@@ -130,11 +130,6 @@ Please note that we never run `kops rolling-update` for cluster updates. You'll
 need to run it manually. However, rolling updates can be automatically applied
 for instance groups, with a configurable node rollout time interval.
 
-TODO
-----
- * Expose generated kops cluster variables, such as `kops` cluster domains, vpc
-   IDs...
-
 Maintainers
 -----------
  * Étienne Lafarge <etienne.lafarge _at_ gmail.com>
