@@ -1,0 +1,84 @@
+resource "aws_s3_bucket_object" "cluster-spec" {
+  bucket = "${var.kops-state-bucket}"
+  key    = "/karch-specs/${var.cluster-name}/master-cluster-spec.yml"
+
+  content = <<EOF
+${join("\n---\n", concat(
+  list(data.template_file.cluster-spec.rendered),
+  data.template_file.master-spec.*.rendered,
+  data.template_file.bastion-spec.*.rendered,
+  list(data.template_file.minion-spec.rendered),
+))}
+EOF
+
+  // On destroy, remove the cluster first :)
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "kops --state=s3://${var.kops-state-bucket} delete cluster --yes ${var.cluster-name}"
+  }
+
+  depends_on = ["aws_route53_record.cluster-root", "aws_vpc.main"]
+}
+
+resource "null_resource" "kops-cluster" {
+  // Let's dump the cluster spec in a conf file
+  provisioner "local-exec" {
+    command = "echo \"${aws_s3_bucket_object.cluster-spec.content}\" > ${path.module}/${var.cluster-name}-cluster-spec.yml"
+  }
+
+  // Let's register our Kops cluster into remote state
+  provisioner "local-exec" {
+    command = "kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-cluster-spec.yml"
+  }
+
+  // Let's remove the cluster spec file from disk
+  provisioner "local-exec" {
+    command = "rm ${path.module}/${var.cluster-name}-cluster-spec.yml"
+  }
+
+  // Do not forget to add our public SSH key over there
+  provisioner "local-exec" {
+    command = "kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
+  }
+
+  depends_on = ["aws_s3_bucket_object.cluster-spec"]
+}
+
+// Hook for other modules (like instance groups) to wait for the master to be available
+resource "null_resource" "master-up" {
+  provisioner "local-exec" {
+    command = <<EOF
+      until kops --state=s3://${var.kops-state-bucket} validate cluster --name ${var.cluster-name}
+      do
+        echo "Cluster isn't available yet"
+        sleep 5s
+      done
+EOF
+  }
+
+  depends_on = ["null_resource.kops-cluster"]
+}
+
+resource "null_resource" "kops-update" {
+  triggers {
+    cluster_spec = "${aws_s3_bucket_object.cluster-spec.content}"
+  }
+
+  provisioner "local-exec" {
+    command = "echo \"${aws_s3_bucket_object.cluster-spec.content}\" > ${path.module}/${var.cluster-name}-cluster-spec.yml"
+  }
+
+  provisioner "local-exec" {
+    command = <<EOF
+      kops --state=s3://${var.kops-state-bucket} \
+        replace -f ${path.module}/${var.cluster-name}-cluster-spec.yml
+
+      rm -f ${path.module}/${var.cluster-name}-cluster-spec.yml
+
+      kops --state=s3://${var.kops-state-bucket} \
+        update cluster ${var.cluster-name} --yes
+EOF
+  }
+
+  depends_on = ["null_resource.kops-cluster"]
+}
