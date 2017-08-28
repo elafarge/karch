@@ -52,12 +52,77 @@ What `karch` isn't
 Getting started
 ---------------
 #### Requirements
-You'll only need `kops`, `kubectl`, `sh`, `awk` and the `aws-cli` (or at
+You'll only need `kops`, `kubectl`, `sh`, and the `aws-cli` (or at
 least, an AWS account configured `accordingly` under `~/.aws/credentials`).
 
 #### Creating a Kubernetes cluster
 
-#### Creating instance groups
+To create a Kubernetes cluster, you can use the `kops-cluster` module:
+You can refer to `./kops-cluster/variables.tf` for a documented list of all the
+variables you can pass to the module.
+```
+module "kops-cluster" {
+  source = "git@github.com:elafarge/karch.git//kops-cluster"
+
+  allowed-aws-account-ids = ["your_account_id"]
+  aws-region              = "eu-west-1"
+
+  # Networking & connectivity
+  vpc-name                  = "kube-hq"
+  vpc-number                = "70"
+  availability-zones        = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  kops-topology             = "private"
+  trusted-cidrs             = "0.0.0.0/0"
+  admin-ssh-public-key-path = "~/.ssh/id_rsa.pub"
+
+  # DNS
+  main-zone-id    = "example.com"
+  cluster-name    = "kube-hq.example.com"
+
+  # Kops & Kuberntetes
+  kops-state-bucket  = "example-com-kops-state"
+
+  # Master
+  master-availability-zones = ["eu-west-1a"]
+  master-image              = "ami-109d6069"
+
+  # Bastion
+  bastion-image        = "ami-109d6069"
+
+  # First minion instance group
+  minion-image        = "ami-109d6069"
+}
+```
+
+#### Adding instance groups to the cluster
+
+Here as well, it boils down to simply using a Terraform module. The list of
+accepted variables can be found under `./kops-ig/variables.tf`.
+```
+module "ingress-ig" {
+  source = "git@github.com:elafarge/karch.git//kops-ig"
+
+  allowed-aws-account-ids = ["your_account_id"]
+  aws-region              = "eu-west-1"
+
+  # Master cluster dependency hook
+  master-up = "${module.kops-cluster.master-up}"
+
+  # Global config
+  name              = "ingress"
+  cluster-name      = "kube-hq.example.com"
+  kops-state-bucket = "example-com-kops-state"
+  visibility        = "private"
+  subnets           = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  image             = "ami-109d6069"
+  type              = "t2.small"
+  volume-size       = "16"
+  volume-type       = "gp2"
+  min-size          = 2
+  max-size          = 3
+  node-labels       = "${map("role.node", "ingress")}"
+}
+```
 
 #### Mainting your cluster
 You can entirely rely on Terraform to update your cluster on `terraform apply`.

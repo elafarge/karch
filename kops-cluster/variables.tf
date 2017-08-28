@@ -65,7 +65,9 @@ variable "cluster-name" {
 
 variable "kube-dns-domain" {
   type        = "string"
-  description = "Domain enforced in our cluster by kube-dns (default: local, ex.: cluster.local)"
+  description = "Domain enforced in our cluster by kube-dns (default: local)."
+
+  default = "local"
 }
 
 # Kops & Kubernetes
