@@ -10,6 +10,7 @@ ${cloud-labels}
   nodeLabels:
 ${node-labels}
   associatePublicIp: ${public}
+${additional-sgs}
   image: ${image}
   machineType: ${type}
   maxSize: ${max-size}

@@ -8,6 +8,7 @@ data "template_file" "master-spec" {
     node-labels             = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
     name                    = "master-${element(var.master-availability-zones, count.index)}"
     public                  = "false"
+    additional-sgs          = ""
     image                   = "${var.master-image}"
     type                    = "${var.master-machine-type}"
     max-size                = 1
@@ -54,11 +55,17 @@ data "template_file" "bastion-spec" {
   template = "${file("${path.module}/../kops-ig/templates/spec.yaml")}"
 
   vars {
-    cluster-name            = "${aws_route53_record.cluster-root.name}"
-    cloud-labels            = "${join("\n", data.template_file.bastion-cloud-labels.*.rendered)}"
-    node-labels             = "${join("\n", data.template_file.bastion-node-labels.*.rendered)}"
-    name                    = "bastions"
-    public                  = "false"
+    cluster-name = "${aws_route53_record.cluster-root.name}"
+    cloud-labels = "${join("\n", data.template_file.bastion-cloud-labels.*.rendered)}"
+    node-labels  = "${join("\n", data.template_file.bastion-node-labels.*.rendered)}"
+    name         = "bastions"
+    public       = "false"
+
+    additional-sgs = <<EOF
+  ${length(var.bastion-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
+  ${join("\n", data.template_file.bastion-additional-sgs.*.rendered)}
+EOF
+
     image                   = "${var.bastion-image}"
     type                    = "${var.bastion-machine-type}"
     max-size                = "${var.max-bastions}"
@@ -71,6 +78,16 @@ data "template_file" "bastion-spec" {
     max-price               = ""
     taints                  = ""
     subnets                 = "${join("\n", data.template_file.minion-subnets.*.rendered)}"
+  }
+}
+
+data "template_file" "bastion-additional-sgs" {
+  count = "${var.bastion-additional-sgs-count}"
+
+  template = "  - $${sg-id}"
+
+  vars {
+    sg-id = "${element(var.bastion-additional-sgs, count.index)}"
   }
 }
 
@@ -104,11 +121,17 @@ data "template_file" "minion-spec" {
   template = "${file("${path.module}/../kops-ig/templates/spec.yaml")}"
 
   vars {
-    cluster-name            = "${aws_route53_record.cluster-root.name}"
-    cloud-labels            = "${join("\n", data.template_file.minion-cloud-labels.*.rendered)}"
-    node-labels             = "${join("\n", data.template_file.minion-node-labels.*.rendered)}"
-    name                    = "${var.minion-ig-name}"
-    public                  = "${var.minion-ig-public}"
+    cluster-name = "${aws_route53_record.cluster-root.name}"
+    cloud-labels = "${join("\n", data.template_file.minion-cloud-labels.*.rendered)}"
+    node-labels  = "${join("\n", data.template_file.minion-node-labels.*.rendered)}"
+    name         = "${var.minion-ig-name}"
+    public       = "${var.minion-ig-public}"
+
+    additional-sgs = <<EOF
+  ${length(var.minion-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
+  ${join("\n", data.template_file.minion-additional-sgs.*.rendered)}
+EOF
+
     image                   = "${var.minion-image}"
     type                    = "${var.minion-machine-type}"
     max-size                = "${var.max-minions}"
@@ -136,6 +159,16 @@ data "template_file" "minion-subnets" {
 
   vars {
     az = "${element(var.availability-zones, count.index)}"
+  }
+}
+
+data "template_file" "minion-additional-sgs" {
+  count = "${var.minion-additional-sgs-count}"
+
+  template = "  - $${sg-id}"
+
+  vars {
+    sg-id = "${element(var.minion-additional-sgs, count.index)}"
   }
 }
 

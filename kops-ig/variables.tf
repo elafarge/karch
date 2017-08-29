@@ -65,6 +65,20 @@ variable "subnets" {
   description = "Subnets this instance group should span"
 }
 
+variable "additional-sgs" {
+  type        = "list"
+  description = "A list of additional security groups to add to this instance"
+
+  default = []
+}
+
+variable "additional-sgs-count" {
+  type        = "string"
+  description = "Number of additional security groups to add"
+
+  default = 0
+}
+
 # Node config
 variable "image" {
   type        = "string"

@@ -180,6 +180,20 @@ variable "bastion-image" {
   description = "AMI id to use for the bastion nodes (in private topology only)"
 }
 
+variable "bastion-additional-sgs" {
+  type        = "list"
+  description = "Number of security groups to add to our bastion nodes"
+
+  default = []
+}
+
+variable "bastion-additional-sgs-count" {
+  type        = "string"
+  description = "Number of security groups to add to our bastion nodes"
+
+  default = 0
+}
+
 variable "bastion-machine-type" {
   type        = "string"
   description = "EC2 instance type to run our bastions onto (default: t2.micro)"
@@ -262,6 +276,20 @@ variable "minion-ig-public" {
   description = "Set to true for nodes in the default minion ig to receive a public IP address"
 
   default = "false"
+}
+
+variable "minion-additional-sgs" {
+  type        = "list"
+  description = "Additional security groups to add to our minion nodes"
+
+  default = []
+}
+
+variable "minion-additional-sgs-count" {
+  type        = "string"
+  description = "Number of security groups to add to our minion nodes"
+
+  default = 0
 }
 
 variable "minion-image" {
