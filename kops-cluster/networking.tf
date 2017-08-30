@@ -10,9 +10,8 @@ resource "aws_vpc" "main" {
   enable_dns_support   = true
 
   tags {
-    Name              = "${var.cluster-name}"
-    Origin            = "Terraform"
-    KubernetesCluster = "${var.cluster-name}"
+    Name   = "${var.cluster-name}"
+    Origin = "Terraform"
   }
 }
 
