@@ -48,6 +48,11 @@ What `karch` isn't
 ------------------
  * A Terraform provider **plugin**. Writing such a plugin would be nice, but
    would require much more time to implement.
+ * For now, `karch` spawns only clusters with a `private` topology. Adding the
+   ability to create `public` clusters will come next
+ * For now, `karch` takes care of creating a VPC and Route53 zone for your
+   cluster's subdomain. Being able to give it an already existing VPC and/or
+   zone is on the roadmap
 
 Getting started
 ---------------

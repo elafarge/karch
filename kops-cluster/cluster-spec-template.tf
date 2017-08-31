@@ -33,7 +33,7 @@ data "template_file" "etcd-member" {
   count = "${length(var.master-availability-zones)}"
 
   template = <<EOF
-    - entcryptedVolume: true
+    - encryptedVolume: true
       instanceGroup: master-$${az}
       name: $${az}
 EOF

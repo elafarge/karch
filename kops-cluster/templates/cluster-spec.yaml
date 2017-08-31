@@ -3,8 +3,6 @@ kind: Cluster
 metadata:
   name: ${cluster-name}
 spec:
-  cloudConfig:
-    disableSecurityGroupIngress: true
   api:
     loadBalancer:
       type: ${master-lb-visibility}
