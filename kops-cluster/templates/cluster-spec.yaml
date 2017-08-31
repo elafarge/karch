@@ -15,7 +15,7 @@ spec:
   cloudLabels:
 ${cloud-labels}
   cloudProvider: aws
-  clusterDNSDomain: ${cluster-name}
+  clusterDNSDomain: ${kube-dns-domain}
   configBase: s3://${kops-state-bucket}/${cluster-name}
   configStore: s3://${kops-state-bucket}/${cluster-name}
   dnsZone: ${cluster-name}
