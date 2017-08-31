@@ -73,7 +73,14 @@ variable "kube-dns-domain" {
 # Kops & Kubernetes
 variable "kops-state-bucket" {
   type        = "string"
-  description = ""
+  description = "Name of the bucket in which kops stores its state (must be created prior to cluster turnup)"
+}
+
+variable "disable-sg-ingress" {
+  type        = "string"
+  description = "Boolean that indicates wether or not to create and attach a security group to instance nodes and load balancers for each LoadBalancer service (default: false)"
+
+  default = "false"
 }
 
 variable "channel" {

@@ -2,11 +2,12 @@ data "template_file" "cluster-spec" {
   template = "${file("${path.module}/templates/cluster-spec.yaml")}"
 
   vars {
-    cluster-name      = "${aws_route53_record.cluster-root.name}"
-    channel           = "${var.channel}"
-    cloud-labels      = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
-    kube-dns-domain   = "${var.kube-dns-domain}"
-    kops-state-bucket = "${var.kops-state-bucket}"
+    cluster-name       = "${aws_route53_record.cluster-root.name}"
+    channel            = "${var.channel}"
+    disable-sg-ingress = "${var.disable-sg-ingress}"
+    cloud-labels       = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
+    kube-dns-domain    = "${var.kube-dns-domain}"
+    kops-state-bucket  = "${var.kops-state-bucket}"
 
     etcd-clusters = <<EOF
   - etcdMembers:

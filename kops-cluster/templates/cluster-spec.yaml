@@ -12,6 +12,8 @@ spec:
   authorization:
     alwaysAllow: {}
   channel: ${channel}
+  cloudConfig:
+    disableSecurityGroupIngress: ${disable-sg-ingress}
   cloudLabels:
 ${cloud-labels}
   cloudProvider: aws
