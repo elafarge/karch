@@ -83,6 +83,13 @@ variable "disable-sg-ingress" {
   default = "false"
 }
 
+variable "rbac" {
+  type        = "string"
+  description = "Boolean indicating whether to enable RBAC authorization (default: false)"
+
+  default = "false"
+}
+
 variable "channel" {
   type        = "string"
   description = "Channel to use for our Kops cluster (default stable)"

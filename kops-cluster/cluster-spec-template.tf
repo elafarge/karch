@@ -18,14 +18,16 @@ ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: events
 EOF
 
-    master-lb-visibility   = "${var.master-lb-visibility}"
-    master-count           = "${length(var.master-availability-zones)}"
-    master-lb-idle-timeout = "${var.master-lb-idle-timeout}"
-    kubernetes-version     = "${var.kubernetes-version}"
-    vpc-cidr               = "${aws_vpc.main.cidr_block}"
-    vpc-id                 = "${aws_vpc.main.id}"
-    trusted-cidrs          = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
-    subnets                = "${join("\n", data.template_file.subnets.*.rendered)}"
+    master-lb-visibility         = "${var.master-lb-visibility}"
+    master-count                 = "${length(var.master-availability-zones)}"
+    master-lb-idle-timeout       = "${var.master-lb-idle-timeout}"
+    kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
+    apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
+    kubernetes-version           = "${var.kubernetes-version}"
+    vpc-cidr                     = "${aws_vpc.main.cidr_block}"
+    vpc-id                       = "${aws_vpc.main.id}"
+    trusted-cidrs                = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
+    subnets                      = "${join("\n", data.template_file.subnets.*.rendered)}"
   }
 }
 

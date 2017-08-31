@@ -8,7 +8,7 @@ spec:
       type: ${master-lb-visibility}
       idleTimeoutSeconds: ${master-lb-idle-timeout}
   authorization:
-    alwaysAllow: {}
+    ${kops-authorization-mode}: {}
   channel: ${channel}
   cloudConfig:
     disableSecurityGroupIngress: ${disable-sg-ingress}
@@ -46,7 +46,7 @@ ${etcd-clusters}
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}
-    authorizationMode: AlwaysAllow
+    authorizationMode: ${apiserver-authorization-mode}
     cloudProvider: aws
     etcdServers:
     - http://127.0.0.1:4001
