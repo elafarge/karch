@@ -26,3 +26,14 @@ data "aws_subnet" "subnet" {
     values = ["${element(var.availability-zones, count.index)}.${var.cluster-name}", "${null_resource.master-up.id}"]
   }
 }
+
+data "aws_security_group" "nodes" {
+  vpc_id = "${aws_vpc.main.id}"
+
+  filter {
+    name = "tag:Name"
+
+    // Same remark as above
+    values = ["nodes.${var.cluster-name}", "${null_resource.master-up.id}"]
+  }
+}
