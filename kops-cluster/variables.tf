@@ -90,6 +90,48 @@ variable "rbac" {
   default = "false"
 }
 
+variable "rbac-super-user" {
+  type        = "string"
+  description = "Name of the RBAC super user"
+
+  default = "admin"
+}
+
+variable "oidc-issuer-url" {
+  type        = "string"
+  description = "Setting this to an OIDC Issuer URL will enable OpenID auth with the configured provider"
+
+  default = ""
+}
+
+variable "oidc-ca-file" {
+  type        = "string"
+  description = "If using OpendID Connect, the oidc CA file on the APIServer pod"
+
+  default = "/srv/kubernetes/ca.crt"
+}
+
+variable "oidc-client-id" {
+  type        = "string"
+  description = "If using OpendID Connect, the oidc client ID"
+
+  default = "example-app"
+}
+
+variable "oidc-username-claim" {
+  type        = "string"
+  description = "If using OpendID Connect, the oidc username claim"
+
+  default = "email"
+}
+
+variable "oidc-groups-claim" {
+  type        = "string"
+  description = "If using OpendID Connect, the oidc group claim"
+
+  default = "groups"
+}
+
 variable "channel" {
   type        = "string"
   description = "Channel to use for our Kops cluster (default stable)"

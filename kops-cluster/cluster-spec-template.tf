@@ -18,16 +18,20 @@ ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: events
 EOF
 
-    master-lb-visibility         = "${var.master-lb-visibility}"
-    master-count                 = "${length(var.master-availability-zones)}"
-    master-lb-idle-timeout       = "${var.master-lb-idle-timeout}"
+    master-lb-visibility   = "${var.master-lb-visibility}"
+    master-count           = "${length(var.master-availability-zones)}"
+    master-lb-idle-timeout = "${var.master-lb-idle-timeout}"
+
     kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
-    kubernetes-version           = "${var.kubernetes-version}"
-    vpc-cidr                     = "${aws_vpc.main.cidr_block}"
-    vpc-id                       = "${aws_vpc.main.id}"
-    trusted-cidrs                = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
-    subnets                      = "${join("\n", data.template_file.subnets.*.rendered)}"
+    rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
+    oidc-config                  = "${element(data.template_file.oidc-apiserver-conf.*.rendered, 0)}"
+
+    kubernetes-version = "${var.kubernetes-version}"
+    vpc-cidr           = "${aws_vpc.main.cidr_block}"
+    vpc-id             = "${aws_vpc.main.id}"
+    trusted-cidrs      = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
+    subnets            = "${join("\n", data.template_file.subnets.*.rendered)}"
   }
 }
 
@@ -89,4 +93,18 @@ EOF
     private-cidr = "${cidrsubnet(aws_vpc.main.cidr_block, 3, count.index+1)}"
     public-cidr  = "${cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)}"
   }
+}
+
+data "template_file" "oidc-apiserver-conf" {
+  count = "${var.oidc-issuer-url == "" ? 0 : 1}"
+
+  template = <<EOF
+    oidcCAFile: ${var.oidc-ca-file}
+    oidcClientID: ${var.oidc-client-id}
+    oidcGroupsClaim: ${var.oidc-groups-claim}
+    oidcIssuerURL: ${var.oidc-issuer-url}
+    oidcUsernameClaim: ${var.oidc-username-claim}
+    runtimeConfig:
+      rbac.authorization.k8s.io/v1alpha1: 'true'
+EOF
 }

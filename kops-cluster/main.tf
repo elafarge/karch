@@ -26,6 +26,17 @@ resource "null_resource" "kops-cluster" {
     command = "echo \"${aws_s3_bucket_object.cluster-spec.content}\" > ${path.module}/${var.cluster-name}-cluster-spec.yml"
   }
 
+  // Let's wait for our newly created DNS zone to propagate
+  provisioner "local-exec" {
+    command = <<EOF
+      until test ! -z "$(dig NS ${var.cluster-name} | grep "ANSWER SECTION")"
+      do
+        echo "DNS zone ${var.cluster-name} isn't available yet, retrying in 5s"
+        sleep 5s
+      done
+EOF
+  }
+
   // Let's register our Kops cluster into remote state
   provisioner "local-exec" {
     command = "kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-cluster-spec.yml"
