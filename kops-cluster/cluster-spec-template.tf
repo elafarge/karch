@@ -22,6 +22,13 @@ EOF
     master-count           = "${length(var.master-availability-zones)}"
     master-lb-idle-timeout = "${var.master-lb-idle-timeout}"
 
+    # CPU and Memory reservation for system/orchestration processes (soft)
+    kubelet-eviction-flag  = "${var.kubelet-eviction-flag}"
+    kube-reserved-cpu      = "${var.kube-reserved-cpu}"
+    kube-reserved-memory   = "${var.kube-reserved-memory}"
+    system-reserved-cpu    = "${var.system-reserved-cpu}"
+    system-reserved-memory = "${var.system-reserved-memory}"
+
     kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
     rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"

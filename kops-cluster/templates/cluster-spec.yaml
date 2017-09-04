@@ -102,7 +102,7 @@ ${apiserver-runtime-config}
     clusterDNS: 100.64.0.10
     clusterDomain: ${kube-dns-domain}
     enableDebuggingHandlers: true
-    evictionHard: memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<10%,imagefs.inodesFree<5%
+    evictionHard: ${kubelet-eviction-flag}
     hostnameOverride: '@aws'
     kubeconfigPath: /var/lib/kubelet/kubeconfig
     logLevel: 2
@@ -111,6 +111,13 @@ ${apiserver-runtime-config}
     podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
     podManifestPath: /etc/kubernetes/manifests
     requireKubeconfig: true
+    kubeReserved:
+      cpu: "${kube-reserved-cpu}"
+      memory: "${kube-reserved-memory}"
+    systemReserved:
+      cpu: "${system-reserved-cpu}"
+      memory: "${system-reserved-memory}"
+    enforceNodeAllocatable: "pods"
   kubernetesApiAccess:
 ${trusted-cidrs}
   kubernetesVersion: ${kubernetes-version}

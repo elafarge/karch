@@ -145,6 +145,42 @@ variable "cloud-labels" {
   default = {}
 }
 
+# Resource reservation on our nodes for Kubernetes daemons & the OS
+variable "kubelet-eviction-flag" {
+  type        = "string"
+  description = "Kubelet flag that configure node memory/storage pod eviction threshold"
+
+  default = "memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<10%,imagefs.inodesFree<5%"
+}
+
+variable "kube-reserved-cpu" {
+  type        = "string"
+  description = "Amount of CPU reserved for the container runtime & kubelet (default: 50m)"
+
+  default = "50m"
+}
+
+variable "kube-reserved-memory" {
+  type        = "string"
+  description = "Amount of CPU reserved for the container runtime & kubelet (default: 256Mi)"
+
+  default = "256Mi"
+}
+
+variable "system-reserved-cpu" {
+  type        = "string"
+  description = "Amount of CPU reserved for the operating system (default: 50m)"
+
+  default = "50m"
+}
+
+variable "system-reserved-memory" {
+  type        = "string"
+  description = "Amount of CPU reserved for the operating system (default: 100Mi)"
+
+  default = "256Mi"
+}
+
 # Master instance group(s)
 variable "master-availability-zones" {
   type        = "list"
