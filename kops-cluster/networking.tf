@@ -15,7 +15,7 @@ resource "aws_vpc" "main" {
   }
 }
 
-// Internet Gatewo
+// Internet Gateway
 resource "aws_internet_gateway" "gw" {
   vpc_id = "${aws_vpc.main.id}"
 
@@ -23,10 +23,4 @@ resource "aws_internet_gateway" "gw" {
     Name   = "${var.cluster-name}"
     Origin = "Terraform"
   }
-}
-
-// VPC endpoint to connect to S3 while bypassing the expensive NAT device
-resource "aws_vpc_endpoint" "s3_endpoint" {
-  service_name = "com.amazonaws.${var.aws-region}.s3"
-  vpc_id       = "${aws_vpc.main.id}"
 }
