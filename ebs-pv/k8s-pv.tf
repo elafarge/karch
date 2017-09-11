@@ -7,7 +7,8 @@ resource "null_resource" "master-up" {
 
 resource "kubernetes_persistent_volume" "kubernetes-pv" {
   metadata {
-    name = "${var.name}"
+    name   = "${var.name}"
+    labels = "${var.labels}"
   }
 
   spec {

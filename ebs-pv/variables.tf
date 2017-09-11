@@ -56,6 +56,13 @@ variable "name" {
   description = "Name of the Kubernetes persistent volume to create"
 }
 
+variable "labels" {
+  type        = "map"
+  description = "Labels to add to the created Kubernetes Persistent Volume"
+
+  default = {}
+}
+
 variable "fs_type" {
   type        = "string"
   description = "FS type to use for this persistent volume (default: ext4)"
