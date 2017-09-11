@@ -1,6 +1,19 @@
 CHANGELOG
 ---------
 
+### 0.4.0
+
+#### Added
+ * Node security group ID as output of the `kops-cluster` module
+ * Helper module to provision EBS volumes as kubernetes persistent volumes
+   (includes the ability to restore them from a snapshot)
+ * Possibility to configure an OIDC provider to the Kubernetes API (tested with
+   Google and Github)
+
+#### Changed
+ * We're not creating an S3 VPC endpoint automatically, however you can create
+   it outside of the `kops-cluster` module using the exported `vpc-id`.
+
 ### 0.3.0 - RBAC !
 
 #### Added
