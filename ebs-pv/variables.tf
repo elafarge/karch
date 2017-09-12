@@ -1,20 +1,3 @@
-variable "aws-region" {
-  type        = "string"
-  description = "The AWS region to create your volume into"
-}
-
-variable "aws-profile" {
-  type        = "string"
-  description = "AWS profile to use (as named under ~/.aws/credentials)"
-
-  default = "default"
-}
-
-variable "allowed-aws-account-ids" {
-  type        = "list"
-  description = "List of account IDs allowed to create this volume"
-}
-
 variable "master-up" {
   type        = "string"
   description = "Dependency hook to be sure that the Kubernetes master is up"

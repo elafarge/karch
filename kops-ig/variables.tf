@@ -1,21 +1,3 @@
-# AWS provider config
-variable "allowed-aws-account-ids" {
-  description = "AWS account ids allowed to spawn this module"
-  type        = "list"
-}
-
-variable "aws-profile" {
-  type        = "string"
-  description = "AWS profile to use (as named under ~/.aws/credentials)"
-
-  default = "default"
-}
-
-variable "aws-region" {
-  type        = "string"
-  description = "AWS region for these nodes (should be the same as master cluster)"
-}
-
 # Dependency hooks
 variable "master-up" {
   type        = "string"
