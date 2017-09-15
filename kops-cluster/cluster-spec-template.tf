@@ -25,7 +25,7 @@ EOF
     kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
     rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
-    oidc-config                  = "${element(data.template_file.oidc-apiserver-conf.*.rendered, 0)}"
+    oidc-config                  = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     kubernetes-version = "${var.kubernetes-version}"
     vpc-cidr           = "${aws_vpc.main.cidr_block}"
