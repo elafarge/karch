@@ -27,6 +27,6 @@ output "subnets" {
 }
 
 // Nodes security groups (to direct ELB traffic to hostPort pods)
-output "nodes_sg" {
+output "nodes-sg" {
   value = "${element(split("/", data.aws_security_group.nodes.arn), 1)}"
 }
