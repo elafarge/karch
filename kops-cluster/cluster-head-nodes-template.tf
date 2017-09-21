@@ -1,6 +1,6 @@
 data "template_file" "master-spec" {
   count    = "${length(var.master-availability-zones)}"
-  template = "${file("${path.module}/../kops-ig/templates/spec.yaml")}"
+  template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
     cluster-name            = "${aws_route53_record.cluster-root.name}"
@@ -52,7 +52,7 @@ EOF
 
 data "template_file" "bastion-spec" {
   count    = "${var.kops-topology == "private" ? 1 : 0}"
-  template = "${file("${path.module}/../kops-ig/templates/spec.yaml")}"
+  template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
     cluster-name = "${aws_route53_record.cluster-root.name}"
@@ -118,7 +118,7 @@ EOF
 }
 
 data "template_file" "minion-spec" {
-  template = "${file("${path.module}/../kops-ig/templates/spec.yaml")}"
+  template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
     cluster-name = "${aws_route53_record.cluster-root.name}"
