@@ -20,6 +20,13 @@ variable "size" {
   description = "Size of the EBS volume to create, in Gigabytes"
 }
 
+variable "iops" {
+  type        = "string"
+  description = "If using the 'io1' volume type, amount of IOPS to provision for this volume"
+
+  default = ""
+}
+
 variable "snapshot-id" {
   type        = "string"
   description = "ID of the snapshot to create this volumes from (leave blank to create an empty volume)"

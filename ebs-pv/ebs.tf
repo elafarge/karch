@@ -2,6 +2,7 @@ resource "aws_ebs_volume" "ebs-pv" {
   availability_zone = "${var.availability-zone}"
   type              = "${var.type}"
   size              = "${var.size}"
+  iops              = "${var.iops}"
   snapshot_id       = "${var.snapshot-id}"
 
   encrypted  = "${var.kms-key-id == "" ? "false" : "true"}"
