@@ -24,7 +24,7 @@ variable "iops" {
   type        = "string"
   description = "If using the 'io1' volume type, amount of IOPS to provision for this volume"
 
-  default = ""
+  default = "100"
 }
 
 variable "snapshot-id" {
