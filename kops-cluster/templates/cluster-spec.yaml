@@ -65,9 +65,8 @@ ${oidc-config}
     serviceClusterIPRange: 100.64.0.0/13
     storageBackend: etcd2
     runtimeConfig:
-      batch/v2alpha1: "true"
-      apps/v1alpha1: "true"
-      autoscaling/v2alpha1: "true"
+${apiserver-runtime-config}
+      ${apiserver-rbac-runtime-config}
   kubeControllerManager:
     allocateNodeCIDRs: true
     attachDetachReconcileSyncPeriod: 1m0s

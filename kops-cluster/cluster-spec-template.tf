@@ -25,7 +25,11 @@ EOF
     kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
     rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
-    oidc-config                  = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
+
+    apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
+    apiserver-rbac-runtime-config = "${var.rbac == "true" ? "rbac.authorization.k8s.io/v1alpha1: 'true'": ""}"
+
+    oidc-config = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     kubernetes-version = "${var.kubernetes-version}"
     vpc-cidr           = "${aws_vpc.main.cidr_block}"
@@ -104,7 +108,11 @@ data "template_file" "oidc-apiserver-conf" {
     oidcGroupsClaim: ${var.oidc-groups-claim}
     oidcIssuerURL: ${var.oidc-issuer-url}
     oidcUsernameClaim: ${var.oidc-username-claim}
-    runtimeConfig:
-      rbac.authorization.k8s.io/v1alpha1: 'true'
 EOF
+}
+
+data "template_file" "apiserver-runtime-configs" {
+  count = "${length(var.apiserver-runtime-flags)}"
+
+  template = "      ${element(keys(var.apiserver-runtime-flags), count.index)}: '${element(values(var.apiserver-runtime-flags), count.index)}'"
 }

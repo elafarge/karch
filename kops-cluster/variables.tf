@@ -84,6 +84,13 @@ variable "rbac-super-user" {
   default = "admin"
 }
 
+variable "apiserver-runtime-flags" {
+  type        = "map"
+  description = "Map describing the --runtime-config parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
+
+  default = {}
+}
+
 variable "oidc-issuer-url" {
   type        = "string"
   description = "Setting this to an OIDC Issuer URL will enable OpenID auth with the configured provider"
