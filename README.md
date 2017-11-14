@@ -67,7 +67,7 @@ You can refer to `./kops-cluster/variables.tf` for a documented list of all the
 variables you can pass to the module.
 ```
 module "kops-cluster" {
-  source = "git@github.com:elafarge/karch.git//kops-cluster"
+  source = "git@github.com:elafarge/karch.git//kops-cluster?ref=1.7.1"
 
   allowed-aws-account-ids = ["your_account_id"]
   aws-region              = "eu-west-1"
@@ -105,7 +105,7 @@ Here as well, it boils down to simply using a Terraform module. The list of
 accepted variables can be found under `./kops-ig/variables.tf`.
 ```
 module "ingress-ig" {
-  source = "git@github.com:elafarge/karch.git//kops-ig"
+  source = "git@github.com:elafarge/karch.git//kops-ig?ref=v1.7.1"
 
   allowed-aws-account-ids = ["your_account_id"]
   aws-region              = "eu-west-1"
