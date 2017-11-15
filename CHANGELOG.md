@@ -1,10 +1,58 @@
 CHANGELOG
 ---------
 
-### 0.4.0
+### 1.7.1
+
+**Note**: from this release, `karch` minor releases (ex.: 1.8.x) will be made
+against the corresponding `kops` release. On CoreOS, compatibility is guaranteed
+between these versions. You should therefore use `karch` `v1.8.x` with `kops`
+`v1.8.y`.
 
 #### Added
- * Node security group ID as output of the `kops-cluster` module
+ * It is now possible to configure (runtime,kubelet) and system resource
+   reservation on nodes
+ * The APIServer `--runtime-config` flag is now exposed, allowing users to
+   easily enable/disable Kubernetes API groups
+ * `batch/v2alpha1`
+
+#### Changed
+ * [refactoring] Remove efs/ebs-pv and revisit folder structure
+
+   Coupling the creation of a complete Kubernetes cluster and of resources
+   (PersistentVolumes, in the case of the efs-pv and ebs-fv volumes) was a
+   really bad idea:
+    * If the Kubernetes API Server is down, it blocks any plan/apply on
+      your Terraform code using these modules, being unable to run
+      Terraform when an outage occured in a cluster isn't... cool :(
+    * It even prevents you to create a custom cluster from scratch
+
+   It is therefore advised to create your Kubernetes infrastructure
+   (including EBS/EFS volumes, karch module calls...) in one piece of
+   Terraform code and to use the "terraform_remote_state" datasources from
+   another to retrieve some data you'd need to provision resources (such
+   as Secrets or PersistentVolumes) from the original codebase or - more
+   precisely - from the state bound to it.
+ * Some alpha API Groups have been enabled. This will soon be configurable with
+   a list variable
+
+#### Removed
+ * `ebs-pv` and `efs-pv` volumes: these were a really bad idea: they imply that,
+   for each `plan` or `apply` call you'll be willing to make, the Kubernetes API
+   server must be up. This is totally impossible during cluster bootstrap
+   (without commenting code) and when the API server is unreachable. You don't
+   want your `terraform apply` to be down during outages :)
+
+### 0.4.1
+
+#### Fixed
+ * Relative path handling issue wrt Terraform 10.0.6
+ * OIDC Server templating fix
+
+#### Changed
+ * Use dashes in all output names
+
+### 0.4.0
+ode security group ID as output of the `kops-cluster` module
  * Helper module to provision EBS volumes as kubernetes persistent volumes
    (includes the ability to restore them from a snapshot)
  * Possibility to configure an OIDC provider to the Kubernetes API (tested with
