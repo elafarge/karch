@@ -39,8 +39,8 @@ EOF
     oidc-config = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     kubernetes-version = "${var.kubernetes-version}"
-    vpc-cidr           = "${aws_vpc.main.cidr_block}"
-    vpc-id             = "${aws_vpc.main.id}"
+    vpc-cidr           = "${var.vpc-cidr-block}"
+    vpc-id             = "${var.vpc-id}"
     trusted-cidrs      = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
     subnets            = "${join("\n", data.template_file.subnets.*.rendered)}"
   }
@@ -101,8 +101,8 @@ EOF
 
   vars {
     az           = "${element(var.availability-zones, count.index)}"
-    private-cidr = "${cidrsubnet(aws_vpc.main.cidr_block, 3, count.index+1)}"
-    public-cidr  = "${cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)}"
+    private-cidr = "${cidrsubnet(var.vpc-cidr-block, 3, count.index+1)}"
+    public-cidr  = "${cidrsubnet(var.vpc-cidr-block, 8, count.index)}"
   }
 }
 

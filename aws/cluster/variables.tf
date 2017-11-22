@@ -4,13 +4,13 @@ variable "aws-region" {
 }
 
 # Networking & Security
-variable "vpc-name" {
-  description = "Arbitrary name to give to your VPC"
+variable "vpc-id" {
+  description = "ID of existing VPC which should be used for a cluster"
   type        = "string"
 }
 
-variable "vpc-number" {
-  description = "The VPC number. This will define the VPC IP range in CIDR notation as follows: 10.<vpc_number>.0.0/16"
+variable "vpc-cidr-block" {
+  description = "CIDR block of existing VPC which should be used for a cluster"
   type        = "string"
 }
 

@@ -1,7 +1,7 @@
 data "aws_subnet" "utility-subnet" {
   count = "${length(var.availability-zones)}"
 
-  vpc_id            = "${aws_vpc.main.id}"
+  vpc_id            = "${var.vpc-id}"
   availability_zone = "${element(var.availability-zones, count.index)}"
 
   filter {
@@ -16,7 +16,7 @@ data "aws_subnet" "utility-subnet" {
 data "aws_subnet" "subnet" {
   count = "${length(var.availability-zones)}"
 
-  vpc_id            = "${aws_vpc.main.id}"
+  vpc_id            = "${var.vpc-id}"
   availability_zone = "${element(var.availability-zones, count.index)}"
 
   filter {
@@ -28,7 +28,7 @@ data "aws_subnet" "subnet" {
 }
 
 data "aws_security_group" "nodes" {
-  vpc_id = "${aws_vpc.main.id}"
+  vpc_id = "${var.vpc-id}"
 
   filter {
     name = "tag:Name"

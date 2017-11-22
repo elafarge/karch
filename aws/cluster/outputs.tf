@@ -13,17 +13,7 @@ output "route53-cluster-zone-id" {
 }
 
 output "vpc-id" {
-  value = "${aws_vpc.main.id}"
-}
-
-// List of utility (public) subnets
-output "utility-subnets" {
-  value = ["${data.aws_subnet.utility-subnet.*.id}"]
-}
-
-// Standard IG subnets
-output "subnets" {
-  value = ["${data.aws_subnet.subnet.*.id}"]
+  value = "${var.vpc-id}"
 }
 
 // Nodes security groups (to direct ELB traffic to hostPort pods)
