@@ -14,7 +14,7 @@ EOF
   // On destroy, remove the cluster first, if it exists
   provisioner "local-exec" {
     when    = "destroy"
-    command = "(test -z \"$(kops get cluster | grep ${var.cluster-name})\" ) || kops --state=s3://${var.kops-state-bucket} delete cluster --yes ${var.cluster-name}"
+    command = "(test -z \"$(kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || kops --state=s3://${var.kops-state-bucket} delete cluster --yes ${var.cluster-name}"
   }
 
   depends_on = ["aws_route53_record.cluster-root", "aws_vpc.main"]
