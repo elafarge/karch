@@ -7,7 +7,7 @@ ${join("\n---\n", concat(
   list(data.template_file.cluster-spec.rendered),
   data.template_file.master-spec.*.rendered,
   data.template_file.bastion-spec.*.rendered,
-  list(data.template_file.minion-spec.rendered),
+  list(data.template_file.minion-spec.rendered)
 ))}
 EOF
 
@@ -17,7 +17,7 @@ EOF
     command = "(test -z \"$(kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || kops --state=s3://${var.kops-state-bucket} delete cluster --yes ${var.cluster-name}"
   }
 
-  depends_on = ["aws_route53_record.cluster-root", "aws_vpc.main"]
+  depends_on = ["aws_route53_record.cluster-root"]
 }
 
 resource "null_resource" "kops-cluster" {
@@ -68,6 +68,21 @@ EOF
   }
 
   depends_on = ["null_resource.kops-cluster"]
+}
+
+resource "null_resource" "dashboard" {
+  provisioner "local-exec" {
+    command = <<EOF
+      until test ! -z "$(kubectl get --all-namespaces=true services | grep kubernetes-dashboard)"
+      do
+        echo "Dashboard isn't available yet, retrying in 5s"
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
+        sleep 5s
+      done
+EOF
+  }
+
+  depends_on = ["null_resource.master-up"]
 }
 
 resource "null_resource" "kops-update" {
