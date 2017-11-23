@@ -82,7 +82,7 @@ resource "null_resource" "dashboard" {
 EOF
   }
 
-  depends_on = ["null_resource.kops-cluster"]
+  depends_on = ["null_resource.master-up"]
 }
 
 resource "null_resource" "kops-update" {
