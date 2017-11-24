@@ -101,8 +101,8 @@ EOF
 
   vars {
     az           = "${element(var.availability-zones, count.index)}"
-    private-cidr = "${cidrsubnet(var.vpc-cidr-block, 3, count.index+1)}"
-    public-cidr  = "${cidrsubnet(var.vpc-cidr-block, 8, count.index)}"
+    private-cidr = "${cidrsubnet(var.vpc-cidr-block, 8, count.index + 20)}"
+    public-cidr  = "${cidrsubnet(var.vpc-cidr-block, 8, count.index + 30)}"
   }
 }
 
