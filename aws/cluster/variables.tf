@@ -134,8 +134,8 @@ variable "channel" {
 
 variable "kubernetes-version" {
   type        = "string"
-  description = "Kubernetes version to use for Core components (default: v1.7.4)"
-  default     = "v1.7.4"
+  description = "Kubernetes version to use for Core components (default: v1.8.4)"
+  default     = "v1.8.4"
 }
 
 variable "cloud-labels" {
