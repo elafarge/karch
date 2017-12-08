@@ -13,6 +13,10 @@ resource "aws_vpc" "main" {
     Name   = "${var.cluster-name}"
     Origin = "Terraform"
   }
+
+  lifecycle {
+    ignore_changes = ["tags"]
+  }
 }
 
 // Internet Gateway
