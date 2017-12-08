@@ -209,7 +209,7 @@ variable "master-machine-type" {
   type        = "string"
   description = "EC2 instance type to run our masters onto (default: m3.medium)"
 
-  default = "m3.medium"
+  default = "c4.large"
 }
 
 variable "master-volume-size" {
