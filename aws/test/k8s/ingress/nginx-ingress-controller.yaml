@@ -1,0 +1,319 @@
+# ServiceAccount for our Ingress controller
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-ingress-controller
+  namespace: ingress
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: nginx-ingress-controller
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+        - events
+    verbs:
+        - create
+        - patch
+  - apiGroups:
+      - "extensions"
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    k8s-addon: ingress-nginx.addons.k8s.io
+  name: nginx-ingress-controller
+  namespace: ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nginx-ingress-controller
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: User
+  name: system:serviceaccount:ingress:nginx-ingress-controller
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: nginx-ingress-controller
+  namespace: ingress
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  - pods
+  - secrets
+  verbs:
+  - get
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  resourceNames:
+  # Defaults to "<election-id>-<ingress-class>"
+  # Here: "<ingress-controller-leader>-<nginx>"
+  # This has to be adapted if you change either parameter
+  # when launching the nginx-ingress-controller.
+  - "ingress-controller-leader-nginx"
+  verbs:
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
+  - endpoints
+  verbs:
+  - get
+  - create
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  labels:
+    k8s-addon: ingress-nginx.addons.k8s.io
+  name: nginx-ingress-controller
+  namespace: ingress
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: nginx-ingress-controller
+subjects:
+- kind: ServiceAccount
+  name: nginx-ingress-controller
+  namespace: ingress
+---
+
+# Ingress Controller config
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-ingress-controller
+  namespace: ingress
+data:
+  proxy-body-size: "0"
+  enable-vts-status: "false"
+  gzip-types: "*"
+  keep-alive: "5"
+  hsts: "true"
+  hsts-max-age: "100000"
+  hsts-include-subdomains: "false"
+  log-format-upstream: '{ "time": "$time_iso8601", "remote_addr": "$proxy_protocol_addr", "x-forward-for": "$proxy_add_x_forwarded_for", "request_id": "$request_id", "remote_user": "$remote_user", "bytes_sent": $bytes_sent, "request_time": $request_time, "status": $status, "vhost": "$host", "request_proto": "$server_protocol", "path": "$uri", "request_query": "$args", "request_length": $request_length, "duration": $request_time, "method": "$request_method", "http_referrer": "$http_referer", "http_user_agent": "$http_user_agent" }'
+  max-worker-connections: "10000"
+  proxy-connect-timeout: "5"
+  proxy-read-timeout: "600"
+  proxy-send-timeout: "60"
+  retry-non-idempotent: "false"
+  proxy-request-buffering: "on"
+  ssl-ciphers: "ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS"
+  # ssl-dh-param: TODO: set this to enable perfect forward secrecy
+  server-name-hash-bucket-size: "256"
+  ssl-protocols: "TLSv1 TLSv1.1 TLSv1.2"
+  ssl-redirect: "true"
+  upstream-fail-timeout: "5"
+  upstream-max-fails: "3"
+  use-gzip: "true"
+  use-http2: "false"
+  use-proxy-protocol: "true"
+  worker-processes: "auto"
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: ingress-nginx
+  namespace: ingress
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      k8s-app: nginx-ingress-controller
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ingress-nginx
+  namespace: ingress
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: ingress-nginx
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+---
+# Ingress controller deployment
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: ingress-nginx
+  namespace: ingress
+  labels:
+    k8s-app: nginx-ingress-controller
+    k8s-addon: ingress-nginx.addons.k8s.io
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 0
+  template:
+    metadata:
+      labels:
+        app: ingress-nginx
+        k8s-app: nginx-ingress-controller
+        k8s-addon: ingress-nginx.addons.k8s.io
+      annotations:
+        prometheus.io/port: '10254'
+        prometheus.io/scrape: 'true'
+    spec:
+      nodeSelector:
+        duty: intake
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: k8s-app
+                operator: In
+                values:
+                - nginx-ingress-controller
+            topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: nginx-ingress-controller
+      hostNetwork: true
+      initContainers:
+      - image: busybox:latest
+        imagePullPolicy: Always
+        name: sysctl-runner
+        securityContext:
+          privileged: true
+        command:
+        - sh
+        - -c
+        - |
+          #!/bin/sh
+          sysctl -w fs.file-max=65000
+          # Avoid a smurf attack
+          sysctl -w net.ipv4.icmp_echo_ignore_broadcasts=1
+          # Turn on protection for bad icmp error messages
+          sysctl -w net.ipv4.icmp_ignore_bogus_error_responses=1
+          # Turn on syncookies for SYN flood attack protection
+          sysctl -w net.ipv4.tcp_syncookies=1
+
+          # Turn on and log spoofed, source routed, and redirect packets
+          # sysctl -w net.ipv4.conf.all.log_martians = 1
+          # sysctl -w net.ipv4.conf.default.log_martians = 1
+          # # No source routed packets here
+          # sysctl -w net.ipv4.conf.all.accept_source_route = 0
+          # sysctl -w net.ipv4.conf.default.accept_source_route = 0
+          # # Turn on reverse path filtering
+          # sysctl -w net.ipv4.conf.all.rp_filter = 1
+          # sysctl -w net.ipv4.conf.default.rp_filter = 1
+          # # Make sure no one can alter the routing tables
+          # sysctl -w net.ipv4.conf.all.accept_redirects = 0
+          # net.ipv4.conf.default.accept_redirects = 0
+          # net.ipv4.conf.all.secure_redirects = 0
+          # net.ipv4.conf.default.secure_redirects = 0
+          # # Don't act as a router
+          # net.ipv4.ip_forward = 0
+          # net.ipv4.conf.all.send_redirects = 0
+          # net.ipv4.conf.default.send_redirects = 0
+          # # Turn on execshild
+          # kernel.exec-shield = 1
+          # kernel.randomize_va_space = 1
+
+      containers:
+      - image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.15
+        name: nginx-ingress-controller
+        imagePullPolicy: Always
+        # Doesn't work with Calico before kops 1.8.0... we have to use host
+        # networking instead
+        # ports:
+        #   - name: http
+        #     containerPort: 80
+        #     hostPort: 80
+        #     protocol: TCP
+        #   - name: https
+        #     containerPort: 443
+        #     hostPort: 443
+        #     protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10254
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        resources:
+          limits:
+            memory: 1000Mi
+          requests:
+            cpu: 400m
+            memory: 1000Mi
+        env:
+          - name: POD_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: POD_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+        args:
+        - /nginx-ingress-controller
+        - --default-backend-service=$(POD_NAMESPACE)/default-backend
+        - --configmap=$(POD_NAMESPACE)/nginx-ingress-controller

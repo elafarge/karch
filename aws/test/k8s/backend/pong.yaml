@@ -1,0 +1,82 @@
+# Just an example service to confirm that requests are routed to pods
+# accordingly
+apiVersion: v1
+kind: Service
+metadata:
+  name: pong
+  labels:
+    app: pong
+spec:
+  selector:
+    app: pong
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+    name: http
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: pong
+  annotations:
+    kubernetes.io/tls-acme: "true"
+spec:
+  tls:
+  - secretName: tls-pong
+    hosts:
+    - pong.${domain}
+  rules:
+  - host: pong.${domain}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: pong
+          servicePort: http
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: pong
+  labels:
+    app: pong
+spec:
+  replicas: 1
+  revisionHistoryLimit: 1
+  selector:
+    matchLabels:
+      app: pong
+  template:
+    metadata:
+      labels:
+        app: pong
+    spec:
+      nodeSelector:
+        duty: webserver
+      containers:
+      - image: elafarge/http-logger
+        name: http-logger
+        imagePullPolicy: Always
+        resources:
+          limits:
+            cpu: 10m
+            memory: 10Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            port: 8000
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            port: 8000
+        args:
+        - -listen
+        - ":8000"
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
