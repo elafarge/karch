@@ -1,0 +1,101 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: default-backend
+  namespace: ingress
+  labels:
+    k8s-app: default-http-backend
+    k8s-addon: ingress-nginx.addons.k8s.io
+    app: default-backend
+spec:
+  ports:
+  - port: 80
+    targetPort: http
+  selector:
+    app: default-backend
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: default-backend
+  namespace: ingress
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: default-backend
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: default-backend
+  namespace: ingress
+spec:
+  scaleTargetRef:
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    name: default-backend
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+---
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: default-backend
+  namespace: ingress
+  labels:
+    k8s-app: default-http-backend
+    k8s-addon: ingress-nginx.addons.k8s.io
+    app: default-backend
+spec:
+  revisionHistoryLimit: 10
+  template:
+    metadata:
+      labels:
+        app: default-backend
+    spec:
+      nodeSelector:
+        duty: intake
+      terminationGracePeriodSeconds: 60
+      containers:
+      - name: default-http-backend
+        image: gcr.io/google_containers/defaultbackend:1.4
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 10m
+            memory: 20Mi
+          requests:
+            cpu: 10m
+            memory: 20Mi
+        ports:
+        - name: http
+          containerPort: 8080
+          protocol: TCP
+      restartPolicy: Always
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values: ["default-backend"]
+              topologyKey: kubernetes.io/hostname
+          - weight: 50
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values: ["default-backend"]
+              topologyKey: failure-domain.beta.kubernetes.io/zone

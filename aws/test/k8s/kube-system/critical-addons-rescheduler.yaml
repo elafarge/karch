@@ -1,0 +1,91 @@
+# Service account and roles
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    k8s-addon: rescheduler.addons.k8s.io
+    k8s-app: rescheduler
+  name: rescheduler
+  namespace: kube-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: rescheduler
+  labels:
+    k8s-addon: rescheduler.addons.k8s.io
+    k8s-app: rescheduler
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - nodes
+  verbs:
+  - list
+  - watch
+  - create
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: rescheduler
+  labels:
+    k8s-addon: rescheduler.addons.k8s.io
+    k8s-app: rescheduler
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: rescheduler
+subjects:
+  - kind: ServiceAccount
+    name: rescheduler
+    namespace: kube-system
+---
+# Rescheduler
+# The code is short and simple and can be found here, better than any doc :)
+# https://github.com/kubernetes/contrib/blob/master/rescheduler/rescheduler.go
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: rescheduler
+  namespace: kube-system
+  labels:
+    app: rescheduler
+    kubernetes.io/cluster-service: "true"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: rescheduler
+      kubernetes.io/cluster-service: "true"
+  template:
+    metadata:
+      name: rescheduler
+      namespace: kube-system
+      labels:
+        app: rescheduler
+        version: v0.3.1
+        kubernetes.io/cluster-service: "true"
+        kubernetes.io/name: "Rescheduler"
+    spec:
+      serviceAccountName: rescheduler
+      hostNetwork: true
+      containers:
+      - image: gcr.io/google_containers/rescheduler:v0.3.1
+        name: rescheduler
+        resources:
+          limits:
+            memory: 100Mi
+          requests:
+            cpu: 10m
+            memory: 100Mi
+        command:
+        - '/rescheduler'
+        args:
+        - '--running-in-cluster=true'
+      nodeSelector:
+        duty: webserver
+      restartPolicy: Always
