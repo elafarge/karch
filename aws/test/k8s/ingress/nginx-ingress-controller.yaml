@@ -202,6 +202,8 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
     # Increase the ELB idle timeout to avoid issues with WebSockets or Server-Sent Events.
     service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
+    # Enable cross-zone load-balancing
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: 'true'
 spec:
   type: LoadBalancer
   selector:
