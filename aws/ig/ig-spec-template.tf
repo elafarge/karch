@@ -25,6 +25,7 @@ EOF
     max-price               = "maxPrice: '${var.max-price}'"
     taints                  = "${join("\n", data.template_file.taints.*.rendered)}"
     subnets                 = "${join("\n", data.template_file.subnets.*.rendered)}"
+    hooks                   = "${join("\n", data.template_file.hooks.*.rendered)}"
   }
 }
 
@@ -86,4 +87,12 @@ EOF
   vars {
     subnet = "${element(var.subnets, count.index)}"
   }
+}
+
+data "template_file" "hooks" {
+  count = "${length(var.hooks)}"
+
+  template = <<EOF
+${element(var.hooks, count.index)}
+EOF
 }

@@ -19,17 +19,6 @@ ${cloud-labels}
   configBase: s3://${kops-state-bucket}/${cluster-name}
   configStore: s3://${kops-state-bucket}/${cluster-name}
   dnsZone: ${cluster-name}
-  docker:
-    bridge: ''
-    ipMasq: false
-    ipTables: false
-    logDriver: json-file
-    logLevel: warn
-    logOpt:
-    - max-size=10m
-    - max-file=5
-    storage: overlay,aufs
-    version: 1.12.6
   etcdClusters:
 ${etcd-clusters}
   keyStore: s3://${kops-state-bucket}/${cluster-name}/pki
@@ -158,3 +147,5 @@ ${subnets}
       type: ${master-lb-visibility}
     masters: private
     nodes: private
+  hooks:
+${hooks}

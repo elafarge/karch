@@ -1,11 +1,3 @@
-output "ingress-elb-dns-name" {
-  value = "${aws_elb.ingress.dns_name}"
-}
-
-output "ingress-elb-zone-id" {
-  value = "${aws_elb.ingress.zone_id}"
-}
-
 output "subnets" {
   value = "${module.kops-cluster.subnets}"
 }

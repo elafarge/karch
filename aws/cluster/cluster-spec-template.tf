@@ -43,6 +43,7 @@ EOF
     vpc-id             = "${aws_vpc.main.id}"
     trusted-cidrs      = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
     subnets            = "${join("\n", data.template_file.subnets.*.rendered)}"
+    hooks              = "${join("\n", data.template_file.hooks.*.rendered)}"
   }
 }
 
@@ -122,4 +123,12 @@ data "template_file" "apiserver-runtime-configs" {
   count = "${length(var.apiserver-runtime-flags)}"
 
   template = "      ${element(keys(var.apiserver-runtime-flags), count.index)}: '${element(values(var.apiserver-runtime-flags), count.index)}'"
+}
+
+data "template_file" "hooks" {
+  count = "${length(var.hooks)}"
+
+  template = <<EOF
+${element(var.hooks, count.index)}
+EOF
 }

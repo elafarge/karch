@@ -58,4 +58,21 @@ module "kops-cluster" {
   min-minions         = "${var.cluster-base-minions-min}"
   max-minions         = "${var.cluster-base-minions-max}"
   minion-node-labels  = "${map("duty", "webserver")}"
+
+  # Disable locksmith auto upgrades and reboot on all nodes
+  hooks = [<<EOF
+  - name: locksmithd.service
+    disabled: true
+EOF
+  ,
+    <<EOF
+  - name: disable-locksmithd.service
+    before:
+    - locksmithd.service
+    manifest: |
+      Type=oneshot
+      ExecStart=/usr/bin/systemctl stop locksmithd.service
+EOF
+    ,
+  ]
 }

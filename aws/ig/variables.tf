@@ -107,6 +107,13 @@ variable "max-price" {
   default = ""
 }
 
+variable "hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to this instance group (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list."
+
+  default = []
+}
+
 # ASG configuration
 variable "max-size" {
   type        = "string"
