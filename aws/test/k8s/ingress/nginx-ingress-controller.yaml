@@ -190,6 +190,30 @@ spec:
   maxReplicas: 10
   targetCPUUtilizationPercentage: 70
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ingress-nginx
+  namespace: ingress
+  labels:
+    k8s-app: nginx-ingress-controller
+  annotations:
+    # Enable PROXY protocol
+    service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: '*'
+    # Increase the ELB idle timeout to avoid issues with WebSockets or Server-Sent Events.
+    service.beta.kubernetes.io/aws-load-balancer-connection-idle-timeout: '3600'
+spec:
+  type: LoadBalancer
+  selector:
+    k8s-app: nginx-ingress-controller
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+  - name: https
+    port: 443
+    targetPort: https
+---
 # Ingress controller deployment
 kind: Deployment
 apiVersion: extensions/v1beta1
@@ -229,7 +253,7 @@ spec:
             topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 60
       serviceAccountName: nginx-ingress-controller
-      hostNetwork: true
+      # hostNetwork: true
       initContainers:
       - image: busybox:latest
         imagePullPolicy: Always
@@ -275,17 +299,16 @@ spec:
       - image: gcr.io/google_containers/nginx-ingress-controller:0.9.0-beta.15
         name: nginx-ingress-controller
         imagePullPolicy: Always
-        # Doesn't work with Calico before kops 1.8.0... we have to use host
-        # networking instead
-        # ports:
-        #   - name: http
-        #     containerPort: 80
-        #     hostPort: 80
-        #     protocol: TCP
-        #   - name: https
-        #     containerPort: 443
-        #     hostPort: 443
-        #     protocol: TCP
+        ports:
+          - name: http
+            containerPort: 80
+            protocol: TCP
+          - name: https
+            containerPort: 443
+            protocol: TCP
+          - name: health
+            containerPort: 10254
+            protocol: TCP
         readinessProbe:
           httpGet:
             path: /healthz

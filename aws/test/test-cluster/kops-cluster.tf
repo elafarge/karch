@@ -21,7 +21,7 @@ module "kops-cluster" {
 
   # Kops & Kuberntetes
   kops-state-bucket  = "${var.kops-state-bucket}"
-  disable-sg-ingress = "true"
+  disable-sg-ingress = "false"
   channel            = "${var.kops-channel}"
   kubernetes-version = "${var.kubernetes-version}"
   cloud-labels       = "${var.cloud-labels}"
