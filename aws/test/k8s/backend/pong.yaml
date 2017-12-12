@@ -42,7 +42,7 @@ metadata:
   labels:
     app: pong
 spec:
-  replicas: 1
+  replicas: 2
   revisionHistoryLimit: 1
   selector:
     matchLabels:
@@ -52,6 +52,7 @@ spec:
       labels:
         app: pong
     spec:
+      terminationGracePeriodSeconds: 10
       nodeSelector:
         duty: webserver
       containers:
@@ -80,3 +81,18 @@ spec:
         - name: http
           containerPort: 8000
           protocol: TCP
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values: ["pong"]
+            topologyKey: kubernetes.io/hostname
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values: ["pong"]
+            topologyKey: failure-domain.beta.kubernetes.io/zone
