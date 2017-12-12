@@ -165,7 +165,7 @@ spec:
         duty: webserver
       containers:
         - name: cluster-autoscaler
-          image: gcr.io/google-containers/cluster-autoscaler:v0.6.2
+          image: gcr.io/google-containers/cluster-autoscaler:v1.0.3
           resources:
             limits:
               cpu: 100m
