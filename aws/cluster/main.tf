@@ -70,21 +70,6 @@ EOF
   depends_on = ["null_resource.kops-cluster"]
 }
 
-resource "null_resource" "dashboard" {
-  provisioner "local-exec" {
-    command = <<EOF
-      until test ! -z "$(kubectl get --all-namespaces=true services | grep kubernetes-dashboard)"
-      do
-        echo "Dashboard isn't available yet, retrying in 5s"
-        kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml
-        sleep 5s
-      done
-EOF
-  }
-
-  depends_on = ["null_resource.master-up"]
-}
-
 resource "null_resource" "kops-update" {
   triggers {
     cluster_spec = "${aws_s3_bucket_object.cluster-spec.content}"
