@@ -3,7 +3,8 @@
  */
 
 resource "aws_route53_zone" "cluster" {
-  name = "${var.cluster-name}"
+  name          = "${var.cluster-name}"
+  force_destroy = true
 }
 
 resource "aws_route53_record" "cluster-root" {
