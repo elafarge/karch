@@ -79,6 +79,19 @@ subjects:
   name: kube-state-metrics
   namespace: kube-system
 ---
+# PodDisruptionBudget of zero allows the cluster autoscaler to scale down a
+# node which has kube-state-metrics on it
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: kube-state-metrics
+  namespace: kube-system
+spec:
+  minAvailable: 0
+  selector:
+    matchLabels:
+      k8s-app: kube-state-metrics
+---
 # Actual service and deployment
 apiVersion: v1
 kind: Service

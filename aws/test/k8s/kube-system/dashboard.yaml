@@ -21,7 +21,19 @@ subjects:
 - kind: ServiceAccount
   name: kubernetes-dashboard
   namespace: kube-system
-
+---
+# PodDisruptionBudget of zero allows the cluster autoscaler to scale down a
+# node which has the kubernetes dashboard on it
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: kubernetes-dashboard
+  namespace: kube-system
+spec:
+  minAvailable: 0
+  selector:
+    matchLabels:
+      k8s-app: kubernetes-dashboard
 # Actual service & deployment
 ---
 kind: Service

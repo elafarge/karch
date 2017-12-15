@@ -1,0 +1,25 @@
+# PodDisruptionBudget of zero allows the cluster autoscaler to scale down a
+# node which has the kube-dns-autoscaler on it
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: kube-dns-autoscaler
+  namespace: kube-system
+spec:
+  minAvailable: 0
+  selector:
+    matchLabels:
+      k8s-app: kube-dns-autoscaler
+---
+# Same thing for kube-dns but let's make sure there's always a living kube-dns
+# pod at least, as everything relies on it
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: kube-dns
+  namespace: kube-system
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      k8s-app: kube-dns

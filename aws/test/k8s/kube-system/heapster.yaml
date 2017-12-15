@@ -60,7 +60,19 @@ subjects:
   name: heapster
   namespace: kube-system
 ---
-
+# PodDisruptionBudget of zero allows the cluster autoscaler to scale down a
+# node which has heapster on it
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: heapster
+  namespace: kube-system
+spec:
+  minAvailable: 0
+  selector:
+    matchLabels:
+      k8s-app: heapster
+---
 # Actual service & deployment
 apiVersion: v1
 kind: Service

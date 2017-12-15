@@ -43,6 +43,19 @@ subjects:
     name: rescheduler
     namespace: kube-system
 ---
+# PodDisruptionBudget of zero allows the cluster autoscaler to scale down a
+# node which has the rescheduler on it
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: rescheduler
+  namespace: kube-system
+spec:
+  minAvailable: 0
+  selector:
+    matchLabels:
+      app: rescheduler
+---
 # Rescheduler
 # The code is short and simple and can be found here, better than any doc :)
 # https://github.com/kubernetes/contrib/blob/master/rescheduler/rescheduler.go
