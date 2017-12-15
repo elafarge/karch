@@ -36,6 +36,10 @@ EOF
     apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
     apiserver-rbac-runtime-config = "${var.rbac == "true" ? "rbac.authorization.k8s.io/v1alpha1: 'true'": ""}"
 
+    hpa-sync-period      = "${var.hpa-sync-period}"
+    hpa-scale-down-delay = "${var.hpa-scale-down-delay}"
+    hpa-scale-up-delay   = "${var.hpa-scale-up-delay}"
+
     oidc-config = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     kubernetes-version = "${var.kubernetes-version}"

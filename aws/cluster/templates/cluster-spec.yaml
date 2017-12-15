@@ -68,6 +68,9 @@ ${apiserver-runtime-config}
       leaderElect: true
     logLevel: 2
     useServiceAccountCredentials: true
+    horizontalPodAutoscalerSyncPerdiod: ${hpa-sync-period}
+    horizontalPodAutoscalerDownscaleDelay: ${hpa-scale-down-delay}
+    horizontalPodAutoscalerUpscaleDelay: ${hpa-scale-up-delay}
   kubeDNS:
     domain: ${kube-dns-domain}
     image: gcr.io/google_containers/kubedns-amd64:1.3

@@ -91,6 +91,27 @@ variable "apiserver-runtime-flags" {
   default = {}
 }
 
+variable "hpa-sync-period" {
+  type        = "string"
+  description = "The frequency at which HPA are evaluated and reconciled"
+
+  default = "10s"
+}
+
+variable "hpa-scale-down-delay" {
+  type        = "string"
+  description = "After a downscale, wait at least for this duration before the next downscale"
+
+  default = "1m"
+}
+
+variable "hpa-scale-up-delay" {
+  type        = "string"
+  description = "After an upscale, wait at least for this duration before the next downscale"
+
+  default = "30s"
+}
+
 variable "oidc-issuer-url" {
   type        = "string"
   description = "Setting this to an OIDC Issuer URL will enable OpenID auth with the configured provider"
