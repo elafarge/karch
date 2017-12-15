@@ -119,14 +119,14 @@ variable "cluster-base-minion-machine-type" {
   type        = "string"
   description = "EC2 instance type to run our minions onto (default: t2.medium)"
 
-  default = "t2.medium"
+  default = "m4.large"
 }
 
 variable "cluster-base-minions-min" {
   type        = "string"
   description = "Cluster base minion ASG min size (default: 1)"
 
-  default = 2
+  default = 1
 }
 
 variable "cluster-base-minions-max" {
@@ -146,7 +146,7 @@ variable "ingress-machine-type" {
   type        = "string"
   description = "EC2 instance type to run our ingress nodes onto (default: t2.medium)"
 
-  default = "t2.medium"
+  default = "m4.large"
 }
 
 variable "ingress-min-nodes" {

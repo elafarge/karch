@@ -27,6 +27,12 @@ rules:
 - apiGroups:
   - ""
   resources:
+  - pods/eviction
+  verbs:
+  - create
+- apiGroups:
+  - ""
+  resources:
   - pods/status
   verbs:
   - update
@@ -43,6 +49,14 @@ rules:
   - ""
   resources:
   - nodes
+  verbs:
+  - watch
+  - list
+  - get
+  - update
+- apiGroups:
+  - ""
+  resources:
   - pods
   - services
   - replicationcontrollers
@@ -51,6 +65,7 @@ rules:
   verbs:
   - watch
   - list
+  - get
 - apiGroups:
   - extensions
   resources:
@@ -60,6 +75,7 @@ rules:
   verbs:
   - watch
   - list
+  - get
 - apiGroups:
   - policy
   resources:
@@ -74,6 +90,8 @@ rules:
   verbs:
   - watch
   - list
+  - get
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -177,7 +195,7 @@ spec:
           - ./cluster-autoscaler
           - --cloud-provider=aws
           - --scale-down-enabled=true
-          - --scale-down-delay=1m
+          - --scale-down-delay-after-add=1m
           - --scale-down-utilization-threshold=0.6
           - --scale-down-unneeded-time=1m
           - --scale-down-unready-time=6m
@@ -186,8 +204,8 @@ spec:
           - --v=4
           - --skip-nodes-with-local-storage=false
           # Per-ASG configuration
-          - --nodes=2:10:ingress.test.morpheo.io
-          - --nodes=2:15:default.test.morpheo.io
+          - --nodes=1:5:ingress.test.morpheo.io
+          - --nodes=1:3:default.test.morpheo.io
           env:
             - name: AWS_REGION
               value: eu-west-1

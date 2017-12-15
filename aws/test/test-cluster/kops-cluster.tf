@@ -59,12 +59,15 @@ module "kops-cluster" {
   max-minions         = "${var.cluster-base-minions-max}"
   minion-node-labels  = "${map("duty", "webserver")}"
 
-  # Disable locksmith auto upgrades and reboot on all nodes
-  hooks = [<<EOF
+  # Hooks enforced on all nodes
+  hooks = [
+    # Disable locksmith auto upgrades and reboots on all nodes
+    <<EOF
   - name: locksmithd.service
     disabled: true
 EOF
-  ,
+    ,
+
     <<EOF
   - name: disable-locksmithd.service
     before:
@@ -75,4 +78,15 @@ EOF
 EOF
     ,
   ]
+
+  #   minion-hooks = [
+  #     <<EOF
+  #   - name: tune-kernel.service
+  #     manifest: |
+  #       Type = oneshot
+  # ${join("\n", data.template_file.webserver-sysctl-parameters.*.rendered)},
+  #       ExecStart=/usr/bin/echo 'Kernel Configured'
+  # EOF
+  #     ,
+  #   ]
 }

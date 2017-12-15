@@ -20,4 +20,15 @@ module "ingress-ig" {
   min-size          = "${var.ingress-min-nodes}"
   max-size          = "${var.ingress-max-nodes}"
   node-labels       = "${map("duty", "intake")}"
+
+  #   hooks = [
+  #     <<EOF
+  #   - name: tune-kernel.service
+  #     manifest: |
+  #       Type = oneshot
+  # ${join("\n", data.template_file.webserver-sysctl-parameters.*.rendered)},
+  #       ExecStart=/usr/bin/echo 'Kernel Configured'
+  # EOF
+  #     ,
+  #   ]
 }

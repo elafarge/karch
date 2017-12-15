@@ -30,10 +30,13 @@ module "test-cluster" {
 
   # First minion instance group (HTTP webservers of all types + kube-system pods)
   cluster-base-minion-ig-name      = "default"
-  cluster-base-minion-machine-type = "t2.medium"
-  cluster-base-minions-min         = 2
-  cluster-base-minions-max         = 15
+  cluster-base-minion-machine-type = "m4.large"
+  cluster-base-minions-min         = 1
+  cluster-base-minions-max         = 3
 
   # Ingress nodes
   ingress-nodes-subnets = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
+  ingress-machine-type  = "m4.large"
+  ingress-min-nodes     = 1
+  ingress-max-nodes     = 5
 }
