@@ -268,6 +268,13 @@ variable "master-node-labels" {
   default = {}
 }
 
+variable "master-hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to the master instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+
+  default = []
+}
+
 # Bastion instance group
 variable "bastion-image" {
   type        = "string"
@@ -355,6 +362,13 @@ variable "bastion-node-labels" {
   description = "(Flat) map of Kubernetes node labels to add to bastion instances"
 
   default = {}
+}
+
+variable "bastion-hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to the bastion instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+
+  default = []
 }
 
 # Initial minion instance group
@@ -465,4 +479,11 @@ variable "minion-node-labels" {
   description = "(Flat) map of Kubernetes node labels to add to minion instances"
 
   default = {}
+}
+
+variable "minion-hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to the minion instances (in the IG created along with the cluster) only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+
+  default = []
 }
