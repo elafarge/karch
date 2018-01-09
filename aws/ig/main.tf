@@ -7,7 +7,7 @@ resource "aws_s3_bucket_object" "ig-spec" {
   // On destroy, remove the IG, if it exists
   provisioner "local-exec" {
     when    = "destroy"
-    command = "(test -z \"$(kops get cluster | grep ${var.cluster-name})\" ) || kops --state=s3://${var.kops-state-bucket} delete ig --name ${var.cluster-name} --yes ${var.name}"
+    command = "(test -z \"$(kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || kops --state=s3://${var.kops-state-bucket} delete ig --name ${var.cluster-name} --yes ${var.name}"
   }
 }
 

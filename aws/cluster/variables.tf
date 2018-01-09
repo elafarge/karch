@@ -91,6 +91,27 @@ variable "apiserver-runtime-flags" {
   default = {}
 }
 
+variable "hpa-sync-period" {
+  type        = "string"
+  description = "The frequency at which HPA are evaluated and reconciled"
+
+  default = "10s"
+}
+
+variable "hpa-scale-down-delay" {
+  type        = "string"
+  description = "After a downscale, wait at least for this duration before the next downscale"
+
+  default = "1m"
+}
+
+variable "hpa-scale-up-delay" {
+  type        = "string"
+  description = "After an upscale, wait at least for this duration before the next downscale"
+
+  default = "30s"
+}
+
 variable "oidc-issuer-url" {
   type        = "string"
   description = "Setting this to an OIDC Issuer URL will enable OpenID auth with the configured provider"
@@ -134,8 +155,8 @@ variable "channel" {
 
 variable "kubernetes-version" {
   type        = "string"
-  description = "Kubernetes version to use for Core components (default: v1.7.4)"
-  default     = "v1.7.4"
+  description = "Kubernetes version to use for Core components (default: v1.8.4)"
+  default     = "v1.8.4"
 }
 
 variable "cloud-labels" {
@@ -181,6 +202,14 @@ variable "system-reserved-memory" {
   default = "256Mi"
 }
 
+# Systemd/Docker hooks
+variable "hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to this instance group (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list."
+
+  default = []
+}
+
 # Master instance group(s)
 variable "master-availability-zones" {
   type        = "list"
@@ -209,7 +238,7 @@ variable "master-machine-type" {
   type        = "string"
   description = "EC2 instance type to run our masters onto (default: m3.medium)"
 
-  default = "m3.medium"
+  default = "c4.large"
 }
 
 variable "master-volume-size" {
@@ -258,6 +287,13 @@ variable "master-node-labels" {
   description = "(Flat) map of Kubernetes node labels to add to master instances"
 
   default = {}
+}
+
+variable "master-hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to the master instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+
+  default = []
 }
 
 # Bastion instance group
@@ -347,6 +383,13 @@ variable "bastion-node-labels" {
   description = "(Flat) map of Kubernetes node labels to add to bastion instances"
 
   default = {}
+}
+
+variable "bastion-hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to the bastion instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+
+  default = []
 }
 
 # Initial minion instance group
@@ -457,4 +500,11 @@ variable "minion-node-labels" {
   description = "(Flat) map of Kubernetes node labels to add to minion instances"
 
   default = {}
+}
+
+variable "minion-hooks" {
+  type        = "list"
+  description = "Docker/Systemd hooks to add to the minion instances (in the IG created along with the cluster) only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+
+  default = []
 }
