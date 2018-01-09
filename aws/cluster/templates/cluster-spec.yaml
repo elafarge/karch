@@ -32,6 +32,7 @@ ${etcd-clusters}
     - DefaultStorageClass
     - DefaultTolerationSeconds
     - ResourceQuota
+    - Initializers
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}
