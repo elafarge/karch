@@ -36,6 +36,10 @@ EOF
     apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
     apiserver-rbac-runtime-config = "${var.rbac == "true" ? "rbac.authorization.k8s.io/v1alpha1: 'true'": ""}"
 
+    hpa-sync-period      = "${var.hpa-sync-period}"
+    hpa-scale-down-delay = "${var.hpa-scale-down-delay}"
+    hpa-scale-up-delay   = "${var.hpa-scale-up-delay}"
+
     oidc-config = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     kubernetes-version = "${var.kubernetes-version}"
@@ -43,6 +47,7 @@ EOF
     vpc-id             = "${var.vpc-id}"
     trusted-cidrs      = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
     subnets            = "${join("\n", data.template_file.subnets.*.rendered)}"
+    hooks              = "${join("\n", data.template_file.hooks.*.rendered)}"
   }
 }
 
@@ -122,4 +127,12 @@ data "template_file" "apiserver-runtime-configs" {
   count = "${length(var.apiserver-runtime-flags)}"
 
   template = "      ${element(keys(var.apiserver-runtime-flags), count.index)}: '${element(values(var.apiserver-runtime-flags), count.index)}'"
+}
+
+data "template_file" "hooks" {
+  count = "${length(var.hooks)}"
+
+  template = <<EOF
+${element(var.hooks, count.index)}
+EOF
 }

@@ -25,3 +25,5 @@ ${additional-sgs}
 ${taints}
   subnets:
 ${subnets}
+  hooks:
+${hooks}

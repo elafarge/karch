@@ -21,6 +21,7 @@ data "template_file" "master-spec" {
     max-price               = ""
     taints                  = ""
     subnets                 = "  - ${element(var.master-availability-zones, count.index)}"
+    hooks                   = "${join("\n", data.template_file.master-hooks.*.rendered)}"
   }
 }
 
@@ -48,6 +49,14 @@ EOF
     tag   = "${element(keys(var.master-node-labels), count.index)}"
     value = "${element(values(var.master-node-labels), count.index)}"
   }
+}
+
+data "template_file" "master-hooks" {
+  count = "${length(var.master-hooks)}"
+
+  template = <<EOF
+${element(var.master-hooks, count.index)}
+EOF
 }
 
 data "template_file" "bastion-spec" {
@@ -78,6 +87,7 @@ EOF
     max-price               = ""
     taints                  = ""
     subnets                 = "${join("\n", data.template_file.minion-subnets.*.rendered)}"
+    hooks                   = "${join("\n", data.template_file.bastion-hooks.*.rendered)}"
   }
 }
 
@@ -117,6 +127,14 @@ EOF
   }
 }
 
+data "template_file" "bastion-hooks" {
+  count = "${length(var.bastion-hooks)}"
+
+  template = <<EOF
+${element(var.bastion-hooks, count.index)}
+EOF
+}
+
 data "template_file" "minion-spec" {
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
@@ -144,6 +162,7 @@ EOF
     max-price               = ""
     taints                  = "${join("\n", data.template_file.minion-taints.*.rendered)}"
     subnets                 = "${join("\n", data.template_file.minion-subnets.*.rendered)}"
+    hooks                   = "${join("\n", data.template_file.minion-hooks.*.rendered)}"
   }
 }
 
@@ -196,4 +215,12 @@ EOF
     tag   = "${element(keys(var.minion-node-labels), count.index)}"
     value = "${element(values(var.minion-node-labels), count.index)}"
   }
+}
+
+data "template_file" "minion-hooks" {
+  count = "${length(var.minion-hooks)}"
+
+  template = <<EOF
+${element(var.minion-hooks, count.index)}
+EOF
 }
