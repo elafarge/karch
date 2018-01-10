@@ -28,7 +28,7 @@ resource "null_resource" "ig" {
       while test -f ${path.root}/.kops-ig-lock
       do
         echo "Waiting for other instance group update to finish"
-        sleep $[ ( $RANDOM % 10 )  + 10 ]s
+        sleep $(((1 + RANDOM % 10)+10))
       done
       echo 'locked' > ${path.root}/.kops-ig-lock
       kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
@@ -58,7 +58,7 @@ resource "null_resource" "ig-update" {
       while test -f ${path.root}/.kops-ig-lock
       do
         echo "Waiting for other instance group update to finish"
-        sleep $[ ( $RANDOM % 10 )  + 10 ]s
+        sleep $(((1 + RANDOM % 10)+10))
       done
       echo 'locked' > ${path.root}/.kops-ig-lock
 
