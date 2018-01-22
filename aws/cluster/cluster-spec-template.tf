@@ -2,6 +2,7 @@ data "template_file" "cluster-spec" {
   template = "${file("${path.module}/templates/cluster-spec.yaml")}"
 
   vars {
+    # Generic cluster configuration
     cluster-name       = "${aws_route53_record.cluster-root.name}"
     channel            = "${var.channel}"
     disable-sg-ingress = "${var.disable-sg-ingress}"
@@ -9,45 +10,56 @@ data "template_file" "cluster-spec" {
     kube-dns-domain    = "${var.kube-dns-domain}"
     kops-state-bucket  = "${var.kops-state-bucket}"
 
-    etcd-clusters = <<EOF
-  - etcdMembers:
-${join("\n", data.template_file.etcd-member.*.rendered)}
-    name: main
-  - etcdMembers:
-${join("\n", data.template_file.etcd-member.*.rendered)}
-    name: events
-EOF
-
-    master-lb-visibility   = "${var.master-lb-visibility}"
-    master-count           = "${length(var.master-availability-zones)}"
-    master-lb-idle-timeout = "${var.master-lb-idle-timeout}"
-
-    # CPU and Memory reservation for system/orchestration processes (soft)
-    kubelet-eviction-flag  = "${var.kubelet-eviction-flag}"
-    kube-reserved-cpu      = "${var.kube-reserved-cpu}"
-    kube-reserved-memory   = "${var.kube-reserved-memory}"
-    system-reserved-cpu    = "${var.system-reserved-cpu}"
-    system-reserved-memory = "${var.system-reserved-memory}"
-
-    kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
-    apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
-    rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
-
-    apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
-    apiserver-rbac-runtime-config = "${var.rbac == "true" ? "rbac.authorization.k8s.io/v1alpha1: 'true'": ""}"
-
-    hpa-sync-period      = "${var.hpa-sync-period}"
-    hpa-scale-down-delay = "${var.hpa-scale-down-delay}"
-    hpa-scale-up-delay   = "${var.hpa-scale-up-delay}"
-
-    oidc-config = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
+    master-lb-visibility     = "${var.master-lb-visibility == "Private" ? "Internal" : "Public"}"
+    master-lb-dns-visibility = "${var.master-lb-visibility}"
+    master-count             = "${length(var.master-availability-zones)}"
+    master-lb-idle-timeout   = "${var.master-lb-idle-timeout}"
 
     kubernetes-version = "${var.kubernetes-version}"
     vpc-cidr           = "${var.vpc-cidr-block}"
     vpc-id             = "${var.vpc-id}"
     trusted-cidrs      = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
     subnets            = "${join("\n", data.template_file.subnets.*.rendered)}"
-    hooks              = "${join("\n", data.template_file.hooks.*.rendered)}"
+
+    hooks = "${join("\n", data.template_file.hooks.*.rendered)}"
+
+    # ETCD cluster parameters
+    etcd-clusters = <<EOF
+  - etcdMembers:
+${join("\n", data.template_file.etcd-member.*.rendered)}
+    name: main
+    enableEtcdTLS: ${var.etcd-enable-tls}
+    version: ${var.etcd-version}
+  - etcdMembers:
+${join("\n", data.template_file.etcd-member.*.rendered)}
+    name: events
+    enableEtcdTLS: ${var.etcd-enable-tls}
+    version: ${var.etcd-version}
+EOF
+
+    # Kubelet configuration
+    # CPU and Memory reservation for system/orchestration processes (soft)
+    kubelet-eviction-flag = "${var.kubelet-eviction-flag}"
+
+    kube-reserved-cpu      = "${var.kube-reserved-cpu}"
+    kube-reserved-memory   = "${var.kube-reserved-memory}"
+    system-reserved-cpu    = "${var.system-reserved-cpu}"
+    system-reserved-memory = "${var.system-reserved-memory}"
+
+    # APIServer configuration
+    apiserver-storage-backend    = "etcd${substr(var.etcd-version, 0, 1)}"
+    kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
+    apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
+    rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
+
+    apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
+    apiserver-rbac-runtime-config = "${var.rbac == "true" ? "rbac.authorization.k8s.io/v1alpha1: 'true'": ""}"
+    oidc-config                   = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
+
+    # kube-controller-manager configuration
+    hpa-sync-period      = "${var.hpa-sync-period}"
+    hpa-scale-down-delay = "${var.hpa-scale-down-delay}"
+    hpa-scale-up-delay   = "${var.hpa-scale-up-delay}"
   }
 }
 

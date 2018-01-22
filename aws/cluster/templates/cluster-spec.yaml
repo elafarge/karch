@@ -52,7 +52,7 @@ ${oidc-config}
     logLevel: 2
     securePort: 443
     serviceClusterIPRange: 100.64.0.0/13
-    storageBackend: etcd2
+    storageBackend: ${apiserver-storage-backend}
     runtimeConfig:
 ${apiserver-runtime-config}
       ${apiserver-rbac-runtime-config}

@@ -70,6 +70,20 @@ variable "disable-sg-ingress" {
   default = "false"
 }
 
+variable "etcd-version" {
+  type        = "string"
+  description = "Etcd version to use"
+
+  default = "3.2.14"
+}
+
+variable "etcd-enable-tls" {
+  type        = "string"
+  description = "Set to true to enable TLS on etcd containers (default: true)"
+
+  default = "true"
+}
+
 variable "rbac" {
   type        = "string"
   description = "Boolean indicating whether to enable RBAC authorization (default: false)"
