@@ -37,3 +37,17 @@ data "aws_security_group" "nodes" {
     values = ["nodes.${var.cluster-name}", "${null_resource.master-up.id}"]
   }
 }
+
+data "aws_route_table" "standard" {
+  count = "${length(var.availability-zones)}"
+
+  vpc_id    = "${aws_vpc.main.id}"
+  subnet_id = "${element(data.aws_subnet.subnet.*.id, count.index)}"
+}
+
+data "aws_route_table" "utility" {
+  count = "${length(var.availability-zones)}"
+
+  vpc_id    = "${aws_vpc.main.id}"
+  subnet_id = "${element(data.aws_subnet.utility-subnet.*.id, count.index)}"
+}

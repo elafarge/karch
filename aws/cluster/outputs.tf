@@ -16,6 +16,10 @@ output "vpc-id" {
   value = "${aws_vpc.main.id}"
 }
 
+output "cluster-cidr-block" {
+  value = "${aws_vpc.main.cidr_block}"
+}
+
 // List of utility (public) subnets
 output "utility-subnets" {
   value = ["${data.aws_subnet.utility-subnet.*.id}"]
@@ -24,6 +28,16 @@ output "utility-subnets" {
 // Standard IG subnets
 output "subnets" {
   value = ["${data.aws_subnet.subnet.*.id}"]
+}
+
+// Utility (public) route tables
+output "utility-route-tables" {
+  value = ["${data.aws_route_table.utility.*.id}"]
+}
+
+// Standard route tables
+output "route-tables" {
+  value = ["${data.aws_route_table.standard.*.id}"]
 }
 
 // Nodes security groups (to direct ELB traffic to hostPort pods)
