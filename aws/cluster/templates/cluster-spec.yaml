@@ -147,7 +147,7 @@ ${subnets}
     bastion:
       bastionPublicName: bastion.${cluster-name}
     dns:
-      type: ${master-lb-visibility}
+      type: ${master-lb-dns-visibility}
     masters: private
     nodes: private
   hooks:

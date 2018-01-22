@@ -3,7 +3,10 @@
  */
 
 resource "aws_route53_zone" "cluster" {
-  name = "${var.cluster-name}"
+  name    = "${var.cluster-name}"
+  comment = "Created by elafarge/karch via Terraform"
+
+  vpc_id = "${var.master-lb-visibility == "Private" ? aws_vpc.main.id : ""}"
 }
 
 resource "aws_route53_record" "cluster-root" {

@@ -29,6 +29,12 @@ resource "null_resource" "kops-cluster" {
   // Let's wait for our newly created DNS zone to propagate
   provisioner "local-exec" {
     command = <<EOF
+      if test ${var.master-lb-visibility} = "Private"
+      then
+        echo "Using a Private DNS zone for Kubernetes components, skipping public DNS polling"
+        exit 0
+      fi
+
       until test ! -z "$(dig NS ${var.cluster-name} | grep "ANSWER SECTION")"
       do
         echo "DNS zone ${var.cluster-name} isn't available yet, retrying in 5s"
@@ -59,6 +65,12 @@ EOF
 resource "null_resource" "master-up" {
   provisioner "local-exec" {
     command = <<EOF
+      if test ${var.master-lb-visibility} = "Private"
+      then
+        echo "Skipping cluster validation inside karch cluster module: since we're using a private ELB, you'll have to use a custom dependency hook that waits for the cluster to validate before creating your instance groups."
+        exit 0
+      fi
+
       until kops --state=s3://${var.kops-state-bucket} validate cluster --name ${var.cluster-name}
       do
         echo "Cluster isn't available yet"
