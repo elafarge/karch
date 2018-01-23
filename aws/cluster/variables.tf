@@ -84,6 +84,13 @@ variable "etcd-enable-tls" {
   default = "true"
 }
 
+variable "container-networking" {
+  type        = "string"
+  description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
+
+  default = "kuberouter"
+}
+
 variable "rbac" {
   type        = "string"
   description = "Boolean indicating whether to enable RBAC authorization (default: false)"

@@ -15,11 +15,12 @@ data "template_file" "cluster-spec" {
     master-count             = "${length(var.master-availability-zones)}"
     master-lb-idle-timeout   = "${var.master-lb-idle-timeout}"
 
-    kubernetes-version = "${var.kubernetes-version}"
-    vpc-cidr           = "${aws_vpc.main.cidr_block}"
-    vpc-id             = "${aws_vpc.main.id}"
-    trusted-cidrs      = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
-    subnets            = "${join("\n", data.template_file.subnets.*.rendered)}"
+    kubernetes-version   = "${var.kubernetes-version}"
+    vpc-cidr             = "${aws_vpc.main.cidr_block}"
+    vpc-id               = "${aws_vpc.main.id}"
+    trusted-cidrs        = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
+    subnets              = "${join("\n", data.template_file.subnets.*.rendered)}"
+    container-networking = "${var.container-networking}"
 
     hooks = "${join("\n", data.template_file.hooks.*.rendered)}"
 
