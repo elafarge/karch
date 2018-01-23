@@ -4,6 +4,21 @@ variable "master-up" {
   description = "Terraform dependency hook to wait for the master cluster to be up before creating instance groups"
 }
 
+# Kops env. overrides
+variable "nodeup-url-env" {
+  type        = "string"
+  description = "NODEUP_URL env. variable override for testing custom builds of nodeup"
+
+  default = ""
+}
+
+variable "aws-profile-env-override" {
+  type        = "string"
+  description = "String of the form AWS_PROFILE=xxxx to override the AWS Profile used by kops calls triggered by karch"
+
+  default = ""
+}
+
 # Instance group parameters
 variable "cluster-name" {
   type        = "string"

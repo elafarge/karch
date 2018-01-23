@@ -7,7 +7,7 @@ resource "aws_s3_bucket_object" "ig-spec" {
   // On destroy, remove the IG, if it exists
   provisioner "local-exec" {
     when    = "destroy"
-    command = "(test -z \"$(kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || kops --state=s3://${var.kops-state-bucket} delete ig --name ${var.cluster-name} --yes ${var.name}"
+    command = "(test -z \"$(${var.nodeup-url-env} ${var.aws-profile-env-override} kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || ${var.nodeup-url-env} ${var.aws-profile-env-override} kops --state=s3://${var.kops-state-bucket} delete ig --name ${var.cluster-name} --yes ${var.name}"
   }
 }
 
@@ -31,7 +31,7 @@ resource "null_resource" "ig" {
         sleep $[ ( $RANDOM % 10 )  + 10 ]s
       done
       echo 'locked' > ${path.root}/.kops-ig-lock
-      kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
+      ${var.nodeup-url-env} ${var.aws-profile-env-override} kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
       rm ${path.root}/.kops-ig-lock
 EOF
   }
@@ -62,16 +62,16 @@ resource "null_resource" "ig-update" {
       done
       echo 'locked' > ${path.root}/.kops-ig-lock
 
-      kops --state=s3://${var.kops-state-bucket} \
+      ${var.nodeup-url-env} ${var.aws-profile-env-override} kops --state=s3://${var.kops-state-bucket} \
         replace -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
 
       rm -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
 
-      kops --state=s3://${var.kops-state-bucket} \
+      ${var.nodeup-url-env} ${var.aws-profile-env-override} kops --state=s3://${var.kops-state-bucket} \
         update cluster ${var.cluster-name} --yes
 
       KOPS_FEATURE_FLAGS="+DrainAndValidateRollingUpdate" \
-      kops --state=s3://${var.kops-state-bucket} \
+      ${var.nodeup-url-env} ${var.aws-profile-env-override} kops --state=s3://${var.kops-state-bucket} \
         rolling-update cluster ${var.cluster-name} \
           --node-interval="${var.update-interval}m" ${var.automatic-rollout == "true" ? "--yes" : ""}\
           --instance-group="${var.name}"
