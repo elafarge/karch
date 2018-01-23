@@ -55,7 +55,6 @@ ${oidc-config}
     storageBackend: ${apiserver-storage-backend}
     runtimeConfig:
 ${apiserver-runtime-config}
-      ${apiserver-rbac-runtime-config}
   kubeControllerManager:
     allocateNodeCIDRs: true
     attachDetachReconcileSyncPeriod: 1m0s

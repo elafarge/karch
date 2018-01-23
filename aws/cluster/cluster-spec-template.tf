@@ -53,9 +53,8 @@ EOF
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
     rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
 
-    apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
-    apiserver-rbac-runtime-config = "${var.rbac == "true" ? "rbac.authorization.k8s.io/v1alpha1: 'true'": ""}"
-    oidc-config                   = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
+    apiserver-runtime-config = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
+    oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     # kube-controller-manager configuration
     hpa-sync-period      = "${var.hpa-sync-period}"
