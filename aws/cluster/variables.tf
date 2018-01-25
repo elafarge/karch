@@ -543,3 +543,15 @@ variable "minion-hooks" {
 
   default = []
 }
+
+variable "master-additional-policies" {
+  type        = "string"
+  description = "Additional IAM policies to add to our master instance role: https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md#adding-additional-policies"
+  default     = ""
+}
+
+variable "node-additional-policies" {
+  type        = "string"
+  description = "Additional IAM policies to add to our node instance role: https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md#adding-additional-policies"
+  default     = ""
+}

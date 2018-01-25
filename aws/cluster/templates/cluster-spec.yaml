@@ -151,3 +151,6 @@ ${subnets}
     nodes: private
   hooks:
 ${hooks}
+  additionalPolicies:
+    ${master-additional-policies}
+    ${node-additional-policies}
