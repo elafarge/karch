@@ -52,10 +52,9 @@ ${oidc-config}
     logLevel: 2
     securePort: 443
     serviceClusterIPRange: 100.64.0.0/13
-    storageBackend: etcd2
+    storageBackend: ${apiserver-storage-backend}
     runtimeConfig:
 ${apiserver-runtime-config}
-      ${apiserver-rbac-runtime-config}
   kubeControllerManager:
     allocateNodeCIDRs: true
     attachDetachReconcileSyncPeriod: 1m0s
@@ -129,7 +128,7 @@ ${trusted-cidrs}
   networkCIDR: ${vpc-cidr}
   networkID: ${vpc-id}
   networking:
-    calico: {}
+    ${container-networking}: {}
   nonMasqueradeCIDR: 100.64.0.0/10
   secretStore: s3://${kops-state-bucket}/${cluster-name}/secrets
   serviceClusterIPRange: 100.64.0.0/13

@@ -70,6 +70,27 @@ variable "disable-sg-ingress" {
   default = "false"
 }
 
+variable "etcd-version" {
+  type        = "string"
+  description = "Etcd version to use"
+
+  default = "3.2.14"
+}
+
+variable "etcd-enable-tls" {
+  type        = "string"
+  description = "Set to true to enable TLS on etcd containers (default: true)"
+
+  default = "true"
+}
+
+variable "container-networking" {
+  type        = "string"
+  description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
+
+  default = "kuberouter"
+}
+
 variable "rbac" {
   type        = "string"
   description = "Boolean indicating whether to enable RBAC authorization (default: false)"
