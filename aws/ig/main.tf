@@ -19,7 +19,11 @@ resource "null_resource" "ig" {
 
   // Let's dump the ig spec on disk
   provisioner "local-exec" {
-    command = "echo \"${aws_s3_bucket_object.ig-spec.content}\" > ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml"
+    command = <<FILEDUMP
+      cat <<EOF > ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
+${aws_s3_bucket_object.ig-spec.content}
+EOF
+FILEDUMP
   }
 
   // Let's register our Kops cluster into remote state
@@ -50,7 +54,11 @@ resource "null_resource" "ig-update" {
   }
 
   provisioner "local-exec" {
-    command = "echo \"${data.template_file.ig-spec.rendered}\" > ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml"
+    command = <<FILEDUMP
+      cat <<EOF > ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
+${data.template_file.ig-spec.rendered}
+EOF
+FILEDUMP
   }
 
   provisioner "local-exec" {

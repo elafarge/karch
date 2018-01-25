@@ -23,7 +23,11 @@ EOF
 resource "null_resource" "kops-cluster" {
   // Let's dump the cluster spec in a conf file
   provisioner "local-exec" {
-    command = "echo \"${aws_s3_bucket_object.cluster-spec.content}\" > ${path.module}/${var.cluster-name}-cluster-spec.yml"
+    command = <<FILEDUMP
+      cat <<EOF > ${path.module}/${var.cluster-name}-cluster-spec.yml
+${aws_s3_bucket_object.cluster-spec.content}
+EOF
+FILEDUMP
   }
 
   // Let's wait for our newly created DNS zone to propagate
@@ -76,7 +80,11 @@ resource "null_resource" "kops-update" {
   }
 
   provisioner "local-exec" {
-    command = "echo \"${aws_s3_bucket_object.cluster-spec.content}\" > ${path.module}/${var.cluster-name}-cluster-spec.yml"
+    command = <<FILEDUMP
+      cat <<EOF > ${path.module}/${var.cluster-name}-cluster-spec.yml
+${aws_s3_bucket_object.cluster-spec.content}
+EOF
+FILEDUMP
   }
 
   provisioner "local-exec" {
