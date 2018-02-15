@@ -8,7 +8,7 @@ module "kops-cluster" {
 
   # Networking & connectivity
   vpc-name                  = "${var.vpc-name}"
-  vpc-number                = "${var.vpc-number}"
+  vpc-cidr                  = "${var.vpc-cidr}"
   availability-zones        = ["${var.availability-zones}"]
   kops-topology             = "private"
   trusted-cidrs             = "${var.trusted-cidrs}"

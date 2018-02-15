@@ -9,8 +9,8 @@ variable "vpc-name" {
   type        = "string"
 }
 
-variable "vpc-number" {
-  description = "The VPC number. This will define the VPC IP range in CIDR notation as follows: 10.<vpc_number>.0.0/16"
+variable "vpc-cidr" {
+  description = "CIDR of the VPC housing the Kubernetes cluster"
   type        = "string"
 }
 
@@ -196,7 +196,7 @@ variable "kubernetes-version" {
 
 variable "cloud-labels" {
   type        = "map"
-  description = "(Flat) map of kops cloud labels to apply to all resource in cluster"
+  description = "(Flat) map of kops cloud labels to apply to all resources in cluster"
 
   default = {}
 }

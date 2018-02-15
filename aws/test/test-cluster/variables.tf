@@ -10,8 +10,8 @@ variable "vpc-name" {
   type        = "string"
 }
 
-variable "vpc-number" {
-  description = "The VPC number. This will define the VPC IP range in CIDR notation as follows: 10.<vpc_number>.0.0/16"
+variable "vpc-cidr" {
+  description = "The (created) Kubernetes VPC CIDR."
   type        = "string"
 }
 

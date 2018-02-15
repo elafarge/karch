@@ -7,7 +7,7 @@ module "test-cluster" {
 
   # Networking
   vpc-name                  = "karch-test-1"
-  vpc-number                = 0
+  vpc-number                = "10.0.0.0/16"
   availability-zones        = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   trusted-cidrs             = ["0.0.0.0/0"]
   admin-ssh-public-key-path = "~/.ssh/terraform.pub"
