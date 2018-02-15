@@ -53,7 +53,7 @@ ${oidc-config}
     - InternalIP
     - Hostname
     - ExternalIP
-    logLevel: 2
+    logLevel: ${log-level}
     securePort: 443
     serviceClusterIPRange: 100.64.0.0/13
     storageBackend: ${apiserver-storage-backend}
@@ -69,7 +69,7 @@ ${apiserver-runtime-config}
     image: gcr.io/google_containers/kube-controller-manager:${kubernetes-version}
     leaderElection:
       leaderElect: true
-    logLevel: 2
+    logLevel: ${log-level}
     useServiceAccountCredentials: true
     horizontalPodAutoscalerSyncPerdiod: ${hpa-sync-period}
     horizontalPodAutoscalerDownscaleDelay: ${hpa-scale-down-delay}
@@ -84,12 +84,12 @@ ${apiserver-runtime-config}
     cpuRequest: 100m
     hostnameOverride: '@aws'
     image: gcr.io/google_containers/kube-proxy:${kubernetes-version}
-    logLevel: 2
+    logLevel: ${log-level}
   kubeScheduler:
     image: gcr.io/google_containers/kube-scheduler:${kubernetes-version}
     leaderElection:
       leaderElect: true
-    logLevel: 2
+    logLevel: ${log-level}
   kubelet:
     allowPrivileged: true
     cgroupRoot: /
@@ -100,7 +100,7 @@ ${apiserver-runtime-config}
     evictionHard: ${kubelet-eviction-flag}
     hostnameOverride: '@aws'
     kubeconfigPath: /var/lib/kubelet/kubeconfig
-    logLevel: 2
+    logLevel: ${log-level}
     networkPluginName: cni
     nonMasqueradeCIDR: 100.64.0.0/10
     podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
@@ -127,7 +127,7 @@ ${trusted-cidrs}
     evictionHard: memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<10%,imagefs.inodesFree<5%
     hostnameOverride: '@aws'
     kubeconfigPath: /var/lib/kubelet/kubeconfig
-    logLevel: 2
+    logLevel: ${log-level}
     networkPluginName: cni
     nonMasqueradeCIDR: 100.64.0.0/10
     podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0

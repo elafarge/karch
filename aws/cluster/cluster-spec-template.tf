@@ -64,6 +64,9 @@ EOF
     # Additional IAM policies for masters and nodes
     master-additional-policies = "${length(var.master-additional-policies) == 0 ? "" : format("master: |\n      %s", indent(6, var.master-additional-policies))}"
     node-additional-policies   = "${length(var.node-additional-policies) == 0 ? "" : format("node: |\n      %s", indent(6, var.node-additional-policies))}"
+
+    # Log level for all master & kubelet components
+    log-level = "${var.log-level}"
   }
 }
 

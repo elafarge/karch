@@ -555,3 +555,10 @@ variable "node-additional-policies" {
   description = "Additional IAM policies to add to our node instance role: https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md#adding-additional-policies"
   default     = ""
 }
+
+variable "log-level" {
+  type        = "string"
+  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc."
+
+  default = 0
+}
