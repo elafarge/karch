@@ -1,53 +1,21 @@
-data "aws_subnet" "utility-subnet" {
-  count = "${length(var.availability-zones)}"
-
-  vpc_id            = "${aws_vpc.main.id}"
-  availability_zone = "${element(var.availability-zones, count.index)}"
-
-  filter {
-    name = "tag:Name"
-
-    // The second value simply is a way to make sure this data source will
-    // only be provisioned once these subnets have been created by kops
-    values = ["utility-${element(var.availability-zones, count.index)}.${var.cluster-name}", "${null_resource.master-up.id}"]
-  }
-}
-
-data "aws_subnet" "subnet" {
-  count = "${length(var.availability-zones)}"
-
-  vpc_id            = "${aws_vpc.main.id}"
-  availability_zone = "${element(var.availability-zones, count.index)}"
-
-  filter {
-    name = "tag:Name"
-
-    // Same remark as above
-    values = ["${element(var.availability-zones, count.index)}.${var.cluster-name}", "${null_resource.master-up.id}"]
-  }
-}
-
 data "aws_security_group" "nodes" {
   vpc_id = "${aws_vpc.main.id}"
 
   filter {
     name = "tag:Name"
 
-    // Same remark as above
+    // The second value is just a hacky dependency hooks on our cluster being created
     values = ["nodes.${var.cluster-name}", "${null_resource.master-up.id}"]
   }
 }
 
-data "aws_route_table" "standard" {
-  count = "${length(var.availability-zones)}"
+data "aws_security_group" "masters" {
+  vpc_id = "${aws_vpc.main.id}"
 
-  vpc_id    = "${aws_vpc.main.id}"
-  subnet_id = "${element(data.aws_subnet.subnet.*.id, count.index)}"
-}
+  filter {
+    name = "tag:Name"
 
-data "aws_route_table" "utility" {
-  count = "${length(var.availability-zones)}"
-
-  vpc_id    = "${aws_vpc.main.id}"
-  subnet_id = "${element(data.aws_subnet.utility-subnet.*.id, count.index)}"
+    // The second value is just a hacky dependency hooks on our cluster being created
+    values = ["masters.${var.cluster-name}", "${null_resource.master-up.id}"]
+  }
 }

@@ -3,7 +3,7 @@ data "template_file" "cluster-spec" {
 
   vars {
     # Generic cluster configuration
-    cluster-name       = "${aws_route53_record.cluster-root.name}"
+    cluster-name       = "${var.cluster-name}"
     channel            = "${var.channel}"
     disable-sg-ingress = "${var.disable-sg-ingress}"
     cloud-labels       = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
@@ -117,16 +117,22 @@ data "template_file" "subnets" {
     name: $${az}
     type: Private
     zone: $${az}
+    id: $${private-subnet-id}
+    egress: $${nat-gateway-id}
   - cidr: $${public-cidr}
     name: utility-$${az}
     type: Utility
     zone: $${az}
+    id: $${public-subnet-id}
 EOF
 
   vars {
-    az           = "${element(var.availability-zones, count.index)}"
-    private-cidr = "${cidrsubnet(aws_vpc.main.cidr_block, 3, count.index+1)}"
-    public-cidr  = "${cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)}"
+    az                = "${element(var.availability-zones, count.index)}"
+    private-cidr      = "${element(aws_subnet.private.*.cidr_block, count.index)}"
+    public-cidr       = "${element(aws_subnet.utility.*.cidr_block, count.index)}"
+    public-subnet-id  = "${element(aws_subnet.utility.*.id, count.index)}"
+    private-subnet-id = "${element(aws_subnet.private.*.id, count.index)}"
+    nat-gateway-id    = "${element(aws_nat_gateway.natgw.*.id, count.index)}"
   }
 }
 

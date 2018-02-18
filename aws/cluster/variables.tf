@@ -41,8 +41,10 @@ variable "admin-ssh-public-key-path" {
 
 ## DNS
 variable "main-zone-id" {
-  description = "Route53 main zone ID"
+  description = "Route53 main zone ID (optional if the cluster zone is private)"
   type        = "string"
+
+  default = ""
 }
 
 variable "cluster-name" {

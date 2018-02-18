@@ -8,7 +8,7 @@ output "cluster-created" {
 }
 
 # DNS zone for the cluster subdomain
-output "route53-cluster-zone-id" {
+output "cluster-zone-id" {
   value = "${aws_route53_zone.cluster.id}"
 }
 
@@ -22,25 +22,25 @@ output "cluster-cidr-block" {
 
 // List of utility (public) subnets
 output "utility-subnets" {
-  value = ["${data.aws_subnet.utility-subnet.*.id}"]
+  value = ["${aws_subnet.utility.*.id}"]
 }
 
 // Standard IG subnets
 output "subnets" {
-  value = ["${data.aws_subnet.subnet.*.id}"]
+  value = ["${aws_subnet.private.*.id}"]
 }
 
 // Utility (public) route tables
 output "utility-route-tables" {
-  value = ["${data.aws_route_table.utility.*.id}"]
+  value = ["${aws_route_table.utility.*.id}"]
 }
 
 // Standard route tables
 output "route-tables" {
-  value = ["${data.aws_route_table.standard.*.id}"]
+  value = ["${aws_route_table.private.*.id}"]
 }
 
-// Nodes security groups (to direct ELB traffic to hostPort pods)
+// Nodes security groups (to direct ELB traffic to hostPort pods if you want to)
 output "nodes-sg" {
   value = "${element(split("/", data.aws_security_group.nodes.arn), 1)}"
 }

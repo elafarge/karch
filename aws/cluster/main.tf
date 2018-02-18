@@ -1,3 +1,4 @@
+// Cluster manifest on S3 and cluster destroy-time provisioner
 resource "aws_s3_bucket_object" "cluster-spec" {
   bucket = "${var.kops-state-bucket}"
   key    = "/karch-specs/${var.cluster-name}/master-cluster-spec.yml"
@@ -20,6 +21,7 @@ EOF
   depends_on = ["aws_route53_record.cluster-root", "aws_vpc.main"]
 }
 
+// Cluster create-time provisioner
 resource "null_resource" "kops-cluster" {
   // Let's dump the cluster spec in a conf file
   provisioner "local-exec" {
@@ -74,6 +76,7 @@ EOF
   depends_on = ["null_resource.kops-cluster"]
 }
 
+// Hook that triggers cluster updates when the manifest changes
 resource "null_resource" "kops-update" {
   triggers {
     cluster_spec = "${aws_s3_bucket_object.cluster-spec.content}"

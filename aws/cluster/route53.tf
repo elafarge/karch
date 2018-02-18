@@ -3,10 +3,14 @@
  */
 
 resource "aws_route53_zone" "cluster" {
-  name = "${var.cluster-name}"
+  name          = "${var.cluster-name}"
+  vpc_id        = "${var.master-lb-visibility == "Private" ? aws_vpc.main.id : ""}"
+  force_destroy = true
 }
 
 resource "aws_route53_record" "cluster-root" {
+  count = "${var.master-lb-visibility == "Private" ? 0 : 1}"
+
   zone_id = "${var.main-zone-id}"
   name    = "${var.cluster-name}"
   type    = "NS"
