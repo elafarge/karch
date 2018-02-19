@@ -560,7 +560,7 @@ variable "node-additional-policies" {
 
 variable "log-level" {
   type        = "string"
-  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc."
+  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
 
   default = 0
 }
