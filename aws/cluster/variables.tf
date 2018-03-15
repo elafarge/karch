@@ -104,7 +104,7 @@ variable "container-networking" {
   type        = "string"
   description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
 
-  default = "kuberouter"
+  default = "canal"
 }
 
 variable "rbac" {
