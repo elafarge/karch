@@ -19,6 +19,31 @@ variable "availability-zones" {
   description = "Availability zones to span (for HA master deployments, see master-availability-zones)"
 }
 
+variable "vpc-public-subnet-ids" {
+  type        = "list"
+  description = "Public subnet ids (in the same order as availibility zones)"
+}
+
+variable "vpc-private-subnet-ids" {
+  type        = "list"
+  description = "Private subnet ids (in the same order as availibility zones)"
+}
+
+variable "nat-gateways" {
+  type        = "list"
+  description = "NAT gateways used for egress (in the same order as availibility zones)"
+}
+
+variable "vpc-private-cidrs" {
+  type        = "list"
+  description = "Private subnet cidr (in the same order as availibility zones)"
+}
+
+variable "vpc-public-cidrs" {
+  type        = "list"
+  description = "Public subnet cidr (in the same order as availibility zones)"
+}
+
 variable "kops-topology" {
   type        = "string"
   description = "Kops topolopy (public|private), (default: private)"
@@ -528,4 +553,23 @@ variable "minion-hooks" {
   description = "Docker/Systemd hooks to add to the minion instances (in the IG created along with the cluster) only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
 
   default = []
+}
+
+variable "master-additional-policies" {
+  type        = "string"
+  description = "Additional IAM policies to add to our master instance role: https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md#adding-additional-policies"
+  default     = ""
+}
+
+variable "node-additional-policies" {
+  type        = "string"
+  description = "Additional IAM policies to add to our node instance role: https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md#adding-additional-policies"
+  default     = ""
+}
+
+variable "log-level" {
+  type        = "string"
+  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc."
+
+  default = 0
 }
