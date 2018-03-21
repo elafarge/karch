@@ -19,6 +19,31 @@ variable "availability-zones" {
   description = "Availability zones to span (for HA master deployments, see master-availability-zones)"
 }
 
+variable "vpc-public-subnet-ids" {
+  type        = "list"
+  description = "Public subnet ids (in the same order as availibility zones)"
+}
+
+variable "vpc-private-subnet-ids" {
+  type        = "list"
+  description = "Private subnet ids (in the same order as availibility zones)"
+}
+
+variable "nat-gateways" {
+  type        = "list"
+  description = "NAT gateways used for egress (in the same order as availibility zones)"
+}
+
+variable "vpc-private-cidrs" {
+  type        = "list"
+  description = "Private subnet cidr (in the same order as availibility zones)"
+}
+
+variable "vpc-public-cidrs" {
+  type        = "list"
+  description = "Public subnet cidr (in the same order as availibility zones)"
+}
+
 variable "kops-topology" {
   type        = "string"
   description = "Kops topolopy (public|private), (default: private)"

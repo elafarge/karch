@@ -107,10 +107,13 @@ data "template_file" "subnets" {
 
   template = <<EOF
   - cidr: $${private-cidr}
+    id: $${private-id}
+    egress: $${nat-gateway}
     name: $${az}
     type: Private
     zone: $${az}
   - cidr: $${public-cidr}
+    id: $${public-id}
     name: utility-$${az}
     type: Utility
     zone: $${az}
@@ -118,8 +121,11 @@ EOF
 
   vars {
     az           = "${element(var.availability-zones, count.index)}"
-    private-cidr = "${cidrsubnet(var.vpc-cidr-block, 8, count.index + 20)}"
-    public-cidr  = "${cidrsubnet(var.vpc-cidr-block, 8, count.index + 30)}"
+    nat-gateway  = "${element(var.nat-gateways, count.index)}"
+    private-id   = "${element(var.vpc-private-subnet-ids, count.index)}"
+    private-cidr = "${element(var.vpc-private-cidrs, count.index)}"
+    public-id    = "${element(var.vpc-public-subnet-ids, count.index)}"
+    public-cidr  = "${element(var.vpc-public-cidrs, count.index)}"
   }
 }
 
