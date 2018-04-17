@@ -31,8 +31,12 @@ ${etcd-clusters}
     - PersistentVolumeLabel
     - DefaultStorageClass
     - DefaultTolerationSeconds
-    - ResourceQuota
     - Initializers
+    - NodeRestriction
+    - Priority
+    - MutatingAdmissionWebhook
+    - ValidatingAdmissionWebhook
+    - ResourceQuota
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}
