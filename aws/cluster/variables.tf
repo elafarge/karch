@@ -342,6 +342,20 @@ variable "master-hooks" {
   default = []
 }
 
+variable "master-additional-sgs" {
+  type        = "list"
+  description = "A list of additional security groups to add to master instances"
+
+  default = []
+}
+
+variable "master-additional-sgs-count" {
+  type        = "string"
+  description = "Number of additional security groups to add to master instances"
+
+  default = 0
+}
+
 # Bastion instance group
 variable "bastion-image" {
   type        = "string"

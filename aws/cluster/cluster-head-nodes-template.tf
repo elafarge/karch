@@ -8,7 +8,12 @@ data "template_file" "master-spec" {
     node-labels             = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
     name                    = "master-${element(var.master-availability-zones, count.index)}"
     public                  = "false"
-    additional-sgs          = ""
+
+    additional-sgs = <<EOF
+  ${length(var.master-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
+  ${join("\n", data.template_file.master-additional-sgs.*.rendered)}
+EOF
+
     image                   = "${var.master-image}"
     type                    = "${var.master-machine-type}"
     max-size                = 1
@@ -57,6 +62,16 @@ data "template_file" "master-hooks" {
   template = <<EOF
 ${element(var.master-hooks, count.index)}
 EOF
+}
+
+data "template_file" "master-additional-sgs" {
+  count = "${var.master-additional-sgs-count}"
+
+  template = "  - $${sg-id}"
+
+  vars {
+    sg-id = "${element(var.master-additional-sgs, count.index)}"
+  }
 }
 
 data "template_file" "bastion-spec" {
