@@ -21,3 +21,17 @@ Session.vim
 *~
 # Auto-generated tag files
 tags
+
+# OS X
+.history
+.DS_Store
+
+# IntelliJ
+.idea_modules
+*.iml
+*.iws
+*.ipr
+.idea/
+build/
+*/build/
+out

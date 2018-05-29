@@ -20,3 +20,7 @@ output "vpc-id" {
 output "nodes-sg" {
   value = "${element(split("/", data.aws_security_group.nodes.arn), 1)}"
 }
+
+output "masters-sg" {
+  value = "${element(split("/", data.aws_security_group.masters.arn), 1)}"
+}
