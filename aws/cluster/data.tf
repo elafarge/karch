@@ -19,3 +19,30 @@ data "aws_security_group" "masters" {
     values = ["masters.${var.cluster-name}", "${null_resource.master-up.id}"]
   }
 }
+
+data "aws_ebs_volume" "etcd-volumes" {
+  count = "${length(var.availability-zones)}"
+
+  filter {
+    name = "tag:Name"
+
+    values = [
+      "${element(var.availability-zones, count.index)}.etcd-main.${var.cluster-name}",
+      "${null_resource.master-up.id}",
+    ]
+  }
+}
+
+data "aws_ebs_volume" "etcd-event-volumes" {
+  count = "${length(var.availability-zones)}"
+
+  filter {
+    name = "tag:Name"
+
+    values = [
+      "${element(var.availability-zones, count.index)}.etcd-events.${var.cluster-name}",
+      "${null_resource.master-up.id}",
+    ]
+  }
+}
+
