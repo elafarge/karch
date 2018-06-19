@@ -109,6 +109,13 @@ variable "etcd-enable-tls" {
   default = "true"
 }
 
+variable "etcd-backup-enabled" {
+  type        = "string"
+  description = "Set to true to enable backup to S3 on etcd containers (default: true)"
+
+  default = "false"
+}
+
 variable "container-networking" {
   type        = "string"
   description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"

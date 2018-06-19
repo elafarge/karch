@@ -31,11 +31,13 @@ ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: main
     enableEtcdTLS: ${var.etcd-enable-tls}
     version: ${var.etcd-version}
+${data.template_file.backup-main.rendered}
   - etcdMembers:
 ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: events
     enableEtcdTLS: ${var.etcd-enable-tls}
     version: ${var.etcd-version}
+${data.template_file.backup-events.rendered}
 EOF
 
     # Kubelet configuration
@@ -82,6 +84,24 @@ EOF
   vars {
     az = "${element(var.master-availability-zones, count.index)}"
   }
+}
+
+data "template_file" "backup-main" {
+  count = "${var.etcd-backup-enabled ? 1 : 0}"
+
+  template = <<EOF
+    backups:
+      backupStore: s3://${var.kops-state-bucket}/backups/${var.cluster-name}/etcd/main/
+EOF
+}
+
+data "template_file" "backup-events" {
+  count = "${var.etcd-backup-enabled ? 1 : 0}"
+
+  template = <<EOF
+    backups:
+      backupStore: s3://${var.kops-state-bucket}/backups/${var.cluster-name}/etcd/events/
+EOF
 }
 
 data "template_file" "trusted-cidrs" {
