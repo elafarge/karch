@@ -31,13 +31,13 @@ ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: main
     enableEtcdTLS: ${var.etcd-enable-tls}
     version: ${var.etcd-version}
-${data.template_file.backup-main.rendered}
+${join("\n", data.template_file.backup-main.*.rendered)}
   - etcdMembers:
 ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: events
     enableEtcdTLS: ${var.etcd-enable-tls}
     version: ${var.etcd-version}
-${data.template_file.backup-events.rendered}
+${join("\n", data.template_file.backup-events.*.rendered)}
 EOF
 
     # Kubelet configuration
