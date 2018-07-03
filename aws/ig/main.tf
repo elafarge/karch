@@ -1,4 +1,5 @@
 resource "aws_s3_bucket_object" "ig-spec" {
+  count  = "${var.count}"
   bucket = "${var.kops-state-bucket}"
   key    = "/karch-specs/${var.cluster-name}/${var.name}-ig-spec.yml"
 

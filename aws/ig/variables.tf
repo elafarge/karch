@@ -5,6 +5,12 @@ variable "master-up" {
 }
 
 # Instance group parameters
+variable "count" {
+  description = "Resource count, should be either 1 or 0. It is a workaround for group destruction that needs to be done in phased manner by first making its count 0 and the removing from config."
+  type        = "string"
+  default     = "1"
+}
+
 variable "cluster-name" {
   type        = "string"
   description = "The name of the Kops cluster the instance group belongs to"
