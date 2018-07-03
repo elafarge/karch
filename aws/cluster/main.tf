@@ -1,4 +1,5 @@
 resource "aws_s3_bucket_object" "cluster-spec" {
+  count  = "${var.count}"
   bucket = "${var.kops-state-bucket}"
   key    = "/karch-specs/${var.cluster-name}/master-cluster-spec.yml"
 
