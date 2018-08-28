@@ -88,6 +88,13 @@ variable "kube-dns-domain" {
   default = "cluster.local"
 }
 
+variable "kube-dns-provider" {
+  type        = "string"
+  description = "Kubernetes dns (service discovery) provider (KubeDNS|CoreDNS)"
+
+  default = "CoreDNS"
+}
+
 # Kops & Kubernetes
 variable "kops-state-bucket" {
   type        = "string"
