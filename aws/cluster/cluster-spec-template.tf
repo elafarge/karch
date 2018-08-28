@@ -8,6 +8,7 @@ data "template_file" "cluster-spec" {
     disable-sg-ingress = "${var.disable-sg-ingress}"
     cloud-labels       = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
     kube-dns-domain    = "${var.kube-dns-domain}"
+    kube-dns-provider  = "${var.kube-dns-provider}"
     kops-state-bucket  = "${var.kops-state-bucket}"
 
     master-lb-visibility     = "${var.master-lb-visibility == "Private" ? "Internal" : "Public"}"
