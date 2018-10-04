@@ -117,7 +117,6 @@ ${apiserver-runtime-config}
     nonMasqueradeCIDR: 100.64.0.0/10
     podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
     podManifestPath: /etc/kubernetes/manifests
-    # require-kubeconfig flag removed in 1.10 https://github.com/kubernetes/kops/pull/5621
     kubeReserved:
       cpu: "${kube-reserved-cpu}"
       memory: "${kube-reserved-memory}"
