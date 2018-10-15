@@ -136,6 +136,13 @@ variable "container-networking" {
   default = "kuberouter"
 }
 
+variable "container-networking-params" {
+  type        = "map"
+  description = "Set the container CNI networking layer parameters"
+
+  default = {}
+}
+
 variable "rbac" {
   type        = "string"
   description = "Boolean indicating whether to enable RBAC authorization (default: false)"
