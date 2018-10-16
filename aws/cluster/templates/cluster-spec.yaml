@@ -132,7 +132,8 @@ ${trusted-cidrs}
   networkCIDR: ${vpc-cidr}
   networkID: ${vpc-id}
   networking:
-    ${container-networking}: {}
+    ${container-networking}:
+${container-networking-params}
   nonMasqueradeCIDR: 100.64.0.0/10
   secretStore: s3://${kops-state-bucket}/${cluster-name}/secrets
   serviceClusterIPRange: 100.64.0.0/13
