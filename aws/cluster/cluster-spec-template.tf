@@ -16,13 +16,14 @@ data "template_file" "cluster-spec" {
     master-count             = "${length(var.master-availability-zones)}"
     master-lb-idle-timeout   = "${var.master-lb-idle-timeout}"
 
-    kubernetes-version          = "${var.kubernetes-version}"
-    vpc-cidr                    = "${var.vpc-cidr-block}"
-    vpc-id                      = "${var.vpc-id}"
-    trusted-cidrs               = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
-    subnets                     = "${join("\n", data.template_file.subnets.*.rendered)}"
-    container-networking        = "${var.container-networking}"
-    container-networking-params = "${length(keys(var.container-networking-params)) == 0 ? "      {}" : join("\n", data.template_file.container-networking-params.*.rendered)}"
+    kubernetes-version                = "${var.kubernetes-version}"
+    vpc-cidr                          = "${var.vpc-cidr-block}"
+    vpc-id                            = "${var.vpc-id}"
+    trusted-cidrs                     = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
+    subnets                           = "${join("\n", data.template_file.subnets.*.rendered)}"
+    container-networking              = "${var.container-networking}"
+    container-networking-params-empty = "${length(keys(var.container-networking-params)) == 0 ? "{}" : ""}"
+    container-networking-params       = "${join("\n", data.template_file.container-networking-params.*.rendered)}"
 
     hooks = "${join("\n", data.template_file.hooks.*.rendered)}"
 
