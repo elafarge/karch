@@ -22,7 +22,7 @@ data "template_file" "cluster-spec" {
     trusted-cidrs               = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
     subnets                     = "${join("\n", data.template_file.subnets.*.rendered)}"
     container-networking        = "${var.container-networking}"
-    container-networking-params = "${join("\n", data.template_file.container-networking-params.*.rendered)}"
+    container-networking-params = "${length(keys(var.container-networking-params)) == 0 ? "      {}" : join("\n", data.template_file.container-networking-params.*.rendered)}"
 
     hooks = "${join("\n", data.template_file.hooks.*.rendered)}"
 
