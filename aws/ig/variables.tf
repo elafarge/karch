@@ -12,11 +12,11 @@ variable "nodeup-url-env" {
   default = ""
 }
 
-variable "aws-profile-env-override" {
+variable "aws-profile" {
   type        = "string"
-  description = "String of the form AWS_PROFILE=xxxx to override the AWS Profile used by kops calls triggered by karch"
+  description = "Name of the AWS profile in ~/.aws/credentials or ~/.aws/config to use"
 
-  default = ""
+  default = "default"
 }
 
 # Instance group parameters
