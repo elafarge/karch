@@ -168,21 +168,21 @@ variable "hpa-sync-period" {
   type        = "string"
   description = "The frequency at which HPA are evaluated and reconciled"
 
-  default = "10s"
+  default = "30s"
 }
 
 variable "hpa-scale-down-delay" {
   type        = "string"
   description = "After a downscale, wait at least for this duration before the next downscale"
 
-  default = "1m"
+  default = "5m"
 }
 
 variable "hpa-scale-up-delay" {
   type        = "string"
   description = "After an upscale, wait at least for this duration before the next downscale"
 
-  default = "30s"
+  default = "3m"
 }
 
 variable "oidc-issuer-url" {
