@@ -180,7 +180,7 @@ variable "hpa-scale-down-delay" {
 
 variable "hpa-scale-up-delay" {
   type        = "string"
-  description = "After an upscale, wait at least for this duration before the next downscale"
+  description = "After an upscale, wait at least for this duration before the next upscale"
 
   default = "3m"
 }
