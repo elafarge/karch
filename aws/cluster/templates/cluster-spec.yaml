@@ -38,6 +38,7 @@ ${etcd-clusters}
     - MutatingAdmissionWebhook
     - ValidatingAdmissionWebhook
     - ResourceQuota
+    - PodPreset
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}
