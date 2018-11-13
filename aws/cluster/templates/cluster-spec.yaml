@@ -35,10 +35,10 @@ ${etcd-clusters}
     - NodeRestriction
     - Priority
     - DenyEscalatingExec
+    - PodPreset
     - MutatingAdmissionWebhook
     - ValidatingAdmissionWebhook
     - ResourceQuota
-    - PodPreset
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}
