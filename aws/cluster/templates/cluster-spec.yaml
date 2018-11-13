@@ -35,6 +35,7 @@ ${etcd-clusters}
     - NodeRestriction
     - Priority
     - DenyEscalatingExec
+    - PodPreset
     - MutatingAdmissionWebhook
     - ValidatingAdmissionWebhook
     - ResourceQuota
