@@ -10,7 +10,7 @@ resource "aws_route53_zone" "cluster" {
 }
 
 resource "aws_route53_record" "cluster-root" {
-  count = "${var.master-lb-visibility != "Private" && var.create-dns-zone == "true" ? 1 : 0}"
+  count = "${var.master-lb-visibility == "Public" && var.create-dns-zone == "true" ? 1 : 0}"
 
   zone_id = "${var.main-zone-id}"
   name    = "${var.cluster-name}"
