@@ -47,6 +47,13 @@ variable "main-zone-id" {
   default = ""
 }
 
+variable "create-dns-zone" {
+  description = "Route53 main zone ID (optional if the cluster zone is private)"
+  type        = "string"
+
+  default = "true"
+}
+
 variable "cluster-name" {
   description = "Cluster domain name (i.e. mycluster.example.com)"
   type        = "string"
