@@ -149,7 +149,6 @@ ${trusted-cidrs}
     podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
     podManifestPath: /etc/kubernetes/manifests
     registerSchedulable: false
-    requireKubeconfig: true
   masterPublicName: api.${cluster-name}
   networkCIDR: ${vpc-cidr}
   networkID: ${vpc-id}
