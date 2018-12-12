@@ -19,6 +19,12 @@ variable "availability-zones" {
   description = "Availability zones to span (for HA master deployments, see master-availability-zones)"
 }
 
+variable "multi-natgw" {
+  type        = "string"
+  description = "Boolean that indicates wether or not to create NAT Gateway per Availability Zone (default: false)"
+  default     = "false"
+}
+
 variable "kops-topology" {
   type        = "string"
   description = "Kops topolopy (public|private), (default: private)"
