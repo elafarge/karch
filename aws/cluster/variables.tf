@@ -21,8 +21,8 @@ variable "availability-zones" {
 
 variable "multi-natgw" {
   type        = "string"
-  description = "Boolean that indicates wether or not to create NAT Gateway per Availability Zone (default: false)"
-  default     = "false"
+  description = "Boolean that indicates wether or not to create NAT Gateway per Availability Zone (default: true)"
+  default     = "true"
 }
 
 variable "kops-topology" {
