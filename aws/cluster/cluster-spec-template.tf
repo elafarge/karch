@@ -132,7 +132,7 @@ EOF
     public-cidr       = "${element(aws_subnet.utility.*.cidr_block, count.index)}"
     public-subnet-id  = "${element(aws_subnet.utility.*.id, count.index)}"
     private-subnet-id = "${element(aws_subnet.private.*.id, count.index)}"
-    nat-gateway-id    = "${element(aws_nat_gateway.natgw.*.id, count.index)}"
+    nat-gateway-id    = "${element(aws_nat_gateway.natgw.*.id, var.multi-natgw != "true" ? 1 : count.index)}"
   }
 }
 

@@ -102,13 +102,13 @@ resource "aws_subnet" "private" {
 }
 
 resource "aws_eip" "nat-device" {
-  count = "${length(var.availability-zones)}"
+  count = "${var.multi-natgw != "true" ? 1 : length(var.availability-zones)}"
 
   vpc = true
 }
 
 resource "aws_nat_gateway" "natgw" {
-  count = "${length(var.availability-zones)}"
+  count = "${var.multi-natgw != "true" ? 1 : length(var.availability-zones)}"
 
   allocation_id = "${element(aws_eip.nat-device.*.id, count.index)}"
   subnet_id     = "${element(aws_subnet.utility.*.id, count.index)}"
@@ -130,7 +130,7 @@ resource "aws_route" "private-to-internet" {
 
   route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "${element(aws_nat_gateway.natgw.*.id, count.index)}"
+  nat_gateway_id         = "${element(aws_nat_gateway.natgw.*.id, var.multi-natgw != "true" ? 1 : count.index)}"
 }
 
 resource "aws_route_table_association" "private" {
