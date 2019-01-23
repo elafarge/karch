@@ -4,8 +4,12 @@
 
 resource "aws_route53_zone" "cluster" {
   name          = "${var.cluster-name}"
-  vpc_id        = "${var.master-lb-visibility == "Private" ? aws_vpc.main.id : ""}"
   force_destroy = true
+}
+
+resource "aws_route53_zone_association" "kubernetes-vpc" {
+  vpc_id  = "${aws_vpc.main.id}"
+  zone_id = "${aws_route53_zone.cluster.id}"
 }
 
 resource "aws_route53_record" "cluster-root" {
