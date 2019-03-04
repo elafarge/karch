@@ -51,7 +51,6 @@ EOF
     apiserver-storage-backend    = "etcd${substr(var.etcd-version, 0, 1)}"
     kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
-    rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
 
     apiserver-runtime-config = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
     oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
