@@ -49,7 +49,7 @@ ${oidc-config}
     - http://127.0.0.1:4001
     etcdServersOverrides:
     - /events#http://127.0.0.1:4002
-    image: gcr.io/google_containers/kube-apiserver:${kubernetes-version}
+    image: gcr.io/google_containers/kube-apiserver:v${kubernetes-version}
     insecurePort: 8080
     kubeletPreferredAddressTypes:
     - InternalIP
@@ -73,7 +73,7 @@ ${apiserver-runtime-config}
     clusterCIDR: 100.96.0.0/11
     clusterName: ${cluster-name}
     configureCloudRoutes: false
-    image: gcr.io/google_containers/kube-controller-manager:${kubernetes-version}
+    image: gcr.io/google_containers/kube-controller-manager:v${kubernetes-version}
     leaderElection:
       leaderElect: true
     logLevel: ${log-level}
@@ -95,10 +95,10 @@ ${apiserver-runtime-config}
     clusterCIDR: 100.96.0.0/11
     cpuRequest: 100m
     hostnameOverride: '@aws'
-    image: gcr.io/google_containers/kube-proxy:${kubernetes-version}
+    image: gcr.io/google_containers/kube-proxy:v${kubernetes-version}
     logLevel: ${log-level}
   kubeScheduler:
-    image: gcr.io/google_containers/kube-scheduler:${kubernetes-version}
+    image: gcr.io/google_containers/kube-scheduler:v${kubernetes-version}
     leaderElection:
       leaderElect: true
     logLevel: ${log-level}
