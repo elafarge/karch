@@ -5,11 +5,14 @@
 resource "aws_route53_zone" "cluster" {
   name          = "${var.cluster-name}"
   force_destroy = true
-}
 
-resource "aws_route53_zone_association" "kubernetes-vpc" {
-  vpc_id  = "${aws_vpc.main.id}"
-  zone_id = "${aws_route53_zone.cluster.id}"
+  vpc {
+    vpc_id = "${aws_vpc.main.id}"
+  }
+
+  lifecycle {
+    ignore_changes = "all"
+  }
 }
 
 resource "aws_route53_record" "cluster-root" {
