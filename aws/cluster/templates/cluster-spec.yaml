@@ -23,8 +23,8 @@ ${cloud-labels}
 ${etcd-clusters}
   keyStore: s3://${kops-state-bucket}/${cluster-name}/pki
   kubeAPIServer:
-    address: 127.0.0.1
-    admissionControl:
+    insecureBindAddress: 127.0.0.1
+    enableAdmissionPlugins:
     - NamespaceLifecycle
     - LimitRanger
     - ServiceAccount
@@ -117,7 +117,6 @@ ${apiserver-runtime-config}
     nonMasqueradeCIDR: 100.64.0.0/10
     podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
     podManifestPath: /etc/kubernetes/manifests
-    requireKubeconfig: true
     kubeReserved:
       cpu: "${kube-reserved-cpu}"
       memory: "${kube-reserved-memory}"
@@ -150,7 +149,6 @@ ${trusted-cidrs}
     podInfraContainerImage: gcr.io/google_containers/pause-amd64:3.0
     podManifestPath: /etc/kubernetes/manifests
     registerSchedulable: false
-    requireKubeconfig: true
   masterPublicName: api.${cluster-name}
   networkCIDR: ${vpc-cidr}
   networkID: ${vpc-id}
