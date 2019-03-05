@@ -12,6 +12,10 @@ output "cluster-zone-id" {
   value = "${aws_route53_zone.cluster.id}"
 }
 
+output "route53-cluster-zone-id" {
+  value = "${aws_route53_zone.cluster.id}"
+}
+
 output "vpc-id" {
   value = "${var.vpc-id}"
 }

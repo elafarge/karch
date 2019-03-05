@@ -3,7 +3,7 @@ data "template_file" "master-spec" {
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
-    cluster-name            = "${var.cluster-name}"
+    cluster-name            = "${aws_route53_record.cluster-root.name}"
     cloud-labels            = "${join("\n", data.template_file.master-cloud-labels.*.rendered)}"
     node-labels             = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
     name                    = "master-${element(var.master-availability-zones, count.index)}"
@@ -79,7 +79,7 @@ data "template_file" "bastion-spec" {
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
-    cluster-name = "${var.cluster-name}"
+    cluster-name = "${aws_route53_record.cluster-root.name}"
     cloud-labels = "${join("\n", data.template_file.bastion-cloud-labels.*.rendered)}"
     node-labels  = "${join("\n", data.template_file.bastion-node-labels.*.rendered)}"
     name         = "bastions"
@@ -154,7 +154,7 @@ data "template_file" "minion-spec" {
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
-    cluster-name = "${var.cluster-name}"
+    cluster-name = "${aws_route53_record.cluster-root.name}"
     cloud-labels = "${join("\n", data.template_file.minion-cloud-labels.*.rendered)}"
     node-labels  = "${join("\n", data.template_file.minion-node-labels.*.rendered)}"
     name         = "${var.minion-ig-name}"
