@@ -130,7 +130,7 @@ resource "aws_route" "private-to-internet" {
 
   route_table_id         = "${element(aws_route_table.private.*.id, count.index)}"
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = "${element(aws_nat_gateway.natgw.*.id, var.multi-natgw != "true" ? 1 : count.index)}"
+  nat_gateway_id         = "${element(aws_nat_gateway.natgw.*.id, var.multi-natgw != "true" ? 0 : count.index)}"
 }
 
 resource "aws_route_table_association" "private" {
