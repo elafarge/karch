@@ -20,7 +20,7 @@ data "aws_security_group" "masters" {
   }
 }
 
-data "aws_ebs_volume" "etcd-volumes" { // Wandera
+data "aws_ebs_volume" "etcd-volumes" {
   count = "${length(var.availability-zones)}"
 
   filter {
@@ -33,7 +33,7 @@ data "aws_ebs_volume" "etcd-volumes" { // Wandera
   }
 }
 
-data "aws_ebs_volume" "etcd-event-volumes" { // Wandera
+data "aws_ebs_volume" "etcd-event-volumes" {
   count = "${length(var.availability-zones)}"
 
   filter {

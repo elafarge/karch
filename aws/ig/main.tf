@@ -29,7 +29,6 @@ FILEDUMP
 
   // Let's register our Kops cluster into remote state
   provisioner "local-exec" {
-    // upstream set to sleep 5
     command = <<EOF
       until mkdir ${path.root}/.kops-ig-lock
       do
@@ -66,7 +65,6 @@ FILEDUMP
   }
 
   provisioner "local-exec" {
-    // upstream set to sleep 5
     command = <<EOF
       until mkdir ${path.root}/.kops-ig-lock
       do

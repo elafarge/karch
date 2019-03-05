@@ -36,27 +36,3 @@ output "etcd-volume-ids" {
 output "etcd-event-volume-ids" {
   value = "${data.aws_ebs_volume.etcd-event-volumes.*.id}"
 }
-
-output "cluster-cidr-block" {
-  value = "${aws_vpc.main.cidr_block}"
-}
-
-// List of utility (public) subnets
-output "utility-subnets" {
-  value = ["${aws_subnet.utility.*.id}"]
-}
-
-// Standard IG subnets
-output "subnets" {
-  value = ["${aws_subnet.private.*.id}"]
-}
-
-// Utility (public) route tables
-output "utility-route-tables" {
-  value = ["${aws_route_table.utility.*.id}"]
-}
-
-// Standard route tables
-output "route-tables" {
-  value = ["${aws_route_table.private.*.id}"]
-}

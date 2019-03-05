@@ -15,13 +15,8 @@ variable "vpc-id" {
   type        = "string"
 }
 
-variable "vpc-cidr-block" { // Wandera
+variable "vpc-cidr-block" {
   description = "CIDR block of existing VPC which should be used for a cluster"
-  type        = "string"
-}
-
-variable "vpc-cidr" { // From upstream
-  description = "CIDR of the VPC housing the Kubernetes cluster"
   type        = "string"
 }
 
@@ -133,7 +128,7 @@ variable "etcd-version" {
   type        = "string"
   description = "Etcd version to use"
 
-  default = "3.2.14" // upstream 3.1.11
+  default = "3.2.14"
 }
 
 variable "etcd-enable-tls" {
@@ -143,7 +138,7 @@ variable "etcd-enable-tls" {
   default = "true"
 }
 
-variable "etcd-backup-enabled" { // Wandera specific
+variable "etcd-backup-enabled" {
   type        = "string"
   description = "Set to true to enable backup to S3 on etcd containers (default: true)"
 
@@ -154,10 +149,10 @@ variable "container-networking" {
   type        = "string"
   description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
 
-  default = "kuberouter" // upstream default canal
+  default = "kuberouter"
 }
 
-variable "container-networking-params" { // Wandera specific
+variable "container-networking-params" {
   type        = "map"
   description = "Set the container CNI networking layer parameters"
 
@@ -182,7 +177,14 @@ variable "apiserver-runtime-flags" {
   type        = "map"
   description = "Map describing the --runtime-config parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
 
-  default = {}
+  default = {
+    "featureGates" = {
+      "ExperimentalCriticalPodAnnotation" = "true"
+      "ExpandPersistentVolumes"           = "true"
+      "Initializers"                      = "true"
+      "PodPriority"                       = "true"
+    }
+  }
 }
 
 variable "hpa-sync-period" {
@@ -632,23 +634,23 @@ variable "node-additional-policies" {
 variable "log-level" {
   type        = "string"
   description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
-  default = 0
+  default     = 0
 }
 
 variable "nat-gateway" {
-  type = "list"
+  type        = "list"
   description = "List of nat gateways ids"
-  default = "${element(var.nat-gateways, count.index)}"
+  default     = "${element(var.nat-gateways, count.index)}"
 }
 
 variable "private-id" {
-  type = "list"
+  type        = "list"
   description = "List of private subnets ids"
-  default = "${element(var.vpc-private-subnet-ids, count.index)}"
+  default     = "${element(var.vpc-private-subnet-ids, count.index)}"
 }
 
 variable "public-id" {
-  type = "list"
+  type        = "list"
   description = "List of nat gateways ids"
-  default = "${element(var.vpc-public-subnet-ids, count.index)}"
+  default     = "${element(var.vpc-public-subnet-ids, count.index)}"
 }

@@ -62,11 +62,6 @@ ${oidc-config}
     storageBackend: ${apiserver-storage-backend}
     runtimeConfig:
 ${apiserver-runtime-config}
-    featureGates:
-      ExperimentalCriticalPodAnnotation: "true"
-      ExpandPersistentVolumes: "true"
-      Initializers: "true"
-      PodPriority: "true"
   kubeControllerManager:
     allocateNodeCIDRs: true
     attachDetachReconcileSyncPeriod: 1m0s
@@ -81,11 +76,7 @@ ${apiserver-runtime-config}
     horizontalPodAutoscalerSyncPerdiod: ${hpa-sync-period}
     horizontalPodAutoscalerDownscaleDelay: ${hpa-scale-down-delay}
     horizontalPodAutoscalerUpscaleDelay: ${hpa-scale-up-delay}
-    featureGates:
-      ExperimentalCriticalPodAnnotation: "true"
-      ExpandPersistentVolumes: "true"
-      Initializers: "true"
-      PodPriority: "true"
+  ${apiserver-runtime-config}
   kubeDNS:
     domain: ${kube-dns-domain}
     replicas: 2
@@ -122,11 +113,7 @@ ${apiserver-runtime-config}
       cpu: "${system-reserved-cpu}"
       memory: "${system-reserved-memory}"
     enforceNodeAllocatable: "pods"
-    featureGates:
-      ExperimentalCriticalPodAnnotation: "true"
-      ExpandPersistentVolumes: "true"
-      Initializers: "true"
-      PodPriority: "true"
+${apiserver-runtime-config}
   kubernetesApiAccess:
 ${trusted-cidrs}
   kubernetesVersion: ${kubernetes-version}
@@ -151,7 +138,7 @@ ${trusted-cidrs}
   networkID: ${vpc-id}
   networking:
     ${container-networking}: ${container-networking-params-empty}
-${container-networking-params} # Wandera
+${container-networking-params}
   nonMasqueradeCIDR: 100.64.0.0/10
   secretStore: s3://${kops-state-bucket}/${cluster-name}/secrets
   serviceClusterIPRange: 100.64.0.0/13

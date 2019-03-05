@@ -3,7 +3,7 @@ data "template_file" "cluster-spec" {
 
   vars {
     # Generic cluster configuration
-    cluster-name       = "${aws_route53_record.cluster-root.name}" # Wandera as opposed to ${var.cluster-name}
+    cluster-name       = "${aws_route53_record.cluster-root.name}"
     channel            = "${var.channel}"
     disable-sg-ingress = "${var.disable-sg-ingress}"
     cloud-labels       = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
@@ -19,10 +19,6 @@ data "template_file" "cluster-spec" {
     kubernetes-version                = "${var.kubernetes-version}"
     vpc-cidr                          = "${var.vpc-cidr-block}"
     vpc-id                            = "${var.vpc-id}"
-    /* From Upstream:
-    kubernetes-version   = "${var.kubernetes-version}"
-    vpc-cidr             = "${aws_vpc.main.cidr_block}"
-    vpc-id               = "${aws_vpc.main.id}"*/
     trusted-cidrs                     = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
     subnets                           = "${join("\n", data.template_file.subnets.*.rendered)}"
     container-networking              = "${var.container-networking}"
@@ -155,8 +151,8 @@ EOF
 
   vars {
     az                = "${element(var.availability-zones, count.index)}"
-    private-cidr = "${element(var.vpc-private-cidrs, count.index)}"
-    public-cidr  = "${element(var.vpc-public-cidrs, count.index)}"
+    private-cidr      = "${element(var.vpc-private-cidrs, count.index)}"
+    public-cidr       = "${element(var.vpc-public-cidrs, count.index)}"
     public-subnet-id  = "${var.public-id}"
     private-subnet-id = "${var.private-id}"
     nat-gateway-id    = "${var.nat-gateway}"
