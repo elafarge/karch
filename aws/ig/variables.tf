@@ -4,6 +4,21 @@ variable "master-up" {
   description = "Terraform dependency hook to wait for the master cluster to be up before creating instance groups"
 }
 
+# Kops env. overrides
+variable "nodeup-url-env" {
+  type        = "string"
+  description = "NODEUP_URL env. variable override for testing custom builds of nodeup"
+
+  default = ""
+}
+
+variable "aws-profile" {
+  type        = "string"
+  description = "Name of the AWS profile in ~/.aws/credentials or ~/.aws/config to use"
+
+  default = "default"
+}
+
 # Instance group parameters
 variable "count" {
   description = "Resource count, should be either 1 or 0. It is a workaround for group destruction that needs to be done in phased manner by first making its count 0 and the removing from config."

@@ -1,3 +1,4 @@
+// Cluster manifest on S3 and cluster destroy-time provisioner
 resource "aws_s3_bucket_object" "cluster-spec" {
   count  = "${var.count}"
   bucket = "${var.kops-state-bucket}"
@@ -15,16 +16,21 @@ EOF
   // On destroy, remove the cluster first, if it exists
   provisioner "local-exec" {
     when    = "destroy"
-    command = "(test -z \"$(kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || kops --state=s3://${var.kops-state-bucket} delete cluster --yes ${var.cluster-name}"
+    command = "(test -z \"$(${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} delete cluster --yes ${var.cluster-name}"
   }
 
   depends_on = ["aws_route53_record.cluster-root"]
 }
 
+// Cluster create-time provisioner
 resource "null_resource" "kops-cluster" {
   // Let's dump the cluster spec in a conf file
   provisioner "local-exec" {
-    command = "echo \"${aws_s3_bucket_object.cluster-spec.content}\" > ${path.module}/${var.cluster-name}-cluster-spec.yml"
+    command = <<FILEDUMP
+      cat <<EOF > ${path.module}/${var.cluster-name}-cluster-spec.yml
+${aws_s3_bucket_object.cluster-spec.content}
+EOF
+FILEDUMP
   }
 
   // Let's wait for our newly created DNS zone to propagate
@@ -40,7 +46,7 @@ EOF
 
   // Let's register our Kops cluster into remote state
   provisioner "local-exec" {
-    command = "kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-cluster-spec.yml"
+    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-cluster-spec.yml"
   }
 
   // Let's remove the cluster spec file from disk
@@ -50,7 +56,7 @@ EOF
 
   // Do not forget to add our public SSH key over there
   provisioner "local-exec" {
-    command = "kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
+    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
   }
 
   depends_on = ["aws_s3_bucket_object.cluster-spec"]
@@ -60,7 +66,7 @@ EOF
 resource "null_resource" "master-up" {
   provisioner "local-exec" {
     command = <<EOF
-      until kops --state=s3://${var.kops-state-bucket} validate cluster --name ${var.cluster-name}
+      until ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} validate cluster --name ${var.cluster-name}
       do
         echo "Cluster isn't available yet"
         sleep 5s
@@ -71,23 +77,28 @@ EOF
   depends_on = ["null_resource.kops-cluster"]
 }
 
+// Hook that triggers cluster updates when the manifest changes
 resource "null_resource" "kops-update" {
   triggers {
     cluster_spec = "${aws_s3_bucket_object.cluster-spec.content}"
   }
 
   provisioner "local-exec" {
-    command = "echo \"${aws_s3_bucket_object.cluster-spec.content}\" > ${path.module}/${var.cluster-name}-cluster-spec.yml"
+    command = <<FILEDUMP
+      cat <<EOF > ${path.module}/${var.cluster-name}-cluster-spec.yml
+${aws_s3_bucket_object.cluster-spec.content}
+EOF
+FILEDUMP
   }
 
   provisioner "local-exec" {
     command = <<EOF
-      kops --state=s3://${var.kops-state-bucket} \
+      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
         replace -f ${path.module}/${var.cluster-name}-cluster-spec.yml
 
       rm -f ${path.module}/${var.cluster-name}-cluster-spec.yml
 
-      kops --state=s3://${var.kops-state-bucket} \
+      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
         update cluster ${var.cluster-name} --yes
 EOF
   }

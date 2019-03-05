@@ -3,7 +3,7 @@ data "template_file" "cluster-spec" {
 
   vars {
     # Generic cluster configuration
-    cluster-name       = "${aws_route53_record.cluster-root.name}"
+    cluster-name       = "${aws_route53_record.cluster-root.name}" # Wandera as opposed to ${var.cluster-name}
     channel            = "${var.channel}"
     disable-sg-ingress = "${var.disable-sg-ingress}"
     cloud-labels       = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
@@ -19,6 +19,10 @@ data "template_file" "cluster-spec" {
     kubernetes-version                = "${var.kubernetes-version}"
     vpc-cidr                          = "${var.vpc-cidr-block}"
     vpc-id                            = "${var.vpc-id}"
+    /* From Upstream:
+    kubernetes-version   = "${var.kubernetes-version}"
+    vpc-cidr             = "${aws_vpc.main.cidr_block}"
+    vpc-id               = "${aws_vpc.main.id}"*/
     trusted-cidrs                     = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
     subnets                           = "${join("\n", data.template_file.subnets.*.rendered)}"
     container-networking              = "${var.container-networking}"
@@ -137,25 +141,25 @@ data "template_file" "subnets" {
 
   template = <<EOF
   - cidr: $${private-cidr}
-    id: $${private-id}
-    egress: $${nat-gateway}
     name: $${az}
     type: Private
     zone: $${az}
+    id: $${private-subnet-id}
+    egress: $${nat-gateway-id}
   - cidr: $${public-cidr}
-    id: $${public-id}
     name: utility-$${az}
     type: Utility
     zone: $${az}
+    id: $${public-subnet-id}
 EOF
 
   vars {
-    az           = "${element(var.availability-zones, count.index)}"
-    nat-gateway  = "${element(var.nat-gateways, count.index)}"
-    private-id   = "${element(var.vpc-private-subnet-ids, count.index)}"
+    az                = "${element(var.availability-zones, count.index)}"
     private-cidr = "${element(var.vpc-private-cidrs, count.index)}"
-    public-id    = "${element(var.vpc-public-subnet-ids, count.index)}"
     public-cidr  = "${element(var.vpc-public-cidrs, count.index)}"
+    public-subnet-id  = "${var.public-id}"
+    private-subnet-id = "${var.private-id}"
+    nat-gateway-id    = "${var.nat-gateway}"
   }
 }
 

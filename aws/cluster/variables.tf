@@ -15,8 +15,13 @@ variable "vpc-id" {
   type        = "string"
 }
 
-variable "vpc-cidr-block" {
+variable "vpc-cidr-block" { // Wandera
   description = "CIDR block of existing VPC which should be used for a cluster"
+  type        = "string"
+}
+
+variable "vpc-cidr" { // From upstream
+  description = "CIDR of the VPC housing the Kubernetes cluster"
   type        = "string"
 }
 
@@ -72,8 +77,10 @@ variable "admin-ssh-public-key-path" {
 
 ## DNS
 variable "main-zone-id" {
-  description = "Route53 main zone ID"
+  description = "Route53 main zone ID (optional if the cluster zone is private)"
   type        = "string"
+
+  default = ""
 }
 
 variable "cluster-name" {
@@ -96,6 +103,20 @@ variable "kube-dns-provider" {
 }
 
 # Kops & Kubernetes
+variable "nodeup-url-env" {
+  type        = "string"
+  description = "NODEUP_URL env. variable override for testing custom builds of nodeup"
+
+  default = ""
+}
+
+variable "aws-profile" {
+  type        = "string"
+  description = "Name of the AWS profile in ~/.aws/credentials or ~/.aws/config to use"
+
+  default = "default"
+}
+
 variable "kops-state-bucket" {
   type        = "string"
   description = "Name of the bucket in which kops stores its state (must be created prior to cluster turnup)"
@@ -112,7 +133,7 @@ variable "etcd-version" {
   type        = "string"
   description = "Etcd version to use"
 
-  default = "3.2.14"
+  default = "3.2.14" // upstream 3.1.11
 }
 
 variable "etcd-enable-tls" {
@@ -122,7 +143,7 @@ variable "etcd-enable-tls" {
   default = "true"
 }
 
-variable "etcd-backup-enabled" {
+variable "etcd-backup-enabled" { // Wandera specific
   type        = "string"
   description = "Set to true to enable backup to S3 on etcd containers (default: true)"
 
@@ -133,10 +154,10 @@ variable "container-networking" {
   type        = "string"
   description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
 
-  default = "kuberouter"
+  default = "kuberouter" // upstream default canal
 }
 
-variable "container-networking-params" {
+variable "container-networking-params" { // Wandera specific
   type        = "map"
   description = "Set the container CNI networking layer parameters"
 
@@ -234,7 +255,7 @@ variable "kubernetes-version" {
 
 variable "cloud-labels" {
   type        = "map"
-  description = "(Flat) map of kops cloud labels to apply to all resource in cluster"
+  description = "(Flat) map of kops cloud labels to apply to all resources in cluster"
 
   default = {}
 }
@@ -610,7 +631,24 @@ variable "node-additional-policies" {
 
 variable "log-level" {
   type        = "string"
-  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc."
-
+  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
   default = 0
+}
+
+variable "nat-gateway" {
+  type = "list"
+  description = "List of nat gateways ids"
+  default = "${element(var.nat-gateways, count.index)}"
+}
+
+variable "private-id" {
+  type = "list"
+  description = "List of private subnets ids"
+  default = "${element(var.vpc-private-subnet-ids, count.index)}"
+}
+
+variable "public-id" {
+  type = "list"
+  description = "List of nat gateways ids"
+  default = "${element(var.vpc-public-subnet-ids, count.index)}"
 }

@@ -4,7 +4,7 @@ data "aws_security_group" "nodes" {
   filter {
     name = "tag:Name"
 
-    // Same remark as above
+    // The second value is just a hacky dependency hooks on our cluster being created
     values = ["nodes.${var.cluster-name}", "${null_resource.master-up.id}"]
   }
 }
@@ -20,7 +20,7 @@ data "aws_security_group" "masters" {
   }
 }
 
-data "aws_ebs_volume" "etcd-volumes" {
+data "aws_ebs_volume" "etcd-volumes" { // Wandera
   count = "${length(var.availability-zones)}"
 
   filter {
@@ -33,7 +33,7 @@ data "aws_ebs_volume" "etcd-volumes" {
   }
 }
 
-data "aws_ebs_volume" "etcd-event-volumes" {
+data "aws_ebs_volume" "etcd-event-volumes" { // Wandera
   count = "${length(var.availability-zones)}"
 
   filter {
@@ -45,4 +45,3 @@ data "aws_ebs_volume" "etcd-event-volumes" {
     ]
   }
 }
-
