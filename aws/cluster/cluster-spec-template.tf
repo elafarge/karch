@@ -59,7 +59,7 @@ EOF
     rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
 
     apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
-    apiserver-featuregates-config = "${join("\n", data.template_file.apiserver-featuregates-configs.*.rendered)}"
+    featuregates-config = "${join("\n", data.template_file.featuregates-configs.*.rendered)}"
     oidc-config                   = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     # kube-controller-manager configuration
@@ -178,10 +178,10 @@ data "template_file" "apiserver-runtime-configs" {
   template = "      ${element(keys(var.apiserver-runtime-flags), count.index)}: '${element(values(var.apiserver-runtime-flags), count.index)}'"
 }
 
-data "template_file" "apiserver-featuregates-configs" {
-  count = "${length(var.apiserver-featuregates-flags)}"
+data "template_file" "featuregates-configs" {
+  count = "${length(var.featuregates-flags)}"
 
-  template = "    ${element(keys(var.apiserver-featuregates-flags), count.index)}: '${element(values(var.apiserver-featuregates-flags), count.index)}'"
+  template = "    ${element(keys(var.featuregates-flags), count.index)}: '${element(values(var.featuregates-flags), count.index)}'"
 }
 
 data "template_file" "hooks" {
