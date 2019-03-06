@@ -58,9 +58,9 @@ EOF
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
     rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
 
-    apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
-    featuregates-config = "${join("\n", data.template_file.featuregates-configs.*.rendered)}"
-    oidc-config                   = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
+    apiserver-runtime-config = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
+    featuregates-config      = "${join("\n", data.template_file.featuregates-configs.*.rendered)}"
+    oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     # kube-controller-manager configuration
     hpa-sync-period      = "${var.hpa-sync-period}"
@@ -154,9 +154,9 @@ EOF
     az                = "${element(var.availability-zones, count.index)}"
     private-cidr      = "${element(var.vpc-private-cidrs, count.index)}"
     public-cidr       = "${element(var.vpc-public-cidrs, count.index)}"
-    public-subnet-id  = "${var.public-id}"
-    private-subnet-id = "${var.private-id}"
-    nat-gateway-id    = "${var.nat-gateway}"
+    public-subnet-id  = "${element(var.vpc-public-subnet-ids, count.index)}"
+    private-subnet-id = "${element(var.vpc-private-subnet-ids, count.index)}"
+    nat-gateway-id    = "${element(var.nat-gateways, count.index)}"
   }
 }
 

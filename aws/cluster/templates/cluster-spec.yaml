@@ -31,15 +31,15 @@ ${etcd-clusters}
     - PersistentVolumeLabel
     - DefaultStorageClass
     - DefaultTolerationSeconds
-    - DenyEscalatingExec
-    - MutatingAdmissionWebhook
-    - ValidatingAdmissionWebhook
-    - ResourceQuota
     - Initializers
     - NodeRestriction
     - Priority
-    - PersistentVolumeClaimResize
+    - DenyEscalatingExec
     - PodPreset
+    - MutatingAdmissionWebhook
+    - ValidatingAdmissionWebhook
+    - ResourceQuota
+    - PersistentVolumeClaimResize
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}
@@ -62,6 +62,7 @@ ${oidc-config}
     storageBackend: ${apiserver-storage-backend}
     runtimeConfig:
 ${apiserver-runtime-config}
+    featureGates:
 ${featuregates-config}
   kubeControllerManager:
     allocateNodeCIDRs: true
@@ -77,6 +78,7 @@ ${featuregates-config}
     horizontalPodAutoscalerSyncPerdiod: ${hpa-sync-period}
     horizontalPodAutoscalerDownscaleDelay: ${hpa-scale-down-delay}
     horizontalPodAutoscalerUpscaleDelay: ${hpa-scale-up-delay}
+    featureGates:
 ${featuregates-config}
   kubeDNS:
     domain: ${kube-dns-domain}
@@ -114,6 +116,7 @@ ${featuregates-config}
       cpu: "${system-reserved-cpu}"
       memory: "${system-reserved-memory}"
     enforceNodeAllocatable: "pods"
+    featureGates:
 ${featuregates-config}
   kubernetesApiAccess:
 ${trusted-cidrs}

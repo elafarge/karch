@@ -641,21 +641,3 @@ variable "log-level" {
   description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
   default     = 0
 }
-
-variable "nat-gateway" {
-  type        = "list"
-  description = "List of nat gateways ids"
-  default     = "${element(var.nat-gateways, count.index)}"
-}
-
-variable "private-id" {
-  type        = "list"
-  description = "List of private subnets ids"
-  default     = "${element(var.vpc-private-subnet-ids, count.index)}"
-}
-
-variable "public-id" {
-  type        = "list"
-  description = "List of nat gateways ids"
-  default     = "${element(var.vpc-public-subnet-ids, count.index)}"
-}
