@@ -58,8 +58,9 @@ EOF
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
     rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
 
-    apiserver-runtime-config = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
-    oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
+    apiserver-runtime-config      = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
+    apiserver-featuregates-config = "${join("\n", data.template_file.apiserver-featuregates-configs.*.rendered)}"
+    oidc-config                   = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     # kube-controller-manager configuration
     hpa-sync-period      = "${var.hpa-sync-period}"
@@ -175,6 +176,12 @@ data "template_file" "apiserver-runtime-configs" {
   count = "${length(var.apiserver-runtime-flags)}"
 
   template = "      ${element(keys(var.apiserver-runtime-flags), count.index)}: '${element(values(var.apiserver-runtime-flags), count.index)}'"
+}
+
+data "template_file" "apiserver-featuregates-configs" {
+  count = "${length(var.apiserver-featuregates-flags)}"
+
+  template = "    ${element(keys(var.apiserver-featuregates-flags), count.index)}: '${element(values(var.apiserver-featuregates-flags), count.index)}'"
 }
 
 data "template_file" "hooks" {
