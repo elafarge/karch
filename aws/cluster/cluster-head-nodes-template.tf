@@ -3,11 +3,11 @@ data "template_file" "master-spec" {
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
-    cluster-name            = "${aws_route53_record.cluster-root.name}"
-    cloud-labels            = "${join("\n", data.template_file.master-cloud-labels.*.rendered)}"
-    node-labels             = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
-    name                    = "master-${element(var.master-availability-zones, count.index)}"
-    public                  = "false"
+    cluster-name = "${aws_route53_record.cluster-root.name}"
+    cloud-labels = "${join("\n", data.template_file.master-cloud-labels.*.rendered)}"
+    node-labels  = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
+    name         = "master-${element(var.master-availability-zones, count.index)}"
+    public       = "false"
 
     additional-sgs = <<EOF
   ${length(var.master-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}

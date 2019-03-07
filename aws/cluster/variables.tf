@@ -72,8 +72,10 @@ variable "admin-ssh-public-key-path" {
 
 ## DNS
 variable "main-zone-id" {
-  description = "Route53 main zone ID"
+  description = "Route53 main zone ID (optional if the cluster zone is private)"
   type        = "string"
+
+  default = ""
 }
 
 variable "cluster-name" {
@@ -96,6 +98,20 @@ variable "kube-dns-provider" {
 }
 
 # Kops & Kubernetes
+variable "nodeup-url-env" {
+  type        = "string"
+  description = "NODEUP_URL env. variable override for testing custom builds of nodeup"
+
+  default = ""
+}
+
+variable "aws-profile" {
+  type        = "string"
+  description = "Name of the AWS profile in ~/.aws/credentials or ~/.aws/config to use"
+
+  default = "default"
+}
+
 variable "kops-state-bucket" {
   type        = "string"
   description = "Name of the bucket in which kops stores its state (must be created prior to cluster turnup)"
@@ -162,6 +178,18 @@ variable "apiserver-runtime-flags" {
   description = "Map describing the --runtime-config parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
 
   default = {}
+}
+
+variable "featuregates-flags" {
+  type        = "map"
+  description = "Map describing the --feature-gates parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
+
+  default = {
+    ExperimentalCriticalPodAnnotation = "true"
+    ExpandPersistentVolumes           = "true"
+    Initializers                      = "true"
+    PodPriority                       = "true"
+  }
 }
 
 variable "hpa-sync-period" {
@@ -234,7 +262,7 @@ variable "kubernetes-version" {
 
 variable "cloud-labels" {
   type        = "map"
-  description = "(Flat) map of kops cloud labels to apply to all resource in cluster"
+  description = "(Flat) map of kops cloud labels to apply to all resources in cluster"
 
   default = {}
 }
@@ -610,7 +638,6 @@ variable "node-additional-policies" {
 
 variable "log-level" {
   type        = "string"
-  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc."
-
-  default = 0
+  description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
+  default     = 0
 }

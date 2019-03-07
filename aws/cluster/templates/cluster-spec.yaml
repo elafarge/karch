@@ -23,8 +23,8 @@ ${cloud-labels}
 ${etcd-clusters}
   keyStore: s3://${kops-state-bucket}/${cluster-name}/pki
   kubeAPIServer:
-    address: 127.0.0.1
-    admissionControl:
+    insecureBindAddress: 127.0.0.1
+    enableAdmissionPlugins:
     - NamespaceLifecycle
     - LimitRanger
     - ServiceAccount
@@ -39,6 +39,7 @@ ${etcd-clusters}
     - MutatingAdmissionWebhook
     - ValidatingAdmissionWebhook
     - ResourceQuota
+    - PersistentVolumeClaimResize
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}
@@ -61,6 +62,8 @@ ${oidc-config}
     storageBackend: ${apiserver-storage-backend}
     runtimeConfig:
 ${apiserver-runtime-config}
+    featureGates:
+${featuregates-config}
   kubeControllerManager:
     allocateNodeCIDRs: true
     attachDetachReconcileSyncPeriod: 1m0s
@@ -75,6 +78,8 @@ ${apiserver-runtime-config}
     horizontalPodAutoscalerSyncPerdiod: ${hpa-sync-period}
     horizontalPodAutoscalerDownscaleDelay: ${hpa-scale-down-delay}
     horizontalPodAutoscalerUpscaleDelay: ${hpa-scale-up-delay}
+    featureGates:
+${featuregates-config}
   kubeDNS:
     domain: ${kube-dns-domain}
     replicas: 2
@@ -84,6 +89,7 @@ ${apiserver-runtime-config}
     clusterCIDR: 100.96.0.0/11
     cpuRequest: 100m
     hostnameOverride: '@aws'
+    image: gcr.io/google_containers/kube-proxy:${kubernetes-version} # From upstream
     logLevel: ${log-level}
   kubeScheduler:
     leaderElection:
@@ -110,6 +116,8 @@ ${apiserver-runtime-config}
       cpu: "${system-reserved-cpu}"
       memory: "${system-reserved-memory}"
     enforceNodeAllocatable: "pods"
+    featureGates:
+${featuregates-config}
   kubernetesApiAccess:
 ${trusted-cidrs}
   kubernetesVersion: ${kubernetes-version}
@@ -146,7 +154,7 @@ ${subnets}
     bastion:
       bastionPublicName: bastion.${cluster-name}
     dns:
-      type: ${master-lb-visibility}
+      type: ${master-lb-dns-visibility}
     masters: private
     nodes: private
   hooks:

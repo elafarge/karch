@@ -74,7 +74,7 @@ module "kops-cluster" {
 
   # Networking & connectivity
   vpc-name                  = "kube-hq"
-  vpc-number                = "70"
+  vpc-cidr                  = "10.70.0.0/16"
   availability-zones        = ["eu-west-1a", "eu-west-1b", "eu-west-1c"]
   kops-topology             = "private"
   trusted-cidrs             = "0.0.0.0/0"
