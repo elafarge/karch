@@ -44,7 +44,6 @@ ${etcd-clusters}
     anonymousAuth: false
     apiServerCount: ${master-count}
     authorizationMode: ${apiserver-authorization-mode}
-    ${rbac-super-user}
 ${oidc-config}
     cloudProvider: aws
     etcdServers:
