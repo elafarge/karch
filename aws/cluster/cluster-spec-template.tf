@@ -56,6 +56,7 @@ EOF
     apiserver-storage-backend    = "etcd${substr(var.etcd-version, 0, 1)}"
     kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
+    rbac-super-user              = "" # Leave empty as otherwise flag set by default and incompatible with kubernetes 1.11
 
     apiserver-runtime-config = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
     featuregates-config      = "${join("\n", data.template_file.featuregates-configs.*.rendered)}"
