@@ -170,7 +170,7 @@ variable "rbac-super-user" {
   type        = "string"
   description = "Name of the RBAC super user"
 
-  default = "admin"
+  default = ""
 }
 
 variable "apiserver-runtime-flags" {
