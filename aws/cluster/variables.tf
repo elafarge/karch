@@ -166,13 +166,6 @@ variable "rbac" {
   default = "false"
 }
 
-variable "rbac-super-user" {
-  type        = "string"
-  description = "Name of the RBAC super user"
-
-  default = ""
-}
-
 variable "apiserver-runtime-flags" {
   type        = "map"
   description = "Map describing the --runtime-config parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
