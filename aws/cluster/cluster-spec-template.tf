@@ -180,7 +180,7 @@ data "template_file" "apiserver-runtime-configs" {
 data "template_file" "featuregates-configs" {
   count = "${length(var.featuregates-flags)}"
 
-  template = "    - ${element(keys(var.featuregates-flags), count.index)}: '${element(values(var.featuregates-flags), count.index)}'"
+  template = "      ${element(keys(var.featuregates-flags), count.index)}: '${element(values(var.featuregates-flags), count.index)}'"
 }
 
 data "template_file" "hooks" {
