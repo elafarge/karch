@@ -178,10 +178,10 @@ variable "featuregates-flags" {
   description = "Map describing the --feature-gates parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
 
   default = {
-    ExperimentalCriticalPodAnnotation = true
-    ExpandPersistentVolumes           = true
-    Initializers                      = true
-    PodPriority                       = true
+    ExperimentalCriticalPodAnnotation = "true"
+    ExpandPersistentVolumes           = "true"
+    Initializers                      = "true"
+    PodPriority                       = "true"
   }
 }
 
