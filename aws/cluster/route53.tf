@@ -11,7 +11,7 @@ resource "aws_route53_zone" "cluster" {
   }
 
   lifecycle {
-    ignore_changes = "all"
+    ignore_changes = ["vpc"]
   }
 }
 
