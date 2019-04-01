@@ -139,11 +139,12 @@ data "template_file" "oidc-apiserver-conf" {
   count = "${var.oidc-issuer-url == "" ? 0 : 1}"
 
   template = <<EOF
-    oidcCAFile: ${var.oidc-ca-file}
-    oidcClientID: ${var.oidc-client-id}
-    oidcGroupsClaim: ${var.oidc-groups-claim}
     oidcIssuerURL: ${var.oidc-issuer-url}
+    oidcClientID: ${var.oidc-client-id}
     oidcUsernameClaim: ${var.oidc-username-claim}
+
+    ${var.oidc-ca-file == "" ? "" : "oidcCAFile: ${var.oidc-ca-file}"}
+    ${var.oidc-groups-claim == "" ? "" : "oidcGroupsClaim: ${var.oidc-groups-claim}"}
 EOF
 }
 
