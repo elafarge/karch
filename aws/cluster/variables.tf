@@ -151,9 +151,9 @@ variable "oidc-issuer-url" {
 
 variable "oidc-ca-file" {
   type        = "string"
-  description = "If using OpendID Connect, the oidc CA file on the APIServer pod"
+  description = "If using OpendID Connect, the oidc CA file on the APIServer pod, leave empty to use your hosts root CAs (eg.: for SSO with Google)"
 
-  default = "/srv/kubernetes/ca.crt"
+  default = ""
 }
 
 variable "oidc-client-id" {
@@ -165,16 +165,16 @@ variable "oidc-client-id" {
 
 variable "oidc-username-claim" {
   type        = "string"
-  description = "If using OpendID Connect, the oidc username claim"
+  description = "If using OpendID Connect, the oidc username claim (default: email)"
 
   default = "email"
 }
 
 variable "oidc-groups-claim" {
   type        = "string"
-  description = "If using OpendID Connect, the oidc group claim"
+  description = "If using OpendID Connect, the oidc group claim, leave empty if your OIDC provider doesn't provide such a claim (e.g.: Google SSO) or if you don't want to use it"
 
-  default = "groups"
+  default = ""
 }
 
 variable "channel" {
