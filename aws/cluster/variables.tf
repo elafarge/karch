@@ -86,6 +86,13 @@ variable "disable-sg-ingress" {
   default = "false"
 }
 
+variable "lb-security-group" {
+  type        = "string"
+  description = "security group to put ELBs/NLBs into (use only with disable-sg-ingress set to false)"
+
+  default = ""
+}
+
 variable "etcd-version" {
   type        = "string"
   description = "Etcd version to use"
@@ -259,6 +266,20 @@ variable "master-lb-idle-timeout" {
   default     = 300
 }
 
+variable "master-additional-sgs" {
+  type        = "list"
+  description = "Security groups to add to our master nodes"
+
+  default = []
+}
+
+variable "master-additional-sgs-count" {
+  type        = "string"
+  description = "Number of security groups to add to our master nodes"
+
+  default = 0
+}
+
 variable "master-image" {
   type        = "string"
   description = "AMI id to use for the master nodes"
@@ -334,7 +355,7 @@ variable "bastion-image" {
 
 variable "bastion-additional-sgs" {
   type        = "list"
-  description = "Number of security groups to add to our bastion nodes"
+  description = "Security groups to add to our bastion nodes"
 
   default = []
 }

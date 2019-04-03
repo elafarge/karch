@@ -3,12 +3,17 @@ data "template_file" "master-spec" {
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
   vars {
-    cluster-name            = "${var.cluster-name}"
-    cloud-labels            = "${join("\n", data.template_file.master-cloud-labels.*.rendered)}"
-    node-labels             = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
-    name                    = "master-${element(var.master-availability-zones, count.index)}"
-    public                  = "false"
-    additional-sgs          = ""
+    cluster-name = "${var.cluster-name}"
+    cloud-labels = "${join("\n", data.template_file.master-cloud-labels.*.rendered)}"
+    node-labels  = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
+    name         = "master-${element(var.master-availability-zones, count.index)}"
+    public       = "false"
+
+    additional-sgs = <<EOF
+  ${length(var.master-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
+  ${join("\n", data.template_file.master-additional-sgs.*.rendered)}
+EOF
+
     image                   = "${var.master-image}"
     type                    = "${var.master-machine-type}"
     max-size                = 1
@@ -22,6 +27,16 @@ data "template_file" "master-spec" {
     taints                  = ""
     subnets                 = "  - ${element(var.master-availability-zones, count.index)}"
     hooks                   = "${join("\n", data.template_file.master-hooks.*.rendered)}"
+  }
+}
+
+data "template_file" "master-additional-sgs" {
+  count = "${var.master-additional-sgs-count}"
+
+  template = "  - $${sg-id}"
+
+  vars {
+    sg-id = "${element(var.master-additional-sgs, count.index)}"
   }
 }
 

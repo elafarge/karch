@@ -3,12 +3,11 @@ data "template_file" "cluster-spec" {
 
   vars {
     # Generic cluster configuration
-    cluster-name       = "${var.cluster-name}"
-    channel            = "${var.channel}"
-    disable-sg-ingress = "${var.disable-sg-ingress}"
-    cloud-labels       = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
-    kube-dns-domain    = "${var.kube-dns-domain}"
-    kops-state-bucket  = "${var.kops-state-bucket}"
+    cluster-name      = "${var.cluster-name}"
+    channel           = "${var.channel}"
+    cloud-labels      = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
+    kube-dns-domain   = "${var.kube-dns-domain}"
+    kops-state-bucket = "${var.kops-state-bucket}"
 
     master-lb-visibility     = "${var.master-lb-visibility == "Private" ? "Internal" : "Public"}"
     master-lb-dns-visibility = "${var.master-lb-visibility}"
@@ -66,6 +65,13 @@ EOF
 
     # Log level for all master & kubelet components
     log-level = "${var.log-level}"
+
+    # Should LoadBalancer service create their own security groups and add a rule in the "nodes" security group... or
+    # should we rather leave the use configure one security group for all LoadBalancer services (and leave the nodes
+    # security group alone !)
+    disable-sg-ingress = "${var.disable-sg-ingress}"
+
+    elb-security-group = "${var.lb-security-group == "" ? "" : "elbSecurityGroup: ${var.lb-security-group}"}"
   }
 }
 

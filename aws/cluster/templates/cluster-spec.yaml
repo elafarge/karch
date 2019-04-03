@@ -12,6 +12,7 @@ spec:
   channel: ${channel}
   cloudConfig:
     disableSecurityGroupIngress: ${disable-sg-ingress}
+    ${elb-security-group}
   cloudLabels:
 ${cloud-labels}
   cloudProvider: aws
