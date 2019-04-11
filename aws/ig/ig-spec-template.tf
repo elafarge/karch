@@ -10,7 +10,7 @@ data "template_file" "ig-spec" {
 
     additional-sgs = <<EOF
   ${length(var.additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
-  ${join("\n", data.template_file.additional-sgs.*.rendered)}
+${join("\n", data.template_file.additional-sgs.*.rendered)}
 EOF
 
     image                   = "${var.image}"

@@ -11,7 +11,7 @@ data "template_file" "master-spec" {
 
     additional-sgs = <<EOF
   ${length(var.master-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
-  ${join("\n", data.template_file.master-additional-sgs.*.rendered)}
+${join("\n", data.template_file.master-additional-sgs.*.rendered)}
 EOF
 
     image                   = "${var.master-image}"
@@ -87,7 +87,7 @@ data "template_file" "bastion-spec" {
 
     additional-sgs = <<EOF
   ${length(var.bastion-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
-  ${join("\n", data.template_file.bastion-additional-sgs.*.rendered)}
+${join("\n", data.template_file.bastion-additional-sgs.*.rendered)}
 EOF
 
     image                   = "${var.bastion-image}"
@@ -162,7 +162,7 @@ data "template_file" "minion-spec" {
 
     additional-sgs = <<EOF
   ${length(var.minion-additional-sgs) > 0 ? "additionalSecurityGroups:" : ""}
-  ${join("\n", data.template_file.minion-additional-sgs.*.rendered)}
+${join("\n", data.template_file.minion-additional-sgs.*.rendered)}
 EOF
 
     image                   = "${var.minion-image}"
