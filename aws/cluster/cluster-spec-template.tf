@@ -3,24 +3,36 @@ data "template_file" "cluster-spec" {
 
   vars {
     # Generic cluster configuration
-    cluster-name      = "${var.cluster-name}"
-    channel           = "${var.channel}"
-    cloud-labels      = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
-    kube-dns-domain   = "${var.kube-dns-domain}"
-    kops-state-bucket = "${var.kops-state-bucket}"
+    cluster-name       = "${var.cluster-name}"
+    kubernetes-version = "${var.kubernetes-version}"
+    channel            = "${var.channel}"
+    cloud-labels       = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
+    kube-dns-domain    = "${var.kube-dns-domain}"
+    kops-state-bucket  = "${var.kops-state-bucket}"
 
+    # Control plane HA mode and network exposure configuration
     master-lb-visibility     = "${var.master-lb-visibility == "Private" ? "Internal" : "Public"}"
     master-lb-dns-visibility = "${var.master-lb-visibility}"
     master-count             = "${length(var.master-availability-zones)}"
     master-lb-idle-timeout   = "${var.master-lb-idle-timeout}"
 
-    kubernetes-version   = "${var.kubernetes-version}"
-    vpc-cidr             = "${aws_vpc.main.cidr_block}"
-    vpc-id               = "${aws_vpc.main.id}"
-    trusted-cidrs        = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
-    subnets              = "${join("\n", data.template_file.subnets.*.rendered)}"
-    container-networking = "${var.container-networking}"
+    # Cloud provider networking configuration
+    vpc-cidr      = "${aws_vpc.main.cidr_block}"
+    vpc-id        = "${aws_vpc.main.id}"
+    trusted-cidrs = "${join("\n", data.template_file.trusted-cidrs.*.rendered)}"
+    subnets       = "${join("\n", data.template_file.subnets.*.rendered)}"
 
+    # DNS provider to use
+    dns-provider = "${var.dns-provider}"
+
+    # Kube proxy mode
+    kube-proxy-mode = "${var.kube-proxy-mode}"
+
+    # CNI plugin to use
+    container-networking = "${var.container-networking}"
+    networking-config    = "${data.template_file.networking-config.rendered}"
+
+    # Extra systemd hooks for all nodes in our cluster
     hooks = "${join("\n", data.template_file.hooks.*.rendered)}"
 
     # ETCD cluster parameters
@@ -165,5 +177,15 @@ data "template_file" "hooks" {
 
   template = <<EOF
 ${element(var.hooks, count.index)}
+EOF
+}
+
+data "template_file" "networking-config" {
+  template = <<EOF
+${
+  var.container-networking == "calico" ?
+  indent(6, "\ncrossSubnet: true\nprometheusMetricsEnabled: true \nprometheusGoMetricsEnabled: true\nprometheusProcessMetricsEnabled: true\nmajorVersion: v3\n")
+  : ""
+}
 EOF
 }
