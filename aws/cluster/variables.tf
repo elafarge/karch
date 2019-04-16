@@ -59,6 +59,20 @@ variable "kube-dns-domain" {
   default = "cluster.local"
 }
 
+variable "dns-provider" {
+  type        = "string"
+  description = "The DNS provider to use (CoreDNS or KubeDNS)"
+
+  default = "CoreDNS"
+}
+
+variable "kube-proxy-mode" {
+  type        = "string"
+  description = "Load balancing method for kube-proxy (iptables or ipvs)"
+
+  default = "iptables"
+}
+
 # Kops & Kubernetes
 variable "nodeup-url-env" {
   type        = "string"
@@ -111,14 +125,14 @@ variable "container-networking" {
   type        = "string"
   description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
 
-  default = "canal"
+  default = "calico"
 }
 
 variable "rbac" {
   type        = "string"
-  description = "Boolean indicating whether to enable RBAC authorization (default: false)"
+  description = "Boolean indicating whether to enable RBAC authorization"
 
-  default = "false"
+  default = "true"
 }
 
 variable "apiserver-runtime-flags" {
@@ -144,7 +158,7 @@ variable "hpa-scale-down-delay" {
 
 variable "hpa-scale-up-delay" {
   type        = "string"
-  description = "After an upscale, wait at least for this duration before the next downscale"
+  description = "After an upscale, wait at least for this duration before the next scale-out operation"
 
   default = "30s"
 }

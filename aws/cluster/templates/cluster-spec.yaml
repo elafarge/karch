@@ -86,17 +86,21 @@ ${apiserver-runtime-config}
       ExpandPersistentVolumes: "true"
       Initializers: "true"
       PodPriority: "true"
+
   kubeDNS:
+    provider: ${dns-provider}
     domain: ${kube-dns-domain}
-    image: gcr.io/google_containers/kubedns-amd64:1.3
-    replicas: 2
     serverIP: 100.64.0.10
+
   kubeProxy:
     clusterCIDR: 100.96.0.0/11
     cpuRequest: 100m
+    memoryRequest: 100Mi
     hostnameOverride: '@aws'
     image: gcr.io/google_containers/kube-proxy:v${kubernetes-version}
     logLevel: ${log-level}
+    proxyMode: ${kube-proxy-mode}
+
   kubeScheduler:
     image: gcr.io/google_containers/kube-scheduler:v${kubernetes-version}
     leaderElection:
@@ -153,7 +157,8 @@ ${trusted-cidrs}
   networkCIDR: ${vpc-cidr}
   networkID: ${vpc-id}
   networking:
-    ${container-networking}: {}
+    ${container-networking}:
+${networking-config}
   nonMasqueradeCIDR: 100.64.0.0/10
   secretStore: s3://${kops-state-bucket}/${cluster-name}/secrets
   serviceClusterIPRange: 100.64.0.0/13
