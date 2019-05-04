@@ -95,14 +95,14 @@ variable "kops-state-bucket" {
 
 variable "disable-sg-ingress" {
   type        = "string"
-  description = "Boolean that indicates wether or not to create and attach a security group to instance nodes and load balancers for each LoadBalancer service (default: false)"
+  description = "if set to true, a new rule will not be added for each load-balancer service to the nodes security group, you will have to authorize lb->node traffic with a custom security group you add to nodes"
 
   default = "false"
 }
 
 variable "lb-security-group" {
   type        = "string"
-  description = "security group to put ELBs/NLBs into (use only with disable-sg-ingress set to false)"
+  description = "if enabled, no SG will be assigned to service E/NLBs and this group will be used instead"
 
   default = ""
 }
