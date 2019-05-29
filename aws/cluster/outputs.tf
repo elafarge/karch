@@ -8,6 +8,10 @@ output "cluster-created" {
 }
 
 # DNS zone for the cluster subdomain
+output "cluster-zone-id" {
+  value = "${aws_route53_zone.cluster.id}"
+}
+
 output "route53-cluster-zone-id" {
   value = "${aws_route53_zone.cluster.id}"
 }

@@ -56,9 +56,9 @@ EOF
     apiserver-storage-backend    = "etcd${substr(var.etcd-version, 0, 1)}"
     kops-authorization-mode      = "${var.rbac == "true" ? "rbac": "alwaysAllow"}"
     apiserver-authorization-mode = "${var.rbac == "true" ? "RBAC": "AlwaysAllow"}"
-    rbac-super-user              = "${var.rbac == "true" ? "authorizationRbacSuperUser: ${var.rbac-super-user}" : ""}"
 
     apiserver-runtime-config = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
+    featuregates-config      = "${join("\n", data.template_file.featuregates-configs.*.rendered)}"
     oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     # kube-controller-manager configuration
@@ -137,25 +137,25 @@ data "template_file" "subnets" {
 
   template = <<EOF
   - cidr: $${private-cidr}
-    id: $${private-id}
-    egress: $${nat-gateway}
     name: $${az}
     type: Private
     zone: $${az}
+    id: $${private-subnet-id}
+    egress: $${nat-gateway-id}
   - cidr: $${public-cidr}
-    id: $${public-id}
     name: utility-$${az}
     type: Utility
     zone: $${az}
+    id: $${public-subnet-id}
 EOF
 
   vars {
-    az           = "${element(var.availability-zones, count.index)}"
-    nat-gateway  = "${element(var.nat-gateways, count.index)}"
-    private-id   = "${element(var.vpc-private-subnet-ids, count.index)}"
-    private-cidr = "${element(var.vpc-private-cidrs, count.index)}"
-    public-id    = "${element(var.vpc-public-subnet-ids, count.index)}"
-    public-cidr  = "${element(var.vpc-public-cidrs, count.index)}"
+    az                = "${element(var.availability-zones, count.index)}"
+    private-cidr      = "${element(var.vpc-private-cidrs, count.index)}"
+    public-cidr       = "${element(var.vpc-public-cidrs, count.index)}"
+    public-subnet-id  = "${element(var.vpc-public-subnet-ids, count.index)}"
+    private-subnet-id = "${element(var.vpc-private-subnet-ids, count.index)}"
+    nat-gateway-id    = "${element(var.nat-gateways, count.index)}"
   }
 }
 
@@ -175,6 +175,12 @@ data "template_file" "apiserver-runtime-configs" {
   count = "${length(var.apiserver-runtime-flags)}"
 
   template = "      ${element(keys(var.apiserver-runtime-flags), count.index)}: '${element(values(var.apiserver-runtime-flags), count.index)}'"
+}
+
+data "template_file" "featuregates-configs" {
+  count = "${length(var.featuregates-flags)}"
+
+  template = "      ${element(keys(var.featuregates-flags), count.index)}: '${element(values(var.featuregates-flags), count.index)}'"
 }
 
 data "template_file" "hooks" {
