@@ -9,7 +9,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true
   enable_dns_support   = true
 
-  tags {
+  tags = {
     Name   = "${var.cluster-name}"
     Origin = "Terraform"
   }
@@ -23,7 +23,7 @@ resource "aws_vpc" "main" {
 resource "aws_internet_gateway" "igw" {
   vpc_id = "${aws_vpc.main.id}"
 
-  tags {
+  tags = {
     Name   = "${var.cluster-name}"
     Origin = "Terraform"
   }
@@ -41,7 +41,7 @@ resource "aws_subnet" "utility" {
     3, count.index
   )}"
 
-  tags {
+  tags = {
     Name   = "utility-${element(var.availability-zones, count.index)}.${var.cluster-name}"
     Origin = "Terraform"
   }
@@ -56,7 +56,7 @@ resource "aws_route_table" "utility" {
 
   vpc_id = "${aws_vpc.main.id}"
 
-  tags {
+  tags = {
     Name   = "utility-${element(var.availability-zones, count.index)}.${var.cluster-name}"
     Origin = "Terraform"
   }
@@ -91,7 +91,7 @@ resource "aws_subnet" "private" {
 
   map_public_ip_on_launch = false
 
-  tags {
+  tags = {
     Name   = "${element(var.availability-zones, count.index)}.${var.cluster-name}"
     Origin = "Terraform"
   }
@@ -119,7 +119,7 @@ resource "aws_route_table" "private" {
 
   vpc_id = "${aws_vpc.main.id}"
 
-  tags {
+  tags = {
     Name   = "${element(var.availability-zones, count.index)}.${var.cluster-name}"
     Origin = "Terraform"
   }

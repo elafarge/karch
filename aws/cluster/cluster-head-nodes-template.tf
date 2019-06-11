@@ -2,7 +2,7 @@ data "template_file" "master-spec" {
   count    = "${length(var.master-availability-zones)}"
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
-  vars {
+  vars = {
     cluster-name = "${var.cluster-name}"
     cloud-labels = "${join("\n", data.template_file.master-cloud-labels.*.rendered)}"
     node-labels  = "${join("\n", data.template_file.master-node-labels.*.rendered)}"
@@ -35,7 +35,7 @@ data "template_file" "master-additional-sgs" {
 
   template = "  - $${sg-id}"
 
-  vars {
+  vars = {
     sg-id = "${element(var.master-additional-sgs, count.index)}"
   }
 }
@@ -47,7 +47,7 @@ data "template_file" "master-cloud-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.master-cloud-labels), count.index)}"
     value = "${element(values(var.master-cloud-labels), count.index)}"
   }
@@ -60,7 +60,7 @@ data "template_file" "master-node-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.master-node-labels), count.index)}"
     value = "${element(values(var.master-node-labels), count.index)}"
   }
@@ -78,7 +78,7 @@ data "template_file" "bastion-spec" {
   count    = "${var.kops-topology == "private" ? 1 : 0}"
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
-  vars {
+  vars = {
     cluster-name = "${var.cluster-name}"
     cloud-labels = "${join("\n", data.template_file.bastion-cloud-labels.*.rendered)}"
     node-labels  = "${join("\n", data.template_file.bastion-node-labels.*.rendered)}"
@@ -111,7 +111,7 @@ data "template_file" "bastion-additional-sgs" {
 
   template = "  - $${sg-id}"
 
-  vars {
+  vars = {
     sg-id = "${element(var.bastion-additional-sgs, count.index)}"
   }
 }
@@ -123,7 +123,7 @@ data "template_file" "bastion-cloud-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.bastion-cloud-labels), count.index)}"
     value = "${element(values(var.bastion-cloud-labels), count.index)}"
   }
@@ -136,7 +136,7 @@ data "template_file" "bastion-node-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.bastion-node-labels), count.index)}"
     value = "${element(values(var.bastion-node-labels), count.index)}"
   }
@@ -153,7 +153,7 @@ EOF
 data "template_file" "minion-spec" {
   template = "${file("${path.module}/templates/ig-spec.yaml")}"
 
-  vars {
+  vars = {
     cluster-name = "${var.cluster-name}"
     cloud-labels = "${join("\n", data.template_file.minion-cloud-labels.*.rendered)}"
     node-labels  = "${join("\n", data.template_file.minion-node-labels.*.rendered)}"
@@ -191,7 +191,7 @@ data "template_file" "minion-subnets" {
   count    = "${length(var.availability-zones)}"
   template = "  - $${az}"
 
-  vars {
+  vars = {
     az = "${element(var.availability-zones, count.index)}"
   }
 }
@@ -201,7 +201,7 @@ data "template_file" "minion-additional-sgs" {
 
   template = "  - $${sg-id}"
 
-  vars {
+  vars = {
     sg-id = "${element(var.minion-additional-sgs, count.index)}"
   }
 }
@@ -213,7 +213,7 @@ data "template_file" "minion-cloud-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.minion-cloud-labels), count.index)}"
     value = "${element(values(var.minion-cloud-labels), count.index)}"
   }
@@ -226,7 +226,7 @@ data "template_file" "minion-node-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.minion-node-labels), count.index)}"
     value = "${element(values(var.minion-node-labels), count.index)}"
   }

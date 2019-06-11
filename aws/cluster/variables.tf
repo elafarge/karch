@@ -39,6 +39,16 @@ variable "admin-ssh-public-key-path" {
   default = "~/.ssh/id_rsa.pub"
 }
 
+variable "extra-route53-vpc-associations" {
+  type = "list"
+  description = <<EOF
+A list of VPC ids to associate with the created route53 zone (containing records for etcd and the
+master API load-balancer
+EOF
+
+  default = []
+}
+
 ## DNS
 variable "main-zone-id" {
   description = "Route53 main zone ID (optional if the cluster zone is private)"

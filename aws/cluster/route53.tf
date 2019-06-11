@@ -10,8 +10,12 @@ resource "aws_route53_zone" "cluster" {
     vpc_id = "${aws_vpc.main.id}"
   }
 
-  lifecycle {
-    ignore_changes = ["vpc"]
+  dynamic "vpc" {
+    for_each = var.extra-route53-vpc-associations
+
+    content {
+      vpc_id = vpc.value
+    }
   }
 }
 

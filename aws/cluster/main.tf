@@ -78,7 +78,7 @@ EOF
 
 // Hook that triggers cluster updates when the manifest changes
 resource "null_resource" "kops-update" {
-  triggers {
+  triggers = {
     cluster_spec = "${aws_s3_bucket_object.cluster-spec.content}"
   }
 

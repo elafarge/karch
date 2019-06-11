@@ -51,7 +51,7 @@ EOF
 }
 
 resource "null_resource" "ig-update" {
-  triggers {
+  triggers = {
     cluster_spec = "${data.template_file.ig-spec.rendered}"
   }
 

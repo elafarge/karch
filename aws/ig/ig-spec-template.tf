@@ -1,7 +1,7 @@
 data "template_file" "ig-spec" {
   template = "${file("${path.module}/templates/spec.yaml")}"
 
-  vars {
+  vars = {
     cluster-name = "${var.cluster-name}"
     cloud-labels = "${join("\n", data.template_file.cloud-labels.*.rendered)}"
     node-labels  = "${join("\n", data.template_file.node-labels.*.rendered)}"
@@ -34,7 +34,7 @@ data "template_file" "additional-sgs" {
 
   template = "  - $${sg-id}"
 
-  vars {
+  vars = {
     sg-id = "${element(var.additional-sgs, count.index)}"
   }
 }
@@ -46,7 +46,7 @@ data "template_file" "cloud-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.cloud-labels), count.index)}"
     value = "${element(values(var.cloud-labels), count.index)}"
   }
@@ -59,7 +59,7 @@ data "template_file" "node-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.node-labels), count.index)}"
     value = "${element(values(var.node-labels), count.index)}"
   }
@@ -72,7 +72,7 @@ data "template_file" "taints" {
   - $${taint}
 EOF
 
-  vars {
+  vars = {
     taint = "${element(var.taints, count.index)}"
   }
 }
@@ -84,7 +84,7 @@ data "template_file" "subnets" {
   - $${subnet}
 EOF
 
-  vars {
+  vars = {
     subnet = "${element(var.subnets, count.index)}"
   }
 }

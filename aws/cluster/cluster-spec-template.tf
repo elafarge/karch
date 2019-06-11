@@ -1,7 +1,7 @@
 data "template_file" "cluster-spec" {
   template = "${file("${path.module}/templates/cluster-spec.yaml")}"
 
-  vars {
+  vars = {
     # Generic cluster configuration
     cluster-name       = "${var.cluster-name}"
     kubernetes-version = "${var.kubernetes-version}"
@@ -96,7 +96,7 @@ data "template_file" "etcd-member" {
       name: $${az}
 EOF
 
-  vars {
+  vars = {
     az = "${element(var.master-availability-zones, count.index)}"
   }
 }
@@ -108,7 +108,7 @@ data "template_file" "trusted-cidrs" {
   - $${cidr}
 EOF
 
-  vars {
+  vars = {
     cidr = "${element(var.trusted-cidrs, count.index)}"
   }
 }
@@ -120,7 +120,7 @@ data "template_file" "cloud-labels" {
     $${tag}: '$${value}'
 EOF
 
-  vars {
+  vars = {
     tag   = "${element(keys(var.cloud-labels), count.index)}"
     value = "${element(values(var.cloud-labels), count.index)}"
   }
@@ -143,7 +143,7 @@ data "template_file" "subnets" {
     id: $${public-subnet-id}
 EOF
 
-  vars {
+  vars = {
     az                = "${element(var.availability-zones, count.index)}"
     private-cidr      = "${element(aws_subnet.private.*.cidr_block, count.index)}"
     public-cidr       = "${element(aws_subnet.utility.*.cidr_block, count.index)}"

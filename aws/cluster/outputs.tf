@@ -22,22 +22,22 @@ output "cluster-cidr-block" {
 
 // List of utility (public) subnets
 output "utility-subnets" {
-  value = ["${aws_subnet.utility.*.id}"]
+  value = aws_subnet.utility.*.id
 }
 
 // Standard IG subnets
 output "subnets" {
-  value = ["${aws_subnet.private.*.id}"]
+  value = aws_subnet.private.*.id
 }
 
 // Utility (public) route tables
 output "utility-route-tables" {
-  value = ["${aws_route_table.utility.*.id}"]
+  value = aws_route_table.utility.*.id
 }
 
 // Standard route tables
 output "route-tables" {
-  value = ["${aws_route_table.private.*.id}"]
+  value = aws_route_table.private.*.id
 }
 
 // Nodes security groups (to direct ELB traffic to hostPort pods if you want to)
