@@ -121,7 +121,7 @@ variable "etcd-version" {
   type        = "string"
   description = "Etcd version to use"
 
-  default = "3.1.11"
+  default = "3.2.18"
 }
 
 variable "etcd-enable-tls" {
