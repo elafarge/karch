@@ -1,8 +1,8 @@
 resource "aws_s3_bucket_object" "ig-spec" {
-  bucket = "${var.kops-state-bucket}"
+  bucket = var.kops-state-bucket
   key    = "/karch-specs/${var.cluster-name}/${var.name}-ig-spec.yml"
 
-  content = "${data.template_file.ig-spec.rendered}"
+  content = data.template_file.ig-spec.rendered
 
   // On destroy, remove the IG, if it exists
   provisioner "local-exec" {
@@ -47,12 +47,12 @@ EOF
     command = "rm -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml"
   }
 
-  depends_on = ["aws_s3_bucket_object.ig-spec"]
+  depends_on = [aws_s3_bucket_object.ig-spec]
 }
 
 resource "null_resource" "ig-update" {
   triggers = {
-    cluster_spec = "${data.template_file.ig-spec.rendered}"
+    cluster_spec = data.template_file.ig-spec.rendered
   }
 
   provisioner "local-exec" {
@@ -90,5 +90,5 @@ FILEDUMP
 EOF
   }
 
-  depends_on = ["null_resource.ig"]
+  depends_on = [null_resource.ig]
 }

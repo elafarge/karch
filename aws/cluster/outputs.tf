@@ -1,23 +1,23 @@
 # Lifecycle hooks
 output "master-up" {
-  value = "${null_resource.master-up.id}"
+  value = null_resource.master-up.id
 }
 
 output "cluster-created" {
-  value = "${null_resource.kops-cluster.id}"
+  value = null_resource.kops-cluster.id
 }
 
 # DNS zone for the cluster subdomain
 output "cluster-zone-id" {
-  value = "${aws_route53_zone.cluster.id}"
+  value = aws_route53_zone.cluster.id
 }
 
 output "vpc-id" {
-  value = "${aws_vpc.main.id}"
+  value = aws_vpc.main.id
 }
 
 output "cluster-cidr-block" {
-  value = "${aws_vpc.main.cidr_block}"
+  value = aws_vpc.main.cidr_block
 }
 
 // List of utility (public) subnets
@@ -42,5 +42,5 @@ output "route-tables" {
 
 // Nodes security groups (to direct ELB traffic to hostPort pods if you want to)
 output "nodes-sg" {
-  value = "${element(split("/", data.aws_security_group.nodes.arn), 1)}"
+  value = element(split("/", data.aws_security_group.nodes.arn), 1)
 }

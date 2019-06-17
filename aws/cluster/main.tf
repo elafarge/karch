@@ -1,6 +1,6 @@
 // Cluster manifest on S3 and cluster destroy-time provisioner
 resource "aws_s3_bucket_object" "cluster-spec" {
-  bucket = "${var.kops-state-bucket}"
+  bucket = var.kops-state-bucket
   key    = "/karch-specs/${var.cluster-name}/master-cluster-spec.yml"
 
   content = <<EOF
@@ -18,7 +18,7 @@ EOF
     command = "(test -z \"$(${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} delete cluster --yes ${var.cluster-name}"
   }
 
-  depends_on = ["aws_route53_record.cluster-root", "aws_vpc.main"]
+  depends_on = [aws_route53_record.cluster-root, aws_vpc.main]
 }
 
 // Cluster create-time provisioner
@@ -58,7 +58,7 @@ EOF
     command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
   }
 
-  depends_on = ["aws_s3_bucket_object.cluster-spec"]
+  depends_on = [aws_s3_bucket_object.cluster-spec]
 }
 
 // Hook for other modules (like instance groups) to wait for the master to be available
@@ -73,13 +73,13 @@ resource "null_resource" "master-up" {
 EOF
   }
 
-  depends_on = ["null_resource.kops-cluster"]
+  depends_on = [null_resource.kops-cluster]
 }
 
 // Hook that triggers cluster updates when the manifest changes
 resource "null_resource" "kops-update" {
   triggers = {
-    cluster_spec = "${aws_s3_bucket_object.cluster-spec.content}"
+    cluster_spec = aws_s3_bucket_object.cluster-spec.content
   }
 
   provisioner "local-exec" {
@@ -102,5 +102,5 @@ FILEDUMP
 EOF
   }
 
-  depends_on = ["null_resource.kops-cluster"]
+  depends_on = [null_resource.kops-cluster]
 }

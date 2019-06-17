@@ -131,6 +131,13 @@ variable "etcd-enable-tls" {
   default = "true"
 }
 
+variable "etcd-enable-manager" {
+  type = "string"
+  description = "Set this to true if your want to manage your etcd cluster using etcd-manager, and to false to enable the legacy etcd provider"
+
+  default = true
+}
+
 variable "container-networking" {
   type        = "string"
   description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
