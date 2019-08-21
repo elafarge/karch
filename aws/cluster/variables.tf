@@ -140,16 +140,23 @@ variable "etcd-enable-tls" {
 
 variable "etcd-backup-enabled" {
   type        = "string"
-  description = "Set to true to enable backup to S3 on etcd containers (default: true)"
+  description = "Set to true to enable backup to S3 on etcd containers (default: false)"
 
   default = "false"
 }
 
-variable "etcd-enable-manager" {
-  type = "string"
-  description = "Set this to true if your want to manage your etcd cluster using etcd-manager, and to false to enable the legacy etcd provider"
+variable "etcd-backup-s3-bucket" {
+  type        = "string"
+  description = "S3 bucket to use to store etcd backups assuming etcd-backup-enabled has been set to true"
 
-  default = true
+  default     = ""
+}
+
+variable "etcd-mode" {
+  type        = "string"
+  description = "Set this to Manager if your want to manage your etcd cluster using etcd-manager, and to Legacy to enable the legacy etcd provider"
+
+  default     = "Manager"
 }
 
 variable "container-networking" {
