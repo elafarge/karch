@@ -1,0 +1,35 @@
+apiVersion: kops/v1alpha2
+kind: InstanceGroup
+metadata:
+  labels:
+    kops.k8s.io/cluster: ${cluster-name}
+  name: ${name}
+spec:
+  cloudLabels:
+${cloud-labels}
+  nodeLabels:
+${node-labels}
+  associatePublicIp: ${public}
+${additional-sgs}
+  image: ${image}
+  machineType: ${type}
+  maxSize: ${max-size}
+  minSize: ${min-size}
+  role: ${role}
+  rootVolumeSize: ${volume-size}
+  rootVolumeType: ${volume-type}
+  rootProvisionedIops: ${volume-provisioned-iops}
+  rootVolumeOptimization: ${ebs-optimized}
+  mixedInstancesPolicy:
+    instances:
+    - ${type}
+${additional_types}
+    onDemandBase: ${policy_ondemand_base}
+    onDemandAboveBase: ${policy_ondemand_above_base}
+    spotInstancePools: ${policy_spot_instance_pools}
+  taints:
+${taints}
+  subnets:
+${subnets}
+  hooks:
+${hooks}
