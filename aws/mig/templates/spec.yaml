@@ -21,6 +21,8 @@ ${additional-sgs}
   rootProvisionedIops: ${volume-provisioned-iops}
   rootVolumeOptimization: ${ebs-optimized}
   mixedInstancesPolicy:
+    spotAllocationStrategy: ${policy_spot_allocation_strategy}
+    onDemandAllocationStrategy: ${policy_ondemand_allocation_strategy}
     instances:
     - ${type}
 ${additional_types}
