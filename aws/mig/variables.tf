@@ -166,8 +166,8 @@ variable "node-labels" {
 }
 
 variable "additional_types" {
-  type    = "list"
-  default = []
+  type        = "list"
+  default     = []
   description = "Instances is a list of instance types which we are willing to run in the EC2 fleet."
 }
 
@@ -183,11 +183,10 @@ variable "policy_ondemand_above_base" {
   description = "On demand above base controls the percentages of On-Demand Instances and Spot Instances for your additional capacity beyond on demand base. The range is 0–100. If youleave this parameter set to 100, the percentages are 100% for On-Demand Instances and 0% for Spot Instances. (default: 100)"
 }
 
-# TODO fix once https://github.com/kubernetes/kops/pull/7660 is merged (var is not used in the template now due to bug)
 variable "policy_ondemand_allocation_strategy" {
-  type = "string"
-  default = ""
-  description = "On-Demand allcoation strategy should be one of (lowestPrice/prioritized) (default: prioritized)."
+  type        = "string"
+  default     = "prioritized"
+  description = "On-Demand allcoation strategy should be one of (lowest-price/prioritized) (default: prioritized)."
 }
 
 variable "policy_spot_instance_pools" {
@@ -196,9 +195,8 @@ variable "policy_spot_instance_pools" {
   description = "Spot instance pools is the number of Spot pools to use to allocate your Spot capacity (default: 2)."
 }
 
-# TODO fix once https://github.com/kubernetes/kops/pull/7660 is merged (var is not used in the template now due to bug)
 variable "policy_spot_allocation_strategy" {
   type        = "string"
-  default     = "LowestPrice"
-  description = "Spot allcoation strategy should be one of (LowestPrice/Diversified) more https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet.html#spot-fleet-allocation-strategy (default: LowestPrice)."
+  default     = "lowest-price"
+  description = "Spot allcoation strategy should be one of (lowest-price/capacity-optimized) more https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet.html#spot-fleet-allocation-strategy (default: lowest-price)."
 }
