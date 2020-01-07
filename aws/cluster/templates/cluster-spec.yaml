@@ -31,7 +31,6 @@ ${etcd-clusters}
     - PersistentVolumeLabel
     - DefaultStorageClass
     - DefaultTolerationSeconds
-    - Initializers
     - NodeRestriction
     - Priority
     - DenyEscalatingExec

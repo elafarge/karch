@@ -194,7 +194,6 @@ variable "featuregates-flags" {
   default = {
     ExperimentalCriticalPodAnnotation = "true"
     ExpandPersistentVolumes           = "true"
-    Initializers                      = "true"
     PodPriority                       = "true"
   }
 }
