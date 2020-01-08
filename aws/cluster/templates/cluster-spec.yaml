@@ -33,7 +33,6 @@ ${etcd-clusters}
     - DefaultTolerationSeconds
     - NodeRestriction
     - Priority
-    - DenyEscalatingExec
     - PodPreset
     - MutatingAdmissionWebhook
     - ValidatingAdmissionWebhook
