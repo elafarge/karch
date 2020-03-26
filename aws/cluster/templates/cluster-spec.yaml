@@ -73,9 +73,8 @@ ${featuregates-config}
       leaderElect: true
     logLevel: ${log-level}
     useServiceAccountCredentials: true
-    horizontalPodAutoscalerSyncPerdiod: ${hpa-sync-period}
-    horizontalPodAutoscalerDownscaleDelay: ${hpa-scale-down-delay}
-    horizontalPodAutoscalerUpscaleDelay: ${hpa-scale-up-delay}
+    horizontalPodAutoscalerSyncPeriod: ${hpa-sync-period}
+    horizontalPodAutoscalerDownscaleStabilization: ${hpa-scale-downscale-stabilization}
     featureGates:
 ${featuregates-config}
   kubeDNS:

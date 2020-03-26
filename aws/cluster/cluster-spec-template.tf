@@ -64,9 +64,8 @@ EOF
     oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     # kube-controller-manager configuration
-    hpa-sync-period      = "${var.hpa-sync-period}"
-    hpa-scale-down-delay = "${var.hpa-scale-down-delay}"
-    hpa-scale-up-delay   = "${var.hpa-scale-up-delay}"
+    hpa-sync-period                     = "${var.hpa-sync-period}"
+    hpa-scale-downscale-stabilization   = "${var.hpa-scale-downscale-stabilization}"
 
     # Additional IAM policies for masters and nodes
     master-additional-policies = "${length(var.master-additional-policies) == 0 ? "" : format("master: |\n      %s", indent(6, var.master-additional-policies))}"

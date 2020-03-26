@@ -203,18 +203,11 @@ variable "hpa-sync-period" {
   default = "30s"
 }
 
-variable "hpa-scale-down-delay" {
+variable "hpa-scale-downscale-stabilization" {
   type        = "string"
-  description = "After a downscale, wait at least for this duration before the next downscale"
+  description = "After an downscale, wait at least for this duration before the next downscale"
 
   default = "5m"
-}
-
-variable "hpa-scale-up-delay" {
-  type        = "string"
-  description = "After an upscale, wait at least for this duration before the next upscale"
-
-  default = "3m"
 }
 
 variable "oidc-issuer-url" {
