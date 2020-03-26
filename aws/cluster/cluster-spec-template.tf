@@ -34,12 +34,14 @@ ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: main
     enableEtcdTLS: ${var.etcd-enable-tls}
     version: ${var.etcd-version}
+    provider: ${var.etcd-mode}
 ${join("\n", data.template_file.backup-main.*.rendered)}
   - etcdMembers:
 ${join("\n", data.template_file.etcd-member.*.rendered)}
     name: events
     enableEtcdTLS: ${var.etcd-enable-tls}
     version: ${var.etcd-version}
+    provider: ${var.etcd-mode}
 ${join("\n", data.template_file.backup-events.*.rendered)}
 EOF
 
@@ -94,7 +96,7 @@ data "template_file" "backup-main" {
 
   template = <<EOF
     backups:
-      backupStore: s3://${var.kops-state-bucket}/backups/${var.cluster-name}/etcd/main/
+      backupStore: s3://${var.etcd-backup-s3-bucket == "" ? var.kops-state-bucket : var.etcd-backup-s3-bucket}/${var.cluster-name}/backups/etcd/main/
 EOF
 }
 
@@ -103,7 +105,7 @@ data "template_file" "backup-events" {
 
   template = <<EOF
     backups:
-      backupStore: s3://${var.kops-state-bucket}/backups/${var.cluster-name}/etcd/events/
+      backupStore: s3://${var.etcd-backup-s3-bucket == "" ? var.kops-state-bucket : var.etcd-backup-s3-bucket}/${var.cluster-name}/backups/etcd/events/
 EOF
 }
 
