@@ -33,6 +33,7 @@ ${etcd-clusters}
     - DefaultTolerationSeconds
     - NodeRestriction
     - Priority
+    - DenyEscalatingExec
     - PodPreset
     - MutatingAdmissionWebhook
     - ValidatingAdmissionWebhook
@@ -93,6 +94,8 @@ ${featuregates-config}
       leaderElect: true
     logLevel: ${log-level}
   kubelet:
+    cpuCFSQuota: ${kubernetes-worker-cpu-cfs-quota-enabled}
+    cpuCFSQuotaPeriod: "${kubernetes-worker-cpu-cfs-quota-period}"
     allowPrivileged: true
     cgroupRoot: /
     cloudProvider: aws
@@ -120,6 +123,8 @@ ${trusted-cidrs}
   kubernetesVersion: ${kubernetes-version}
   masterInternalName: api.internal.${cluster-name}
   masterKubelet:
+    cpuCFSQuota: ${kubernetes-master-cpu-cfs-quota-enabled}
+    cpuCFSQuotaPeriod: "${kubernetes-master-cpu-cfs-quota-period}"
     allowPrivileged: true
     cgroupRoot: /
     cloudProvider: aws
