@@ -93,6 +93,7 @@ ${featuregates-config}
       leaderElect: true
     logLevel: ${log-level}
   kubelet:
+    anonymousAuth: true
     cpuCFSQuota: ${kubernetes-worker-cpu-cfs-quota-enabled}
     cpuCFSQuotaPeriod: "${kubernetes-worker-cpu-cfs-quota-period}"
     allowPrivileged: true
@@ -122,8 +123,6 @@ ${trusted-cidrs}
   kubernetesVersion: ${kubernetes-version}
   masterInternalName: api.internal.${cluster-name}
   masterKubelet:
-    cpuCFSQuota: ${kubernetes-master-cpu-cfs-quota-enabled}
-    cpuCFSQuotaPeriod: "${kubernetes-master-cpu-cfs-quota-period}"
     allowPrivileged: true
     cgroupRoot: /
     cloudProvider: aws

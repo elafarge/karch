@@ -650,15 +650,3 @@ variable "kubernetes-worker-cpu-cfs-quota-period" {
   description = "Set a time period for cpuCFSQuotaPeriod (cpu-cfs-quota-period)"
   default     = "100ms"
 }
-
-variable "kubernetes-master-cpu-cfs-quota-enabled" {
-  type        = "string"
-  description = "Boolean (true or false) enable or disable cpuCFSQuota (cpu-cfs-quota)"
-  default     = "true"
-}
-
-variable "kubernetes-master-cpu-cfs-quota-period" {
-  type        = "string"
-  description = "Set a time period for cpuCFSQuotaPeriod (cpu-cfs-quota-period)"
-  default     = "100ms"
-}
