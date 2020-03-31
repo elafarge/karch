@@ -75,8 +75,8 @@ EOF
     log-level = "${var.log-level}"
 
     # Set cpuCFSQuota and cpuCFSQuotaPeriod to improve
-    kubernetes-worker-cpu-cfs-quota-enabled = "${var.kubernetes-worker-cpu-cfs-quota-enabled}"
-    kubernetes-worker-cpu-cfs-quota-period  = "${var.kubernetes-worker-cpu-cfs-quota-period}"
+    kubernetes-cpu-cfs-quota-enabled = "${var.kubernetes-cpu-cfs-quota-enabled}"
+    kubernetes-cpu-cfs-quota-period  = "${var.kubernetes-cpu-cfs-quota-period}"
   }
 }
 

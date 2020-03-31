@@ -639,13 +639,13 @@ variable "log-level" {
   default     = 0
 }
 
-variable "kubernetes-worker-cpu-cfs-quota-enabled" {
+variable "kubernetes-cpu-cfs-quota-enabled" {
   type        = "string"
   description = "Boolean (true or false) enable or disable cpuCFSQuota (cpu-cfs-quota)"
   default     = "true"
 }
 
-variable "kubernetes-worker-cpu-cfs-quota-period" {
+variable "kubernetes-cpu-cfs-quota-period" {
   type        = "string"
   description = "Set a time period for cpuCFSQuotaPeriod (cpu-cfs-quota-period)"
   default     = "100ms"
