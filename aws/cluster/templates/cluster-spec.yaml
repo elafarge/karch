@@ -94,8 +94,8 @@ ${featuregates-config}
     logLevel: ${log-level}
   kubelet:
     anonymousAuth: true
-    cpuCFSQuota: ${kubernetes-worker-cpu-cfs-quota-enabled}
-    cpuCFSQuotaPeriod: "${kubernetes-worker-cpu-cfs-quota-period}"
+    cpuCFSQuota: ${kubernetes-cpu-cfs-quota-enabled}
+    cpuCFSQuotaPeriod: "${kubernetes-cpu-cfs-quota-period}"
     allowPrivileged: true
     cgroupRoot: /
     cloudProvider: aws
