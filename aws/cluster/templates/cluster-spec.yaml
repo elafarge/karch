@@ -94,7 +94,7 @@ ${featuregates-config}
     logLevel: ${log-level}
   kubelet:
     allowedUnsafeSysctls:
-  ${allowed-unsafe-sysctls}
+${allowed-unsafe-sysctls}
     anonymousAuth: true
     cpuCFSQuota: ${kubernetes-cpu-cfs-quota-enabled}
     cpuCFSQuotaPeriod: "${kubernetes-cpu-cfs-quota-period}"
