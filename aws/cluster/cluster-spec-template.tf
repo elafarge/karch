@@ -77,6 +77,9 @@ EOF
     # Set cpuCFSQuota and cpuCFSQuotaPeriod to improve
     kubernetes-cpu-cfs-quota-enabled = "${var.kubernetes-cpu-cfs-quota-enabled}"
     kubernetes-cpu-cfs-quota-period  = "${var.kubernetes-cpu-cfs-quota-period}"
+
+    # Set allowed-unsafe-sysctls so we can tweak them in containers
+    allowed-unsafe-sysctls   = "${join("\n", data.template_file.allowed-unsafe-sysctls.*.rendered)}"
   }
 }
 
@@ -206,5 +209,17 @@ EOF
   vars {
     tag   = "${element(keys(var.container-networking-params), count.index)}"
     value = "${element(values(var.container-networking-params), count.index)}"
+  }
+}
+
+data "template_file" "allowed-unsafe-sysctls" {
+  count = "${length(var.allowed-unsafe-sysctls)}"
+
+  template = <<EOF
+  - $${sysctls}
+EOF
+
+  vars {
+    sysctls = "${element(var.allowed-unsafe-sysctls, count.index)}"
   }
 }
