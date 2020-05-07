@@ -216,10 +216,10 @@ data "template_file" "allowed-unsafe-sysctls" {
   count = "${length(var.allowed-unsafe-sysctls)}"
 
   template = <<EOF
-    - $${sysctls}
+    - $${sysctl}
 EOF
 
   vars {
-    sysctls = "${element(var.allowed-unsafe-sysctls, count.index)}"
+    sysctl = "${element(var.allowed-unsafe-sysctls, count.index)}"
   }
 }
