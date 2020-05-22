@@ -650,3 +650,9 @@ variable "kubernetes-cpu-cfs-quota-period" {
   description = "Set a time period for cpuCFSQuotaPeriod (cpu-cfs-quota-period)"
   default     = "100ms"
 }
+
+variable "allowed-unsafe-sysctls" {
+  type        = "list"
+  description = "List of sysctls to allow override - allowedUnsafeSysctls (allowed-unsafe-sysctls)"
+  default     = []
+}
