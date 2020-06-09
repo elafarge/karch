@@ -264,6 +264,26 @@ variable "cloud-labels" {
   default = {}
 }
 
+variable "controller-manager-kube-api-qps" {
+  default     = 20
+  description = "Limit of queries per second to use when Kube Controller Manager is talking to Kubernetes API server."
+}
+
+variable "controller-manager-kube-api-burst" {
+  default     = 30
+  description = "Allowed burst in queries per second to use when Kube Controller Manager is talking to Kubernetes API server."
+}
+
+variable "scheduler-kube-api-qps" {
+  default     = 50
+  description = "Limit of queries per second to use when Kube Scheduler is talking to Kubernetes API server."
+}
+
+variable "scheduler-kube-api-burst" {
+  default     = 100
+  description = "Allowed burst in queries per second to use when Kube Scheduler is talking to Kubernetes API server."
+}
+
 # Resource reservation on our nodes for Kubernetes daemons & the OS
 variable "kubelet-eviction-flag" {
   type        = "string"

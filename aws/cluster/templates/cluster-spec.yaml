@@ -75,6 +75,8 @@ ${featuregates-config}
     useServiceAccountCredentials: true
     horizontalPodAutoscalerSyncPeriod: ${hpa-sync-period}
     horizontalPodAutoscalerDownscaleStabilization: ${hpa-scale-downscale-stabilization}
+    kubeAPIQPS: ${controller-manager-kube-api-qps}
+    kubeAPIBurst: ${controller-manager-kube-api-burst}
     featureGates:
 ${featuregates-config}
   kubeDNS:
@@ -92,6 +94,8 @@ ${featuregates-config}
     leaderElection:
       leaderElect: true
     logLevel: ${log-level}
+    qps: ${scheduler-kube-api-qps}
+    burst: ${scheduler-kube-api-burst}
   kubelet:
     allowedUnsafeSysctls:
 ${allowed-unsafe-sysctls}
