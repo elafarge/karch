@@ -64,9 +64,8 @@ EOF
     oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
 
     # kube-controller-manager configuration
-    hpa-sync-period      = "${var.hpa-sync-period}"
-    hpa-scale-down-delay = "${var.hpa-scale-down-delay}"
-    hpa-scale-up-delay   = "${var.hpa-scale-up-delay}"
+    hpa-sync-period                     = "${var.hpa-sync-period}"
+    hpa-scale-downscale-stabilization   = "${var.hpa-scale-downscale-stabilization}"
 
     # Additional IAM policies for masters and nodes
     master-additional-policies = "${length(var.master-additional-policies) == 0 ? "" : format("master: |\n      %s", indent(6, var.master-additional-policies))}"
@@ -74,6 +73,13 @@ EOF
 
     # Log level for all master & kubelet components
     log-level = "${var.log-level}"
+
+    # Set cpuCFSQuota and cpuCFSQuotaPeriod to improve
+    kubernetes-cpu-cfs-quota-enabled = "${var.kubernetes-cpu-cfs-quota-enabled}"
+    kubernetes-cpu-cfs-quota-period  = "${var.kubernetes-cpu-cfs-quota-period}"
+
+    # Set allowed-unsafe-sysctls so we can tweak them in containers
+    allowed-unsafe-sysctls   = "${join("\n", data.template_file.allowed-unsafe-sysctls.*.rendered)}"
   }
 }
 
@@ -203,5 +209,17 @@ EOF
   vars {
     tag   = "${element(keys(var.container-networking-params), count.index)}"
     value = "${element(values(var.container-networking-params), count.index)}"
+  }
+}
+
+data "template_file" "allowed-unsafe-sysctls" {
+  count = "${length(var.allowed-unsafe-sysctls)}"
+
+  template = <<EOF
+    - $${sysctl}
+EOF
+
+  vars {
+    sysctl = "${element(var.allowed-unsafe-sysctls, count.index)}"
   }
 }

@@ -127,8 +127,7 @@ variable "disable-sg-ingress" {
 variable "etcd-version" {
   type        = "string"
   description = "Etcd version to use"
-
-  default = "3.2.14"
+  default = "3.3.10"
 }
 
 variable "etcd-enable-tls" {
@@ -192,7 +191,6 @@ variable "featuregates-flags" {
   description = "Map describing the --feature-gates parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
 
   default = {
-    ExperimentalCriticalPodAnnotation = "true"
     ExpandPersistentVolumes           = "true"
     PodPriority                       = "true"
   }
@@ -205,18 +203,11 @@ variable "hpa-sync-period" {
   default = "30s"
 }
 
-variable "hpa-scale-down-delay" {
+variable "hpa-scale-downscale-stabilization" {
   type        = "string"
-  description = "After a downscale, wait at least for this duration before the next downscale"
+  description = "After an downscale, wait at least for this duration before the next downscale"
 
   default = "5m"
-}
-
-variable "hpa-scale-up-delay" {
-  type        = "string"
-  description = "After an upscale, wait at least for this duration before the next upscale"
-
-  default = "3m"
 }
 
 variable "oidc-issuer-url" {
@@ -646,4 +637,22 @@ variable "log-level" {
   type        = "string"
   description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
   default     = 0
+}
+
+variable "kubernetes-cpu-cfs-quota-enabled" {
+  type        = "string"
+  description = "Boolean (true or false) enable or disable cpuCFSQuota (cpu-cfs-quota)"
+  default     = "true"
+}
+
+variable "kubernetes-cpu-cfs-quota-period" {
+  type        = "string"
+  description = "Set a time period for cpuCFSQuotaPeriod (cpu-cfs-quota-period)"
+  default     = "100ms"
+}
+
+variable "allowed-unsafe-sysctls" {
+  type        = "list"
+  description = "List of sysctls to allow override - allowedUnsafeSysctls (allowed-unsafe-sysctls)"
+  default     = []
 }
