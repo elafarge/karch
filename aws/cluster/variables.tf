@@ -196,6 +196,28 @@ variable "featuregates-flags" {
   }
 }
 
+variable "enable-admission-plugins" {
+  type        = "list"
+  description = "List of enabled admission plugins"
+
+  default = [
+    "NamespaceLifecycle",
+    "LimitRanger",
+    "ServiceAccount",
+    "PersistentVolumeLabel",
+    "DefaultStorageClass",
+    "DefaultTolerationSeconds",
+    "NodeRestriction",
+    "Priority",
+    "DenyEscalatingExec",
+    "PodPreset",
+    "MutatingAdmissionWebhook",
+    "ValidatingAdmissionWebhook",
+    "ResourceQuota",
+    "PersistentVolumeClaimResize"
+  ]
+}
+
 variable "hpa-sync-period" {
   type        = "string"
   description = "The frequency at which HPA are evaluated and reconciled"

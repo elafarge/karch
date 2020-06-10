@@ -25,20 +25,7 @@ ${etcd-clusters}
   kubeAPIServer:
     insecureBindAddress: 127.0.0.1
     enableAdmissionPlugins:
-    - NamespaceLifecycle
-    - LimitRanger
-    - ServiceAccount
-    - PersistentVolumeLabel
-    - DefaultStorageClass
-    - DefaultTolerationSeconds
-    - NodeRestriction
-    - Priority
-    - DenyEscalatingExec
-    - PodPreset
-    - MutatingAdmissionWebhook
-    - ValidatingAdmissionWebhook
-    - ResourceQuota
-    - PersistentVolumeClaimResize
+    ${enable-admission-plugins}
     allowPrivileged: true
     anonymousAuth: false
     apiServerCount: ${master-count}

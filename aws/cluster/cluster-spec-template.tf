@@ -62,6 +62,7 @@ EOF
     apiserver-runtime-config = "${join("\n", data.template_file.apiserver-runtime-configs.*.rendered)}"
     featuregates-config      = "${join("\n", data.template_file.featuregates-configs.*.rendered)}"
     oidc-config              = "${join("\n", data.template_file.oidc-apiserver-conf.*.rendered)}"
+    enable-admission-plugins = "${trimspace(join("", data.template_file.enable-admission-plugins.*.rendered))}"
 
     # kube-controller-manager configuration
     hpa-sync-period                     = "${var.hpa-sync-period}"
@@ -221,5 +222,17 @@ EOF
 
   vars {
     sysctl = "${element(var.allowed-unsafe-sysctls, count.index)}"
+  }
+}
+
+data "template_file" "enable-admission-plugins" {
+  count = "${length(var.enable-admission-plugins)}"
+
+  template = <<EOF
+    - $${plugin}
+EOF
+
+  vars {
+    plugin = "${element(var.enable-admission-plugins, count.index)}"
   }
 }
