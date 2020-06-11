@@ -11,6 +11,9 @@ data "template_file" "cluster-spec" {
     kube-dns-provider  = "${var.kube-dns-provider}"
     kops-state-bucket  = "${var.kops-state-bucket}"
 
+    controller-manager-kube-api-qps   = "${var.controller-manager-kube-api-qps}"
+    controller-manager-kube-api-burst = "${var.controller-manager-kube-api-burst}"
+
     master-lb-visibility     = "${var.master-lb-visibility == "Private" ? "Internal" : "Public"}"
     master-lb-dns-visibility = "${var.master-lb-visibility}"
     master-count             = "${length(var.master-availability-zones)}"

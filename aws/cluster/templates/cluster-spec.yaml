@@ -62,6 +62,8 @@ ${featuregates-config}
     useServiceAccountCredentials: true
     horizontalPodAutoscalerSyncPeriod: ${hpa-sync-period}
     horizontalPodAutoscalerDownscaleStabilization: ${hpa-scale-downscale-stabilization}
+    kubeAPIQPS: ${controller-manager-kube-api-qps}
+    kubeAPIBurst: ${controller-manager-kube-api-burst}
     featureGates:
 ${featuregates-config}
   kubeDNS:
