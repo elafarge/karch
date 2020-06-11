@@ -94,8 +94,6 @@ ${featuregates-config}
     leaderElection:
       leaderElect: true
     logLevel: ${log-level}
-    qps: ${scheduler-kube-api-qps}
-    burst: ${scheduler-kube-api-burst}
   kubelet:
     allowedUnsafeSysctls:
 ${allowed-unsafe-sysctls}
