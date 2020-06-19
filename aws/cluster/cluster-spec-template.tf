@@ -84,6 +84,10 @@ EOF
 
     # Set allowed-unsafe-sysctls so we can tweak them in containers
     allowed-unsafe-sysctls   = "${join("\n", data.template_file.allowed-unsafe-sysctls.*.rendered)}"
+
+    # Improve image pull concurrency
+    serialize-image-pulls = "${var.serialize-image-pulls-enabled}"
+    image-pull-progress-deadline = "${var.image-pull-progress-deadline}"
   }
 }
 

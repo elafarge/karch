@@ -87,6 +87,8 @@ ${allowed-unsafe-sysctls}
     anonymousAuth: true
     cpuCFSQuota: ${kubernetes-cpu-cfs-quota-enabled}
     cpuCFSQuotaPeriod: "${kubernetes-cpu-cfs-quota-period}"
+    serializeImagePulls: ${serialize-image-pulls}
+    imagePullProgressDeadline: "${image-pull-progress-deadline}"
     allowPrivileged: true
     cgroupRoot: /
     cloudProvider: aws
