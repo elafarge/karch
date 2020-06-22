@@ -68,8 +68,8 @@ EOF
     enable-admission-plugins = "${trimspace(join("", data.template_file.enable-admission-plugins.*.rendered))}"
 
     # kube-controller-manager configuration
-    hpa-sync-period                     = "${var.hpa-sync-period}"
-    hpa-scale-downscale-stabilization   = "${var.hpa-scale-downscale-stabilization}"
+    hpa-sync-period                   = "${var.hpa-sync-period}"
+    hpa-scale-downscale-stabilization = "${var.hpa-scale-downscale-stabilization}"
 
     # Additional IAM policies for masters and nodes
     master-additional-policies = "${length(var.master-additional-policies) == 0 ? "" : format("master: |\n      %s", indent(6, var.master-additional-policies))}"
@@ -83,10 +83,10 @@ EOF
     kubernetes-cpu-cfs-quota-period  = "${var.kubernetes-cpu-cfs-quota-period}"
 
     # Set allowed-unsafe-sysctls so we can tweak them in containers
-    allowed-unsafe-sysctls   = "${join("\n", data.template_file.allowed-unsafe-sysctls.*.rendered)}"
+    allowed-unsafe-sysctls = "${join("\n", data.template_file.allowed-unsafe-sysctls.*.rendered)}"
 
     # Improve image pull concurrency
-    serialize-image-pulls = "${var.serialize-image-pulls-enabled}"
+    serialize-image-pulls        = "${var.serialize-image-pulls-enabled}"
     image-pull-progress-deadline = "${var.image-pull-progress-deadline}"
   }
 }
