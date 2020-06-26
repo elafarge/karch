@@ -683,6 +683,18 @@ variable "kubernetes-cpu-cfs-quota-period" {
   default     = "100ms"
 }
 
+variable "serialize-image-pulls-enabled" {
+  type        = "string"
+  description = "Boolean (true or false) enable or disable serializeImagePulls (serialize-image-pulls). If disabled Docker default download concurrency is 3."
+  default     = "true"
+}
+
+variable "image-pull-progress-deadline" {
+  type        = "string"
+  description = "Set a time period for imagePullProgressDeadline (image-pull-progress-deadline)"
+  default     = "1m"
+}
+
 variable "allowed-unsafe-sysctls" {
   type        = "list"
   description = "List of sysctls to allow override - allowedUnsafeSysctls (allowed-unsafe-sysctls)"
