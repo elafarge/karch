@@ -12,15 +12,15 @@ locals {
 }
 
 resource "aws_route53_zone" "cluster" {
-  name          = "${var.cluster-name}"
+  name          = var.cluster-name
   force_destroy = true
 }
 
 resource "aws_route53_record" "cluster-root" {
-  count = "${var.master-lb-visibility == "Private" ? 0 : 1}"
+  count = var.master-lb-visibility == "Private" ? 0 : 1
 
-  zone_id = "${var.main-zone-id}"
-  name    = "${var.cluster-name}"
+  zone_id = var.main-zone-id
+  name    = var.cluster-name
   type    = "NS"
   ttl     = "30"
 
@@ -33,8 +33,8 @@ resource "aws_route53_record" "cluster-root" {
 }
 
 resource "aws_route53_record" "cluster-soa" {
-  zone_id = "${aws_route53_zone.cluster.id}"
-  name    = "${aws_route53_zone.cluster.name}"
+  zone_id = aws_route53_zone.cluster.id
+  name    = aws_route53_zone.cluster.name
   type    = "SOA"
   ttl     = "60"
   records = ["${aws_route53_zone.cluster.name_servers.0}. ${local.dns_soa_appendix}"]

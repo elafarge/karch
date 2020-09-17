@@ -1,5 +1,5 @@
 data "aws_security_group" "nodes" {
-  vpc_id = "${var.vpc-id}"
+  vpc_id = var.vpc-networking["vpc-id"]
 
   filter {
     name = "tag:Name"
@@ -10,7 +10,7 @@ data "aws_security_group" "nodes" {
 }
 
 data "aws_security_group" "masters" {
-  vpc_id = "${var.vpc-id}"
+  vpc_id = var.vpc-networking["vpc-id"]
 
   filter {
     name = "tag:Name"
@@ -21,7 +21,7 @@ data "aws_security_group" "masters" {
 }
 
 data "aws_ebs_volume" "etcd-volumes" {
-  count = "${length(var.availability-zones)}"
+  count = length(var.availability-zones)
 
   filter {
     name = "tag:Name"
@@ -34,7 +34,7 @@ data "aws_ebs_volume" "etcd-volumes" {
 }
 
 data "aws_ebs_volume" "etcd-event-volumes" {
-  count = "${length(var.availability-zones)}"
+  count = length(var.availability-zones)
 
   filter {
     name = "tag:Name"
