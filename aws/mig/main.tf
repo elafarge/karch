@@ -1,14 +1,22 @@
 resource "aws_s3_bucket_object" "ig-spec" {
-  count  = "${var.count}"
-  bucket = "${var.kops-state-bucket}"
+  count  = var.create_cluster_spec_object
+  bucket = var.kops-state-bucket
   key    = "/karch-specs/${var.cluster-name}/${var.name}-ig-spec.yml"
 
-  content = "${data.template_file.ig-spec.rendered}"
+  content = data.template_file.ig-spec.rendered
+
+  tags = {
+    nodeup-url-env    = var.nodeup-url-env
+    aws-profile       = var.aws-profile
+    kops-state-bucket = var.kops-state-bucket
+    cluster-name      = var.cluster-name
+    name              = var.name
+  }
 
   // On destroy, remove the IG, if it exists
   provisioner "local-exec" {
-    when    = "destroy"
-    command = "(test -z \"$(${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} get cluster | grep ${var.cluster-name})\" ) || ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} delete ig --name ${var.cluster-name} --yes ${var.name}"
+    when    = destroy
+    command = "(test -z \"$(${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} get cluster | grep ${self.tags["cluster-name"]})\" ) || ${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} delete ig --name ${self.tags["cluster-name"]} --yes ${self.tags["name"]}"
   }
 }
 
@@ -22,7 +30,7 @@ resource "null_resource" "ig" {
   provisioner "local-exec" {
     command = <<FILEDUMP
       cat <<EOF > ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
-${aws_s3_bucket_object.ig-spec.content}
+${aws_s3_bucket_object.ig-spec[0].content}
 EOF
 FILEDUMP
   }
@@ -48,12 +56,12 @@ EOF
     command = "rm -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml"
   }
 
-  depends_on = ["aws_s3_bucket_object.ig-spec"]
+  depends_on = [ aws_s3_bucket_object.ig-spec ]
 }
 
 resource "null_resource" "ig-update" {
-  triggers {
-    cluster_spec = "${data.template_file.ig-spec.rendered}"
+  triggers = {
+    cluster_spec = data.template_file.ig-spec.rendered
   }
 
   provisioner "local-exec" {
@@ -91,5 +99,5 @@ FILEDUMP
 EOF
   }
 
-  depends_on = ["null_resource.ig"]
+  depends_on = [ null_resource.ig ]
 }
