@@ -17,16 +17,16 @@ some limits:
    subnets, etc... aren't really accessible from the rest of your codebase.
  * One needs one subfolder per cluster (which can be used as a Terraform
    module): creating a "cluster template" (masters + several IGs) that can
-   easily be replicated accross AWS regions & shared accross teams isn't
+   easily be replicated across AWS regions & shared across teams isn't
    possible
 
 It seemed that wrapping by wrapping the `kops` CLI itself into a Terraform
-module whicch really feels like a simple Terraform module could fulfill this
-need for portable, reapeatable infrastructure a bit better. Of course, keeping
-the flexibilty offered by `kops`'s cluster & instance group spec available by
+module which really feels like a simple Terraform module could fulfil this
+need for portable, repeatable infrastructure a bit better. Of course, keeping
+the flexibility offered by `kops`'s cluster & instance group spec available by
 exposing all the parameters it provides as Terraform variables felt essential.
 
-Therfore, `karch` aims at making it easy to encode Kubernetes cluster topologies
+Therefore, `karch` aims at making it easy to encode Kubernetes cluster topologies
 using Terraform infrastructure code. For instance, such a topology could be:
  - an instance group for a pool of NginX ingress controllers, mounting ports
  - one for your backend APIs
@@ -38,7 +38,7 @@ What `karch` is
 ---------------
  * A Terraform library, written in plain HCL and using essentially `kops`, `sh`
    and `awk`.
- * A set of two Terraform modules `cluster` and `ig`. The former spaws a base
+ * A set of two Terraform modules `cluster` and `ig`. The former spawns a base
    cluster, in a new VPC, the latter can be used to spawn instance groups.
  * A wrapper around `kops`, instead of using `kops` directly, you'll be using
    a terraform module to create/update/delete your `kops` clusters. When
@@ -129,11 +129,16 @@ module "ingress-ig" {
 }
 ```
 
-#### Mainting your cluster
+#### Maintaining your cluster
 You can entirely rely on Terraform to update your cluster on `terraform apply`.
 Please note that we never run `kops rolling-update` for cluster updates. You'll
 need to run it manually. However, rolling updates can be automatically applied
 for instance groups, with a configurable node rollout time interval.
+
+### Versions
+Please note that from release tag tf13-v1.14.1, the repository now supports
+Terraform 13 syntax and thus is incompatible with Terraform 11 or before. We
+will continue to release from v1.15.x with Terraform 13 syntax going forward.
 
 Maintainers
 -----------
