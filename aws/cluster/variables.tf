@@ -1,70 +1,49 @@
-variable "count" {
+variable "create_cluster_spec_object" {
   description = "Resource count, should be either 1 or 0. It is a workaround for cluster destruction that needs to be done in phased manner by first making its count 0 and the removing from config."
-  type        = "string"
+  type        = string
   default     = "1"
 }
 
 variable "aws-region" {
   description = "The AWS region in which to deploy your cluster & VPC."
-  type        = "string"
+  type        = string
 }
 
 # Networking & Security
-variable "vpc-id" {
-  description = "ID of existing VPC which should be used for a cluster"
-  type        = "string"
-}
-
-variable "vpc-cidr-block" {
-  description = "CIDR block of existing VPC which should be used for a cluster"
-  type        = "string"
+variable "vpc-networking" {
+  type = object(
+    {
+      vpc-id                  = string
+      vpc-cidr-block          = string
+      nat-gateways            = list(string)
+      vpc-public-subnet-ids   = list(string)
+      vpc-private-subnet-ids  = list(string)
+      vpc-private-cidrs       = list(string)
+      vpc-public-cidrs        = list(string)
+    }
+  )
 }
 
 variable "availability-zones" {
-  type        = "list"
+  type        = list(string)
   description = "Availability zones to span (for HA master deployments, see master-availability-zones)"
 }
 
-variable "vpc-public-subnet-ids" {
-  type        = "list"
-  description = "Public subnet ids (in the same order as availibility zones)"
-}
-
-variable "vpc-private-subnet-ids" {
-  type        = "list"
-  description = "Private subnet ids (in the same order as availibility zones)"
-}
-
-variable "nat-gateways" {
-  type        = "list"
-  description = "NAT gateways used for egress (in the same order as availibility zones)"
-}
-
-variable "vpc-private-cidrs" {
-  type        = "list"
-  description = "Private subnet cidr (in the same order as availibility zones)"
-}
-
-variable "vpc-public-cidrs" {
-  type        = "list"
-  description = "Public subnet cidr (in the same order as availibility zones)"
-}
-
 variable "kops-topology" {
-  type        = "string"
+  type        = string
   description = "Kops topolopy (public|private), (default: private)"
   default     = "private"
 }
 
 variable "trusted-cidrs" {
-  type        = "list"
+  type        = list(string)
   description = "CIDR whitelist for Kubernetes master HTTPs & bastion SSH access (default: 0.0.0.0/0)"
 
   default = ["0.0.0.0/0"]
 }
 
 variable "admin-ssh-public-key-path" {
-  type        = "string"
+  type        = string
   description = "Path to the cluster admin's public SSH key (default: ~/.ssh/id_rsa.pub)"
 
   default = "~/.ssh/id_rsa.pub"
@@ -73,25 +52,25 @@ variable "admin-ssh-public-key-path" {
 ## DNS
 variable "main-zone-id" {
   description = "Route53 main zone ID (optional if the cluster zone is private)"
-  type        = "string"
+  type        = string
 
   default = ""
 }
 
 variable "cluster-name" {
   description = "Cluster domain name (i.e. mycluster.example.com)"
-  type        = "string"
+  type        = string
 }
 
 variable "kube-dns-domain" {
-  type        = "string"
+  type        = string
   description = "Domain enforced in our cluster by kube-dns (default: cluster.local)."
 
   default = "cluster.local"
 }
 
 variable "kube-dns-provider" {
-  type        = "string"
+  type        = string
   description = "Kubernetes dns (service discovery) provider (KubeDNS|CoreDNS)"
 
   default = "CoreDNS"
@@ -99,105 +78,105 @@ variable "kube-dns-provider" {
 
 # Kops & Kubernetes
 variable "nodeup-url-env" {
-  type        = "string"
+  type        = string
   description = "NODEUP_URL env. variable override for testing custom builds of nodeup"
 
   default = ""
 }
 
 variable "aws-profile" {
-  type        = "string"
+  type        = string
   description = "Name of the AWS profile in ~/.aws/credentials or ~/.aws/config to use"
 
   default = "default"
 }
 
 variable "kops-state-bucket" {
-  type        = "string"
+  type        = string
   description = "Name of the bucket in which kops stores its state (must be created prior to cluster turnup)"
 }
 
 variable "disable-sg-ingress" {
-  type        = "string"
+  type        = string
   description = "Boolean that indicates wether or not to create and attach a security group to instance nodes and load balancers for each LoadBalancer service (default: false)"
 
   default = "false"
 }
 
 variable "etcd-version" {
-  type        = "string"
+  type        = string
   description = "Etcd version to use"
-  default = "3.3.10"
+  default     = "3.3.10"
 }
 
 variable "etcd-enable-tls" {
-  type        = "string"
+  type        = string
   description = "Set to true to enable TLS on etcd containers (default: true)"
 
   default = "true"
 }
 
 variable "etcd-backup-enabled" {
-  type        = "string"
+  type        = string
   description = "Set to true to enable backup to S3 on etcd containers (default: false)"
 
   default = "false"
 }
 
 variable "etcd-backup-s3-bucket" {
-  type        = "string"
+  type        = string
   description = "S3 bucket to use to store etcd backups assuming etcd-backup-enabled has been set to true"
 
-  default     = ""
+  default = ""
 }
 
 variable "etcd-mode" {
-  type        = "string"
+  type        = string
   description = "Set this to Manager if your want to manage your etcd cluster using etcd-manager, and to Legacy to enable the legacy etcd provider"
 
-  default     = "Manager"
+  default = "Manager"
 }
 
 variable "container-networking" {
-  type        = "string"
+  type        = string
   description = "Set the container CNI networking layer (https://github.com/kubernetes/kops/blob/master/docs/networking.md)"
 
   default = "kuberouter"
 }
 
 variable "container-networking-params" {
-  type        = "map"
+  type        = map(string)
   description = "Set the container CNI networking layer parameters"
 
   default = {}
 }
 
 variable "rbac" {
-  type        = "string"
+  type        = string
   description = "Boolean indicating whether to enable RBAC authorization (default: false)"
 
   default = "false"
 }
 
 variable "apiserver-runtime-flags" {
-  type        = "map"
+  type        = map(string)
   description = "Map describing the --runtime-config parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
 
   default = {}
 }
 
 variable "featuregates-flags" {
-  type        = "map"
+  type        = map(string)
   description = "Map describing the --feature-gates parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
 
   default = {
-    ExpandPersistentVolumes           = "true"
-    PodPriority                       = "true"
+    ExpandPersistentVolumes = "true"
+    PodPriority             = "true"
   }
 }
 
 variable "enable-admission-plugins" {
-  type        = "list"
+  type        = list(string)
   description = "List of enabled admission plugins"
 
   default = [
@@ -219,68 +198,68 @@ variable "enable-admission-plugins" {
 }
 
 variable "hpa-sync-period" {
-  type        = "string"
+  type        = string
   description = "The frequency at which HPA are evaluated and reconciled"
 
   default = "30s"
 }
 
 variable "hpa-scale-downscale-stabilization" {
-  type        = "string"
+  type        = string
   description = "After an downscale, wait at least for this duration before the next downscale"
 
   default = "5m"
 }
 
 variable "oidc-issuer-url" {
-  type        = "string"
+  type        = string
   description = "Setting this to an OIDC Issuer URL will enable OpenID auth with the configured provider"
 
   default = ""
 }
 
 variable "oidc-ca-file" {
-  type        = "string"
+  type        = string
   description = "If using OpendID Connect, the oidc CA file on the APIServer pod"
 
   default = "/srv/kubernetes/ca.crt"
 }
 
 variable "oidc-client-id" {
-  type        = "string"
+  type        = string
   description = "If using OpendID Connect, the oidc client ID"
 
   default = "example-app"
 }
 
 variable "oidc-username-claim" {
-  type        = "string"
+  type        = string
   description = "If using OpendID Connect, the oidc username claim"
 
   default = "email"
 }
 
 variable "oidc-groups-claim" {
-  type        = "string"
+  type        = string
   description = "If using OpendID Connect, the oidc group claim"
 
   default = "groups"
 }
 
 variable "channel" {
-  type        = "string"
+  type        = string
   description = "Channel to use for our Kops cluster (default stable)"
   default     = "stable"
 }
 
 variable "kubernetes-version" {
-  type        = "string"
+  type        = string
   description = "Kubernetes version to use for Core components (default: v1.8.4)"
   default     = "v1.8.4"
 }
 
 variable "cloud-labels" {
-  type        = "map"
+  type        = map(string)
   description = "(Flat) map of kops cloud labels to apply to all resources in cluster"
 
   default = {}
@@ -298,35 +277,35 @@ variable "controller-manager-kube-api-burst" {
 
 # Resource reservation on our nodes for Kubernetes daemons & the OS
 variable "kubelet-eviction-flag" {
-  type        = "string"
+  type        = string
   description = "Kubelet flag that configure node memory/storage pod eviction threshold"
 
   default = "memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<10%,imagefs.inodesFree<5%"
 }
 
 variable "kube-reserved-cpu" {
-  type        = "string"
+  type        = string
   description = "Amount of CPU reserved for the container runtime & kubelet (default: 50m)"
 
   default = "50m"
 }
 
 variable "kube-reserved-memory" {
-  type        = "string"
+  type        = string
   description = "Amount of CPU reserved for the container runtime & kubelet (default: 256Mi)"
 
   default = "256Mi"
 }
 
 variable "system-reserved-cpu" {
-  type        = "string"
+  type        = string
   description = "Amount of CPU reserved for the operating system (default: 50m)"
 
   default = "50m"
 }
 
 variable "system-reserved-memory" {
-  type        = "string"
+  type        = string
   description = "Amount of CPU reserved for the operating system (default: 100Mi)"
 
   default = "256Mi"
@@ -334,7 +313,7 @@ variable "system-reserved-memory" {
 
 # Systemd/Docker hooks
 variable "hooks" {
-  type        = "list"
+  type        = list(string)
   description = "Docker/Systemd hooks to add to this instance group (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list."
 
   default = []
@@ -342,99 +321,99 @@ variable "hooks" {
 
 # Master instance group(s)
 variable "master-availability-zones" {
-  type        = "list"
+  type        = list(string)
   description = "Availability zones in which to create master instance groups"
 }
 
 variable "master-lb-visibility" {
-  type        = "string"
+  type        = string
   description = "Visibility (Public|Private) for our Kubernetes masters' ELB (default: Public)"
 
   default = "Public"
 }
 
 variable "master-lb-idle-timeout" {
-  type        = "string"
+  type        = string
   description = "Idle timeout for Kubernetes masters' ELB (default: 300s), in seconds"
   default     = 300
 }
 
 variable "master-image" {
-  type        = "string"
+  type        = string
   description = "AMI id to use for the master nodes"
 }
 
 variable "master-machine-type" {
-  type        = "string"
+  type        = string
   description = "EC2 instance type to run our masters onto (default: m3.medium)"
 
   default = "c4.large"
 }
 
 variable "master-volume-size" {
-  type        = "string"
+  type        = string
   description = "Size of our master's root volume, in GB (default: 10)"
 
   default = "10"
 }
 
 variable "master-volume-provisioned-iops" {
-  type        = "string"
+  type        = string
   description = "Master volume provisioned IOPS, if applicable"
 
   default = ""
 }
 
 variable "master-volume-type" {
-  type        = "string"
+  type        = string
   description = "Master volume type (io1/gp2), defaults to gp2"
 
   default = "gp2"
 }
 
 variable "master-ebs-optimized" {
-  type        = "string"
+  type        = string
   description = "Boolean (true or false) indicating whether our masters should be EBS optimized"
   default     = "false"
 }
 
 variable "master-update-interval" {
-  type        = "string"
+  type        = string
   description = "Interval (in minutes) between rolling updates of master nodes (default: 8)"
 
   default = "8"
 }
 
 variable "master-cloud-labels" {
-  type        = "map"
+  type        = map(string)
   description = "(Flat) map of EC2 tags to add to master instances"
 
   default = {}
 }
 
 variable "master-node-labels" {
-  type        = "map"
+  type        = map(string)
   description = "(Flat) map of Kubernetes node labels to add to master instances"
 
   default = {}
 }
 
 variable "master-hooks" {
-  type        = "list"
+  type        = list(string)
   description = "Docker/Systemd hooks to add to the master instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
 
   default = []
 }
 
 variable "master-additional-sgs" {
-  type        = "list"
+  type        = list(string)
   description = "A list of additional security groups to add to master instances"
 
   default = []
 }
 
 variable "master-additional-sgs-count" {
-  type        = "string"
+  type        = string
   description = "Number of additional security groups to add to master instances"
 
   default = 0
@@ -442,95 +421,95 @@ variable "master-additional-sgs-count" {
 
 # Bastion instance group
 variable "bastion-image" {
-  type        = "string"
+  type        = string
   description = "AMI id to use for the bastion nodes (in private topology only)"
 }
 
 variable "bastion-additional-sgs" {
-  type        = "list"
+  type        = list(string)
   description = "Number of security groups to add to our bastion nodes"
 
   default = []
 }
 
 variable "bastion-additional-sgs-count" {
-  type        = "string"
+  type        = string
   description = "Number of security groups to add to our bastion nodes"
 
   default = 0
 }
 
 variable "bastion-machine-type" {
-  type        = "string"
+  type        = string
   description = "EC2 instance type to run our bastions onto (default: t2.micro)"
 
   default = "t2.micro"
 }
 
 variable "bastion-volume-size" {
-  type        = "string"
+  type        = string
   description = "Size of our bastion's root volume, in GB (default: 10)"
 
   default = "10"
 }
 
 variable "bastion-volume-provisioned-iops" {
-  type        = "string"
+  type        = string
   description = "Bastion volume provisioned IOPS, if applicable"
 
   default = ""
 }
 
 variable "bastion-volume-type" {
-  type        = "string"
+  type        = string
   description = "Bastion volume type (io1/gp2), defaults to gp2"
 
   default = "gp2"
 }
 
 variable "bastion-ebs-optimized" {
-  type        = "string"
+  type        = string
   description = "Boolean (true or false) indicating whether our bastion should be EBS optimized"
   default     = "false"
 }
 
 variable "min-bastions" {
-  type        = "string"
+  type        = string
   description = "Bastion ASG min size (default: 1)"
 
   default = 1
 }
 
 variable "max-bastions" {
-  type        = "string"
+  type        = string
   description = "Bastion ASG max size (default: 2)"
 
   default = 2
 }
 
 variable "bastion-update-interval" {
-  type        = "string"
+  type        = string
   description = "Interval (in minutes) between rolling updates of bastion nodes (default: 5)"
 
   default = "5"
 }
 
 variable "bastion-cloud-labels" {
-  type        = "map"
+  type        = map(string)
   description = "(Flat) map of EC2 tags to add to bastion instances"
 
   default = {}
 }
 
 variable "bastion-node-labels" {
-  type        = "map"
+  type        = map(string)
   description = "(Flat) map of Kubernetes node labels to add to bastion instances"
 
   default = {}
 }
 
 variable "bastion-hooks" {
-  type        = "list"
+  type        = list(string)
   description = "Docker/Systemd hooks to add to the bastion instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
 
   default = []
@@ -538,165 +517,165 @@ variable "bastion-hooks" {
 
 # Initial minion instance group
 variable "minion-ig-name" {
-  type        = "string"
+  type        = string
   description = "Name to give to the ig created along with the cluster (default: nodes)"
 
   default = "nodes"
 }
 
 variable "minion-ig-public" {
-  type        = "string"
+  type        = string
   description = "Set to true for nodes in the default minion ig to receive a public IP address"
 
   default = "false"
 }
 
 variable "minion-additional-sgs" {
-  type        = "list"
+  type        = list(string)
   description = "Additional security groups to add to our minion nodes"
 
   default = []
 }
 
 variable "minion-additional-sgs-count" {
-  type        = "string"
+  type        = string
   description = "Number of security groups to add to our minion nodes"
 
   default = 0
 }
 
 variable "minion-image" {
-  type        = "string"
+  type        = string
   description = "AMI id to use for the minion nodes (in private topology only)"
 }
 
 variable "minion-machine-type" {
-  type        = "string"
+  type        = string
   description = "EC2 instance type to run our minions onto (default: t2.medium)"
 
   default = "t2.medium"
 }
 
 variable "minion-volume-size" {
-  type        = "string"
+  type        = string
   description = "Size of our default minion ig root volume, in GB (default: 30)"
 
   default = "30"
 }
 
 variable "minion-volume-provisioned-iops" {
-  type        = "string"
+  type        = string
   description = "Minion volume provisioned IOPS, if applicable"
 
   default = ""
 }
 
 variable "minion-volume-type" {
-  type        = "string"
+  type        = string
   description = "Minion volume type (io1/gp2), defaults to gp2"
 
   default = "gp2"
 }
 
 variable "minion-ebs-optimized" {
-  type        = "string"
+  type        = string
   description = "Boolean (true or false) indicating whether our default minion ig should be EBS optimized"
   default     = "false"
 }
 
 variable "min-minions" {
-  type        = "string"
+  type        = string
   description = "Minion ASG min size (default: 1)"
 
   default = 1
 }
 
 variable "max-minions" {
-  type        = "string"
+  type        = string
   description = "Minion ASG max size (default: 3)"
 
   default = 3
 }
 
 variable "minion-taints" {
-  type        = "list"
+  type        = list(string)
   description = "List of taints (under the form key=value) to add to default minion ig"
 
   default = []
 }
 
 variable "minion-update-interval" {
-  type        = "string"
+  type        = string
   description = "Interval (in minutes) between rolling updates of minion nodes (default: 8)"
 
   default = "8"
 }
 
 variable "minion-cloud-labels" {
-  type        = "map"
+  type        = map(string)
   description = "(Flat) map of EC2 tags to add to minion instances"
 
   default = {}
 }
 
 variable "minion-node-labels" {
-  type        = "map"
+  type        = map(string)
   description = "(Flat) map of Kubernetes node labels to add to minion instances"
 
   default = {}
 }
 
 variable "minion-hooks" {
-  type        = "list"
+  type        = list(string)
   description = "Docker/Systemd hooks to add to the minion instances (in the IG created along with the cluster) only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
 
   default = []
 }
 
 variable "master-additional-policies" {
-  type        = "string"
+  type        = string
   description = "Additional IAM policies to add to our master instance role: https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md#adding-additional-policies"
   default     = ""
 }
 
 variable "node-additional-policies" {
-  type        = "string"
+  type        = string
   description = "Additional IAM policies to add to our node instance role: https://github.com/kubernetes/kops/blob/master/docs/iam_roles.md#adding-additional-policies"
   default     = ""
 }
 
 variable "log-level" {
-  type        = "string"
+  type        = string
   description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
   default     = 0
 }
 
 variable "kubernetes-cpu-cfs-quota-enabled" {
-  type        = "string"
+  type        = string
   description = "Boolean (true or false) enable or disable cpuCFSQuota (cpu-cfs-quota)"
   default     = "true"
 }
 
 variable "kubernetes-cpu-cfs-quota-period" {
-  type        = "string"
+  type        = string
   description = "Set a time period for cpuCFSQuotaPeriod (cpu-cfs-quota-period)"
   default     = "100ms"
 }
 
 variable "serialize-image-pulls-enabled" {
-  type        = "string"
+  type        = string
   description = "Boolean (true or false) enable or disable serializeImagePulls (serialize-image-pulls). If disabled Docker default download concurrency is 3."
   default     = "true"
 }
 
 variable "image-pull-progress-deadline" {
-  type        = "string"
+  type        = string
   description = "Set a time period for imagePullProgressDeadline (image-pull-progress-deadline)"
   default     = "1m"
 }
 
 variable "allowed-unsafe-sysctls" {
-  type        = "list"
+  type        = list(string)
   description = "List of sysctls to allow override - allowedUnsafeSysctls (allowed-unsafe-sysctls)"
   default     = []
 }
