@@ -5,7 +5,7 @@ data "aws_security_group" "nodes" {
     name = "tag:Name"
 
     // The second value is just a hacky dependency hooks on our cluster being created
-    values = ["nodes.${var.cluster-name}", "${null_resource.master-up.id}"]
+    values = ["nodes.${var.cluster-name}", null_resource.master-up.id]
   }
 }
 
@@ -16,7 +16,7 @@ data "aws_security_group" "masters" {
     name = "tag:Name"
 
     // Same remark as above
-    values = ["masters.${var.cluster-name}", "${null_resource.master-up.id}"]
+    values = ["masters.${var.cluster-name}", null_resource.master-up.id]
   }
 }
 
@@ -28,7 +28,7 @@ data "aws_ebs_volume" "etcd-volumes" {
 
     values = [
       "${element(var.availability-zones, count.index)}.etcd-main.${var.cluster-name}",
-      "${null_resource.master-up.id}",
+      null_resource.master-up.id,
     ]
   }
 }
@@ -41,7 +41,7 @@ data "aws_ebs_volume" "etcd-event-volumes" {
 
     values = [
       "${element(var.availability-zones, count.index)}.etcd-events.${var.cluster-name}",
-      "${null_resource.master-up.id}",
+      null_resource.master-up.id,
     ]
   }
 }
