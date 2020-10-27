@@ -29,6 +29,10 @@ output "masters-sg" {
   value = element(split("/", data.aws_security_group.masters.arn), 1)
 }
 
+output "bastion-sg" {
+  value = element(split("/", data.aws_security_group.bastion.arn), 1)
+}
+
 output "etcd-volume-ids" {
   value = data.aws_ebs_volume.etcd-volumes.*.id
 }

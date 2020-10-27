@@ -1,3 +1,14 @@
+data "aws_security_group" "bastion" {
+  vpc_id = var.vpc-networking["vpc-id"]
+
+  filter {
+    name = "tag:Name"
+
+    // The second value is just a hacky dependency hooks on our cluster being created
+    values = ["bastion.${var.cluster-name}", null_resource.master-up.id]
+  }
+}
+
 data "aws_security_group" "nodes" {
   vpc_id = var.vpc-networking["vpc-id"]
 
@@ -15,7 +26,7 @@ data "aws_security_group" "masters" {
   filter {
     name = "tag:Name"
 
-    // Same remark as above
+    // The second value is just a hacky dependency hooks on our cluster being created
     values = ["masters.${var.cluster-name}", null_resource.master-up.id]
   }
 }
