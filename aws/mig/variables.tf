@@ -42,14 +42,14 @@ variable "kops-state-bucket" {
 }
 
 variable "automatic-rollout" {
-  type        = string
+  type        = bool
   description = "If set to true, a rolling update of the instance group will be triggered when its spec is modified"
 
-  default = "false"
+  default = false
 }
 
 variable "update-interval" {
-  type        = string
+  type        = number
   description = "Rolling update interval"
 
   default = 8
@@ -75,13 +75,6 @@ variable "additional-sgs" {
   default = []
 }
 
-variable "additional-sgs-count" {
-  type        = string
-  description = "Number of additional security groups to add"
-
-  default = 0
-}
-
 # Node config
 variable "image" {
   type        = string
@@ -94,10 +87,10 @@ variable "type" {
 }
 
 variable "volume-size" {
-  type        = string
+  type        = number
   description = "Size of our nodes' root volume, in GB (default: 10)"
 
-  default = "10"
+  default = 10
 }
 
 variable "volume-provisioned-iops" {
@@ -115,32 +108,32 @@ variable "volume-type" {
 }
 
 variable "ebs-optimized" {
-  type        = string
+  type        = bool
   description = "Boolean (true or false) indicating whether our nodes should be EBS optimized"
 
-  default = "false"
+  default = false
 }
 
 variable "hooks" {
-  type        = list(string)
-  description = "Docker/Systemd hooks to add to this instance group (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+  type        = list(map(any))
+  description = "Docker/Systemd hooks to add to this instance group. https://kops.sigs.k8s.io/cluster_spec/#hooks"
 
   default = []
 }
 
 # ASG configuration
 variable "max-size" {
-  type        = string
+  type        = number
   description = "Group max size"
 
-  default = "5"
+  default = 5
 }
 
 variable "min-size" {
-  type        = string
+  type        = number
   description = "Group min size"
 
-  default = "1"
+  default = 1
 }
 
 # Labels
@@ -172,14 +165,14 @@ variable "additional_types" {
 }
 
 variable "policy_ondemand_base" {
-  type        = string
-  default     = "0"
+  type        = number
+  default     = 0
   description = "On demand base is the minimum amount of the Auto Scaling group's capacity that must be fulfilled by On-Demand Instances. This base portion is provisioned first as your group scales (default: 0)."
 }
 
 variable "policy_ondemand_above_base" {
-  type        = string
-  default     = "100"
+  type        = number
+  default     = 100
   description = "On demand above base controls the percentages of On-Demand Instances and Spot Instances for your additional capacity beyond on demand base. The range is 0–100. If youleave this parameter set to 100, the percentages are 100% for On-Demand Instances and 0% for Spot Instances. (default: 100)"
 }
 
@@ -190,8 +183,8 @@ variable "policy_ondemand_allocation_strategy" {
 }
 
 variable "policy_spot_instance_pools" {
-  type        = string
-  default     = "2"
+  type        = number
+  default     = 2
   description = "Spot instance pools is the number of Spot pools to use to allocate your Spot capacity (default: 2)."
 }
 

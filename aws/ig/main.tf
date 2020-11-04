@@ -1,9 +1,40 @@
+locals {
+  ig_spec = {
+    apiVersion = "kops/v1alpha2"
+    kind = "InstanceGroup"
+    metadata = {
+      labels = {
+        "kops.k8s.io/cluster" = var.cluster-name
+      }
+      name = var.name
+    } 
+    spec = merge({
+      cloudLabels = var.cloud-labels
+      nodeLabels = var.node-labels
+      associatePublicIp = var.visibility == "public"
+      image = var.image
+      machineType = var.type
+      maxSize = var.max-size
+      minSize = var.min-size
+      role = "Node"
+      rootVolumeSize = var.volume-size
+      rootVolumeType = var.volume-type
+      rootProvisionedIops = var.volume-provisioned-iops == "" ? null : var.volume-provisioned-iops
+      rootVolumeOptimization = var.ebs-optimized
+      maxPrice = var.max-price
+      taints = length(var.taints) > 0 ? var.taints : null
+      subnets = var.subnets
+      hooks = length(var.hooks) > 0 ? var.hooks : null
+    }, length(var.additional-sgs) > 0 ? {additionalSecurityGroups = var.additional-sgs} : {})
+  }
+}
+
 resource "aws_s3_bucket_object" "ig-spec" {
   count  = var.create_cluster_spec_object
   bucket = var.kops-state-bucket
   key    = "/karch-specs/${var.cluster-name}/${var.name}-ig-spec.yml"
 
-  content = data.template_file.ig-spec.rendered
+  content = yamlencode(local.ig_spec)
 
   tags = {
     nodeup-url-env    = var.nodeup-url-env
@@ -61,13 +92,13 @@ EOF
 
 resource "null_resource" "ig-update" {
   triggers = {
-    cluster_spec = data.template_file.ig-spec.rendered
+    cluster_spec = yamlencode(local.ig_spec)
   }
 
   provisioner "local-exec" {
     command = <<FILEDUMP
       cat <<EOF > ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
-${data.template_file.ig-spec.rendered}
+${yamlencode(local.ig_spec)}
 EOF
 FILEDUMP
   }
