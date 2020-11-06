@@ -7,26 +7,26 @@ resource "aws_s3_bucket_object" "cluster-spec" {
   content = <<EOF
 ${join("\n---\n", concat(
   list(yamlencode(local.cluster_spec)),
-  [for spec in local.master_spec: yamlencode(spec)],
-  [for spec in local.bastion_spec: yamlencode(spec)],
+  [for spec in local.master_spec : yamlencode(spec)],
+  [for spec in local.bastion_spec : yamlencode(spec)],
   list(yamlencode(local.minion_spec)),
 ))}
 EOF
 
-  tags = {
-    nodeup-url-env    = var.nodeup-url-env
-    aws-profile       = var.aws-profile
-    kops-state-bucket = var.kops-state-bucket
-    cluster-name      = var.cluster-name
-  }
+tags = {
+  nodeup-url-env    = var.nodeup-url-env
+  aws-profile       = var.aws-profile
+  kops-state-bucket = var.kops-state-bucket
+  cluster-name      = var.cluster-name
+}
 
-  // On destroy, remove the cluster first, if it exists
-  provisioner "local-exec" {
-    when    = destroy
-    command = "(test -z \"$(${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} get cluster | grep ${self.tags["cluster-name"]})\" ) || ${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} delete cluster --yes ${self.tags["cluster-name"]}"
-  }
+// On destroy, remove the cluster first, if it exists
+provisioner "local-exec" {
+  when    = destroy
+  command = "(test -z \"$(${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} get cluster | grep ${self.tags["cluster-name"]})\" ) || ${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} delete cluster --yes ${self.tags["cluster-name"]}"
+}
 
-  depends_on = [ aws_route53_record.cluster-root ]
+depends_on = [aws_route53_record.cluster-root]
 }
 
 // Cluster create-time provisioner
@@ -66,7 +66,7 @@ EOF
     command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
   }
 
-  depends_on = [ aws_s3_bucket_object.cluster-spec ]
+  depends_on = [aws_s3_bucket_object.cluster-spec]
 }
 
 // Hook for other modules (like instance groups) to wait for the master to be available
@@ -81,11 +81,12 @@ resource "null_resource" "master-up" {
 EOF
   }
 
-  depends_on = [ null_resource.kops-cluster ]
+  depends_on = [null_resource.kops-cluster]
 }
 
 // Hook that triggers cluster updates when the manifest changes
 resource "null_resource" "kops-update" {
+  count = var.create_cluster_spec_object
   triggers = {
     cluster_spec = aws_s3_bucket_object.cluster-spec[0].content
   }
@@ -110,5 +111,5 @@ FILEDUMP
 EOF
   }
 
-  depends_on = [ null_resource.kops-cluster ]
+  depends_on = [null_resource.kops-cluster]
 }

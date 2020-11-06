@@ -1,38 +1,38 @@
 locals {
   ig_spec = {
     apiVersion = "kops/v1alpha2"
-    kind = "InstanceGroup"
+    kind       = "InstanceGroup"
     metadata = {
       labels = {
-        "kops.k8s.io/cluster": var.cluster-name
+        "kops.k8s.io/cluster" : var.cluster-name
       }
       name = var.name
     }
     spec = merge({
-      cloudLabels = var.cloud-labels
-      nodeLabels = var.node-labels
-      associatePublicIp = var.visibility == "public"
-      image = var.image
-      machineType = var.type
-      maxSize = var.max-size
-      minSize = var.min-size
-      role = "Node"
-      rootVolumeSize = var.volume-size
-      rootVolumeType = var.volume-type
-      rootProvisionedIops = var.volume-provisioned-iops == "" ? null : var.volume-provisioned-iops
+      cloudLabels            = var.cloud-labels
+      nodeLabels             = var.node-labels
+      associatePublicIp      = var.visibility == "public"
+      image                  = var.image
+      machineType            = var.type
+      maxSize                = var.max-size
+      minSize                = var.min-size
+      role                   = "Node"
+      rootVolumeSize         = var.volume-size
+      rootVolumeType         = var.volume-type
+      rootProvisionedIops    = var.volume-provisioned-iops == "" ? null : var.volume-provisioned-iops
       rootVolumeOptimization = var.ebs-optimized
       mixedInstancesPolicy = {
-        spotAllocationStrategy = var.policy_spot_allocation_strategy
+        spotAllocationStrategy     = var.policy_spot_allocation_strategy
         onDemandAllocationStrategy = var.policy_ondemand_allocation_strategy
-        instances = concat([var.type], var.additional_types)
-        onDemandBase = var.policy_ondemand_base
-        onDemandAboveBase = var.policy_ondemand_above_base
-        spotInstancePools = var.policy_spot_instance_pools
+        instances                  = concat([var.type], var.additional_types)
+        onDemandBase               = var.policy_ondemand_base
+        onDemandAboveBase          = var.policy_ondemand_above_base
+        spotInstancePools          = var.policy_spot_instance_pools
       }
-      taints = length(var.taints) > 0 ? var.taints : null
+      taints  = length(var.taints) > 0 ? var.taints : null
       subnets = var.subnets
-      hooks = length(var.hooks) > 0 ? var.hooks : null
-    }, length(var.additional-sgs) > 0 ? {additionalSecurityGroups = var.additional-sgs} : {})
+      hooks   = length(var.hooks) > 0 ? var.hooks : null
+    }, length(var.additional-sgs) > 0 ? { additionalSecurityGroups = var.additional-sgs } : {})
   }
 }
 
@@ -94,7 +94,7 @@ EOF
     command = "rm -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml"
   }
 
-  depends_on = [ aws_s3_bucket_object.ig-spec ]
+  depends_on = [aws_s3_bucket_object.ig-spec]
 }
 
 resource "null_resource" "ig-update" {
@@ -137,5 +137,5 @@ FILEDUMP
 EOF
   }
 
-  depends_on = [ null_resource.ig ]
+  depends_on = [null_resource.ig]
 }
