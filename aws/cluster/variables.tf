@@ -13,13 +13,13 @@ variable "aws-region" {
 variable "vpc-networking" {
   type = object(
     {
-      vpc-id                  = string
-      vpc-cidr-block          = string
-      nat-gateways            = list(string)
-      vpc-public-subnet-ids   = list(string)
-      vpc-private-subnet-ids  = list(string)
-      vpc-private-cidrs       = list(string)
-      vpc-public-cidrs        = list(string)
+      vpc-id                 = string
+      vpc-cidr-block         = string
+      nat-gateways           = list(string)
+      vpc-public-subnet-ids  = list(string)
+      vpc-private-subnet-ids = list(string)
+      vpc-private-cidrs      = list(string)
+      vpc-public-cidrs       = list(string)
     }
   )
 }
