@@ -97,10 +97,10 @@ variable "kops-state-bucket" {
 }
 
 variable "disable-sg-ingress" {
-  type        = string
+  type        = bool
   description = "Boolean that indicates wether or not to create and attach a security group to instance nodes and load balancers for each LoadBalancer service (default: false)"
 
-  default = "false"
+  default = false
 }
 
 variable "etcd-version" {
@@ -110,17 +110,17 @@ variable "etcd-version" {
 }
 
 variable "etcd-enable-tls" {
-  type        = string
+  type        = bool
   description = "Set to true to enable TLS on etcd containers (default: true)"
 
-  default = "true"
+  default = true
 }
 
 variable "etcd-backup-enabled" {
-  type        = string
+  type        = bool
   description = "Set to true to enable backup to S3 on etcd containers (default: false)"
 
-  default = "false"
+  default = false
 }
 
 variable "etcd-backup-s3-bucket" {
@@ -152,10 +152,10 @@ variable "container-networking-params" {
 }
 
 variable "rbac" {
-  type        = string
+  type        = bool
   description = "Boolean indicating whether to enable RBAC authorization (default: false)"
 
-  default = "false"
+  default = false
 }
 
 variable "apiserver-runtime-flags" {
@@ -170,8 +170,8 @@ variable "featuregates-flags" {
   description = "Map describing the --feature-gates parameter passed to the API server, useful to enable certain alphav2 APIs that aren't integrated in the API server by default, such a batch/v1alpha2 that introduces CronJobs (default: {}). Note: the RBAC flag is automatically set if you enabled RBAC with the 'rbac' variable above"
 
   default = {
-    ExpandPersistentVolumes = "true"
-    PodPriority             = "true"
+    ExpandPersistentVolumes = true
+    PodPriority             = true
   }
 }
 
@@ -313,8 +313,8 @@ variable "system-reserved-memory" {
 
 # Systemd/Docker hooks
 variable "hooks" {
-  type        = list(string)
-  description = "Docker/Systemd hooks to add to this instance group (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list."
+  type        = list(map(any))
+  description = "Docker/Systemd hooks to add to this instance group. https://kops.sigs.k8s.io/cluster_spec/#hooks"
 
   default = []
 }
@@ -333,7 +333,7 @@ variable "master-lb-visibility" {
 }
 
 variable "master-lb-idle-timeout" {
-  type        = string
+  type        = number
   description = "Idle timeout for Kubernetes masters' ELB (default: 300s), in seconds"
   default     = 300
 }
@@ -351,10 +351,10 @@ variable "master-machine-type" {
 }
 
 variable "master-volume-size" {
-  type        = string
+  type        = number
   description = "Size of our master's root volume, in GB (default: 10)"
 
-  default = "10"
+  default = 10
 }
 
 variable "master-volume-provisioned-iops" {
@@ -372,16 +372,16 @@ variable "master-volume-type" {
 }
 
 variable "master-ebs-optimized" {
-  type        = string
+  type        = bool
   description = "Boolean (true or false) indicating whether our masters should be EBS optimized"
-  default     = "false"
+  default     = false
 }
 
 variable "master-update-interval" {
-  type        = string
+  type        = number
   description = "Interval (in minutes) between rolling updates of master nodes (default: 8)"
 
-  default = "8"
+  default = 8
 }
 
 variable "master-cloud-labels" {
@@ -399,8 +399,8 @@ variable "master-node-labels" {
 }
 
 variable "master-hooks" {
-  type        = list(string)
-  description = "Docker/Systemd hooks to add to the master instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+  type        = list(map(any))
+  description = "Docker/Systemd hooks to add to the master instances. https://kops.sigs.k8s.io/cluster_spec/#hooks"
 
   default = []
 }
@@ -410,13 +410,6 @@ variable "master-additional-sgs" {
   description = "A list of additional security groups to add to master instances"
 
   default = []
-}
-
-variable "master-additional-sgs-count" {
-  type        = string
-  description = "Number of additional security groups to add to master instances"
-
-  default = 0
 }
 
 # Bastion instance group
@@ -432,13 +425,6 @@ variable "bastion-additional-sgs" {
   default = []
 }
 
-variable "bastion-additional-sgs-count" {
-  type        = string
-  description = "Number of security groups to add to our bastion nodes"
-
-  default = 0
-}
-
 variable "bastion-machine-type" {
   type        = string
   description = "EC2 instance type to run our bastions onto (default: t2.micro)"
@@ -447,10 +433,10 @@ variable "bastion-machine-type" {
 }
 
 variable "bastion-volume-size" {
-  type        = string
+  type        = number
   description = "Size of our bastion's root volume, in GB (default: 10)"
 
-  default = "10"
+  default = 10
 }
 
 variable "bastion-volume-provisioned-iops" {
@@ -468,20 +454,20 @@ variable "bastion-volume-type" {
 }
 
 variable "bastion-ebs-optimized" {
-  type        = string
+  type        = bool
   description = "Boolean (true or false) indicating whether our bastion should be EBS optimized"
-  default     = "false"
+  default     = false
 }
 
 variable "min-bastions" {
-  type        = string
+  type        = number
   description = "Bastion ASG min size (default: 1)"
 
   default = 1
 }
 
 variable "max-bastions" {
-  type        = string
+  type        = number
   description = "Bastion ASG max size (default: 2)"
 
   default = 2
@@ -509,8 +495,8 @@ variable "bastion-node-labels" {
 }
 
 variable "bastion-hooks" {
-  type        = list(string)
-  description = "Docker/Systemd hooks to add to the bastion instances only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+  type        = list(map(any))
+  description = "Docker/Systemd hooks to add to bastion instances. https://kops.sigs.k8s.io/cluster_spec/#hooks"
 
   default = []
 }
@@ -524,10 +510,10 @@ variable "minion-ig-name" {
 }
 
 variable "minion-ig-public" {
-  type        = string
+  type        = bool
   description = "Set to true for nodes in the default minion ig to receive a public IP address"
 
-  default = "false"
+  default = false
 }
 
 variable "minion-additional-sgs" {
@@ -535,13 +521,6 @@ variable "minion-additional-sgs" {
   description = "Additional security groups to add to our minion nodes"
 
   default = []
-}
-
-variable "minion-additional-sgs-count" {
-  type        = string
-  description = "Number of security groups to add to our minion nodes"
-
-  default = 0
 }
 
 variable "minion-image" {
@@ -557,10 +536,10 @@ variable "minion-machine-type" {
 }
 
 variable "minion-volume-size" {
-  type        = string
+  type        = number
   description = "Size of our default minion ig root volume, in GB (default: 30)"
 
-  default = "30"
+  default = 30
 }
 
 variable "minion-volume-provisioned-iops" {
@@ -578,20 +557,20 @@ variable "minion-volume-type" {
 }
 
 variable "minion-ebs-optimized" {
-  type        = string
+  type        = bool
   description = "Boolean (true or false) indicating whether our default minion ig should be EBS optimized"
-  default     = "false"
+  default     = false
 }
 
 variable "min-minions" {
-  type        = string
+  type        = number
   description = "Minion ASG min size (default: 1)"
 
   default = 1
 }
 
 variable "max-minions" {
-  type        = string
+  type        = number
   description = "Minion ASG max size (default: 3)"
 
   default = 3
@@ -626,8 +605,8 @@ variable "minion-node-labels" {
 }
 
 variable "minion-hooks" {
-  type        = list(string)
-  description = "Docker/Systemd hooks to add to the minion instances (in the IG created along with the cluster) only (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+  type        = list(map(any))
+  description = "Docker/Systemd hooks to add to minions. https://kops.sigs.k8s.io/cluster_spec/#hooks"
 
   default = []
 }
@@ -645,15 +624,15 @@ variable "node-additional-policies" {
 }
 
 variable "log-level" {
-  type        = string
+  type        = number
   description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
   default     = 0
 }
 
 variable "kubernetes-cpu-cfs-quota-enabled" {
-  type        = string
+  type        = bool
   description = "Boolean (true or false) enable or disable cpuCFSQuota (cpu-cfs-quota)"
-  default     = "true"
+  default     = true
 }
 
 variable "kubernetes-cpu-cfs-quota-period" {
@@ -663,9 +642,9 @@ variable "kubernetes-cpu-cfs-quota-period" {
 }
 
 variable "serialize-image-pulls-enabled" {
-  type        = string
+  type        = bool
   description = "Boolean (true or false) enable or disable serializeImagePulls (serialize-image-pulls). If disabled Docker default download concurrency is 3."
-  default     = "true"
+  default     = true
 }
 
 variable "image-pull-progress-deadline" {

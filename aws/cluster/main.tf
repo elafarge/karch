@@ -6,10 +6,10 @@ resource "aws_s3_bucket_object" "cluster-spec" {
 
   content = <<EOF
 ${join("\n---\n", concat(
-  list(data.template_file.cluster-spec.rendered),
-  data.template_file.master-spec.*.rendered,
-  data.template_file.bastion-spec.*.rendered,
-  list(data.template_file.minion-spec.rendered)
+  list(yamlencode(local.cluster_spec)),
+  [for spec in local.master_spec: yamlencode(spec)],
+  [for spec in local.bastion_spec: yamlencode(spec)],
+  list(yamlencode(local.minion_spec)),
 ))}
 EOF
 

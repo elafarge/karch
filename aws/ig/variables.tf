@@ -42,14 +42,14 @@ variable "kops-state-bucket" {
 }
 
 variable "automatic-rollout" {
-  type        = string
+  type        = bool
   description = "If set to true, a rolling update of the instance group will be triggered when its spec is modified"
 
-  default = "false"
+  default = false
 }
 
 variable "update-interval" {
-  type        = string
+  type        = number
   description = "Rolling update interval"
 
   default = 8
@@ -75,13 +75,6 @@ variable "additional-sgs" {
   default = []
 }
 
-variable "additional-sgs-count" {
-  type        = string
-  description = "Number of additional security groups to add"
-
-  default = 0
-}
-
 # Node config
 variable "image" {
   type        = string
@@ -94,10 +87,10 @@ variable "type" {
 }
 
 variable "volume-size" {
-  type        = string
+  type        = number
   description = "Size of our nodes' root volume, in GB (default: 10)"
 
-  default = "10"
+  default = 10
 }
 
 variable "volume-provisioned-iops" {
@@ -115,10 +108,10 @@ variable "volume-type" {
 }
 
 variable "ebs-optimized" {
-  type        = string
+  type        = bool
   description = "Boolean (true or false) indicating whether our nodes should be EBS optimized"
 
-  default = "false"
+  default = false
 }
 
 variable "max-price" {
@@ -129,25 +122,25 @@ variable "max-price" {
 }
 
 variable "hooks" {
-  type        = list(string)
-  description = "Docker/Systemd hooks to add to this instance group (add 2 spaces at the beginning of each line for indentation. Also, you'll need the '-' (dash) to indicate that this hook is part of a list.)"
+  type        = list(map(any))
+  description = "Docker/Systemd hooks to add to this instance group. https://kops.sigs.k8s.io/cluster_spec/#hooks"
 
   default = []
 }
 
 # ASG configuration
 variable "max-size" {
-  type        = string
+  type        = number
   description = "Group max size"
 
-  default = "5"
+  default = 5
 }
 
 variable "min-size" {
-  type        = string
+  type        = number
   description = "Group min size"
 
-  default = "1"
+  default = 1
 }
 
 # Labels
