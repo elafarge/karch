@@ -658,3 +658,9 @@ variable "allowed-unsafe-sysctls" {
   description = "List of sysctls to allow override - allowedUnsafeSysctls (allowed-unsafe-sysctls)"
   default     = []
 }
+
+variable "docker-auth-config" {
+  type        = "string"
+  description = "Base64 encoded ~/.docker/config.json for Docker Hub login"
+  default     = ""
+}
