@@ -660,7 +660,7 @@ variable "allowed-unsafe-sysctls" {
 }
 
 variable "docker-auth-config" {
-  type        = "string"
+  type        = string
   description = "Base64 encoded ~/.docker/config.json for Docker Hub login"
   default     = ""
 }
