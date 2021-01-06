@@ -12,6 +12,9 @@ locals {
           idleTimeoutSeconds = var.master-lb-idle-timeout
         }
       }
+      addons = [{
+        manifest = "s3://${var.kops-state-bucket}/terraform-addons/${var.cluster-name}/addons.yaml"
+      }]
       authorization = {
         (var.rbac ? "rbac" : "alwaysAllow") = {}
       }
@@ -198,7 +201,7 @@ locals {
       }
       hooks = length(var.hooks) > 0 ? var.hooks : null
       additionalPolicies = merge(
-        length(var.master-additional-policies) == 0 ? {} : { master = var.master-additional-policies },
+        { master = jsonencode(jsondecode(data.aws_iam_policy_document.master-additional.json).Statement) },
         length(var.node-additional-policies) == 0 ? {} : { node = var.node-additional-policies }
       )
     }
@@ -285,5 +288,28 @@ locals {
       subnets                = var.availability-zones
       hooks                  = length(var.minion-hooks) > 0 ? var.minion-hooks : null
     }, length(var.minion-additional-sgs) > 0 ? { additionalSecurityGroups = var.minion-additional-sgs } : {})
+  }
+}
+
+data "aws_iam_policy_document" "master-additional" {
+  source_json = var.master-additional-policies
+
+  statement {
+    actions = [
+      "s3:GetObject",
+    ]
+    resources = [
+      "arn:aws:s3:::${var.kops-state-bucket}/terraform-addons/${var.cluster-name}/*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.kops-state-bucket}"
+    ]
   }
 }
