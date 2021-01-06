@@ -96,6 +96,18 @@ variable "kops-state-bucket" {
   description = "Name of the bucket in which kops stores its state (must be created prior to cluster turnup)"
 }
 
+# https://github.com/kubernetes/kops/blob/1ae09e86a5e48e16cb885b8d001023cd1894d59e/docs/addons.md
+# https://github.com/kubernetes/kops/issues/3554#issuecomment-658694934
+variable "kops-static-addons" {
+  type = map(object({
+    version  = string
+    manifest = string
+  }))
+  description = "Map of addon manifests (kubernetes charts to be deployed to the cluster by protokube). Not to be mistaken for managed addons like cert-manager."
+
+  default = {}
+}
+
 variable "disable-sg-ingress" {
   type        = bool
   description = "Boolean that indicates wether or not to create and attach a security group to instance nodes and load balancers for each LoadBalancer service (default: false)"
