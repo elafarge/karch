@@ -1,6 +1,6 @@
 locals {
   cluster_spec = {
-    apiVersion = "kops/v1alpha2"
+    apiVersion = "kops.k8s.io/v1alpha2"
     kind       = "Cluster"
     metadata = {
       name = var.cluster-name
@@ -208,7 +208,7 @@ locals {
   }
   master_spec = [
     for az in var.master-availability-zones : {
-      apiVersion = "kops/v1alpha2"
+      apiVersion = "kops.k8s.io/v1alpha2"
       kind       = "InstanceGroup"
       metadata = {
         labels = {
@@ -236,7 +236,7 @@ locals {
     }
   ]
   bastion_spec = var.kops-topology != "private" ? [] : [{
-    apiVersion = "kops/v1alpha2"
+    apiVersion = "kops.k8s.io/v1alpha2"
     kind       = "InstanceGroup"
     metadata = {
       labels = {
@@ -263,7 +263,7 @@ locals {
     }, length(var.bastion-additional-sgs) > 0 ? { additionalSecurityGroups = var.bastion-additional-sgs } : {})
   }]
   minion_spec = {
-    apiVersion = "kops/v1alpha2"
+    apiVersion = "kops.k8s.io/v1alpha2"
     kind       = "InstanceGroup"
     metadata = {
       labels = {

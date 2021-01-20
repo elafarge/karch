@@ -1,6 +1,6 @@
 locals {
   ig_spec = {
-    apiVersion = "kops/v1alpha2"
+    apiVersion = "kops.k8s.io/v1alpha2"
     kind       = "InstanceGroup"
     metadata = {
       labels = {
