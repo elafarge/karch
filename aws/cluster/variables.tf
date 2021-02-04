@@ -62,18 +62,51 @@ variable "cluster-name" {
   type        = string
 }
 
-variable "kube-dns-domain" {
-  type        = string
-  description = "Domain enforced in our cluster by kube-dns (default: cluster.local)."
-
-  default = "cluster.local"
+variable "kube-dns" {
+  type = object({
+    domain    = string
+    provider  = string
+    server-ip = string
+  })
+  default = {
+    domain    = "cluster.local"
+    provider  = "CoreDNS"
+    server-ip = "100.64.0.10"
+  }
 }
 
-variable "kube-dns-provider" {
-  type        = string
-  description = "Kubernetes dns (service discovery) provider (KubeDNS|CoreDNS)"
+# https://kops.sigs.k8s.io/addons/#node-local-dns-cache
+# Available since kops 1.18, K8s 1.15
+variable "node-local-dns-cache" {
+  type = object({
+    enabled = bool
+    resources = object({
+      requests = object({
+        cpu    = string
+        memory = string
+      })
+    })
+  })
+  default = {
+    enabled = false
+    resources = {
+      requests = {
+        cpu    = "25m"
+        memory = "5Mi"
+      }
+    }
+  }
+}
 
-  default = "CoreDNS"
+variable "coredns" {
+  type = object({
+    image    = string
+    corefile = string
+  })
+  default = {
+    image    = null
+    corefile = null
+  }
 }
 
 # Kops & Kubernetes
