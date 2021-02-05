@@ -30,8 +30,8 @@ depends_on = [aws_route53_record.cluster-root, aws_s3_bucket_object.addons-list]
 }
 
 resource "aws_s3_bucket_object" "addons-list" {
-  bucket  = var.kops-state-bucket
-  key     = "/terraform-addons/${var.cluster-name}/addons.yaml"
+  bucket = var.kops-state-bucket
+  key    = "/terraform-addons/${var.cluster-name}/addons.yaml"
   content = yamlencode({
     kind = "Addons"
     metadata = {
@@ -39,7 +39,7 @@ resource "aws_s3_bucket_object" "addons-list" {
     }
     spec = {
       addons = [
-        for name, addon in var.kops-static-addons: {
+        for name, addon in var.kops-static-addons : {
           version = addon.version
           selector = {
             k8s-addon = "${name}.addons.k8s.io"
@@ -54,9 +54,9 @@ resource "aws_s3_bucket_object" "addons-list" {
 
 resource "aws_s3_bucket_object" "addons-manifests" {
   for_each = var.kops-static-addons
-  bucket  = var.kops-state-bucket
-  key     = "/terraform-addons/${var.cluster-name}/${each.key}_v${each.value.version}.yaml"
-  content = each.value.manifest
+  bucket   = var.kops-state-bucket
+  key      = "/terraform-addons/${var.cluster-name}/${each.key}_v${each.value.version}.yaml"
+  content  = each.value.manifest
 }
 
 // Cluster create-time provisioner
