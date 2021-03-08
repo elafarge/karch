@@ -225,20 +225,21 @@ variable "enable-admission-plugins" {
   description = "List of enabled admission plugins"
 
   default = [
-    "NamespaceLifecycle",
-    "LimitRanger",
-    "ServiceAccount",
-    "PersistentVolumeLabel",
     "DefaultStorageClass",
     "DefaultTolerationSeconds",
-    "NodeRestriction",
-    "Priority",
     "DenyEscalatingExec",
-    "PodPreset",
+    "LimitRanger",
     "MutatingAdmissionWebhook",
-    "ValidatingAdmissionWebhook",
+    "NamespaceLifecycle",
+    "NodeRestriction",
+    "PersistentVolumeClaimResize",
+    "PersistentVolumeLabel",
+    "PodPreset",
+    "PodSecurityPolicy",
+    "Priority",
     "ResourceQuota",
-    "PersistentVolumeClaimResize"
+    "ServiceAccount",
+    "ValidatingAdmissionWebhook",
   ]
 }
 
