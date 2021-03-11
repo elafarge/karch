@@ -88,7 +88,7 @@ variable "node-local-dns-cache" {
     })
   })
   default = {
-    enabled = false
+    enabled = true
     resources = {
       requests = {
         cpu    = "25m"
@@ -300,8 +300,8 @@ variable "channel" {
 
 variable "kubernetes-version" {
   type        = string
-  description = "Kubernetes version to use for Core components (default: v1.8.4)"
-  default     = "v1.8.4"
+  description = "Kubernetes version to use for Core components (default: 1.15.12)"
+  default     = "1.15.12"
 }
 
 variable "cloud-labels" {

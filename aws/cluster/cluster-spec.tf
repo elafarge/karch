@@ -51,7 +51,6 @@ locals {
       kubeAPIServer = merge({
         insecureBindAddress          = "127.0.0.1"
         enableAdmissionPlugins       = var.enable-admission-plugins
-        allowPrivileged              = true
         anonymousAuth                = false
         apiServerCount               = length(var.master-availability-zones)
         authorizationMode            = var.rbac ? "RBAC" : "AlwaysAllow"
@@ -123,7 +122,6 @@ locals {
         cpuCFSQuotaPeriod         = var.kubernetes-cpu-cfs-quota-period
         serializeImagePulls       = var.serialize-image-pulls-enabled
         imagePullProgressDeadline = var.image-pull-progress-deadline
-        allowPrivileged           = true
         cgroupRoot                = "/"
         cloudProvider             = "aws"
         clusterDNS                = var.kube-dns.server-ip
@@ -151,7 +149,6 @@ locals {
       kubernetesVersion   = var.kubernetes-version
       masterInternalName  = "api.internal.${var.cluster-name}"
       masterKubelet = {
-        allowPrivileged         = true
         cgroupRoot              = "/"
         cloudProvider           = "aws"
         clusterDNS              = var.kube-dns.server-ip
