@@ -232,7 +232,7 @@ locals {
         rootVolumeType         = var.master-volume-type
         rootProvisionedIops    = var.master-volume-provisioned-iops == "" ? null : var.master-volume-provisioned-iops
         rootVolumeOptimization = var.master-ebs-optimized
-        taints                 = null
+        taints                 = length(var.master-taints) > 0 ? var.master-taints : null
         subnets                = [az]
         hooks                  = length(var.master-hooks) > 0 ? var.master-hooks : null
       }, length(var.master-additional-sgs) > 0 ? { additionalSecurityGroups = var.master-additional-sgs } : {})
