@@ -444,6 +444,15 @@ variable "master-node-labels" {
   default = {}
 }
 
+variable "master-taints" {
+  type        = list(string)
+  description = "List of taints (under the form key=value) to add to master instances"
+
+  default = [
+    "CriticalAddonsOnly=:NoSchedule",
+  ]
+}
+
 variable "master-hooks" {
   type        = list(map(any))
   description = "Docker/Systemd hooks to add to the master instances. https://kops.sigs.k8s.io/cluster_spec/#hooks"
