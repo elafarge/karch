@@ -1,4 +1,11 @@
 locals {
+  container_networking_params = {
+    calico     = var.container-networking-params-calico
+    cilium     = var.container-networking-params-cilium
+    flannel    = var.container-networking-params-flannel
+    kuberouter = var.container-networking-params-kuberouter
+  }
+
   cluster_spec = {
     apiVersion = "kops.k8s.io/v1alpha2"
     kind       = "Cluster"
@@ -168,7 +175,7 @@ locals {
       networkCIDR      = var.vpc-networking.vpc-cidr-block
       networkID        = var.vpc-networking.vpc-id
       networking = {
-        (var.container-networking) = var.container-networking-params[var.container-networking]
+        (var.container-networking) = local.container_networking_params[var.container-networking]
       }
       nonMasqueradeCIDR     = "100.64.0.0/10"
       secretStore           = "s3://${var.kops-state-bucket}/${var.cluster-name}/secrets"

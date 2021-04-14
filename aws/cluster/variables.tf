@@ -208,59 +208,70 @@ variable "container-networking" {
   default = "kuberouter"
 }
 
-variable "container-networking-params" {
+variable "container-networking-params-calico" {
   type = object({
-    calico = object({
-      awsSrcDstCheck         = string
-      crossSubnet            = bool
-      bpfEnabled             = bool
-      bpfExternalServiceMode = string
-      bpfLogLevel            = string
-      encapsulationMode      = string
-      IPIPMode               = string
-      mtu                    = number
-      typhaReplicas          = number
-      wireguardEnabled       = bool
-    })
-    cilium = object({
-      disableMasquerade = bool
-      enableEncryption  = bool
-      enableNodePort    = bool
-      etcdManaged       = bool
-      ipam              = string
-    })
-    flannel = object({
-      iptablesResyncSeconds = number
-    })
-    kuberouter = object({})
+    awsSrcDstCheck         = string
+    crossSubnet            = bool
+    bpfEnabled             = bool
+    bpfExternalServiceMode = string
+    bpfLogLevel            = string
+    encapsulationMode      = string
+    IPIPMode               = string
+    mtu                    = number
+    typhaReplicas          = number
+    wireguardEnabled       = bool
   })
-  description = "Set the container CNI networking layer parameters"
+  description = "Calico CNI params"
 
   default = {
-    calico = {
-      awsSrcDstCheck         = "Disable"
-      crossSubnet            = null
-      bpfEnabled             = false
-      bpfExternalServiceMode = null
-      bpfLogLevel            = null
-      encapsulationMode      = "ipip"
-      IPIPMode               = "CrossSubnet"
-      mtu                    = 8981
-      typhaReplicas          = null
-      wireguardEnabled       = false
-    }
-    cilium = {
-      disableMasquerade = false
-      enableEncryption  = false
-      enableNodePort    = false
-      etcdManaged       = false
-      ipam              = null
-    }
-    flannel = {
-      iptablesResyncSeconds = 360
-    }
-    kuberouter = {}
+    awsSrcDstCheck         = "Disable"
+    crossSubnet            = true
+    bpfEnabled             = false
+    bpfExternalServiceMode = "Tunnel"
+    bpfLogLevel            = "Off"
+    encapsulationMode      = "ipip"
+    IPIPMode               = "CrossSubnet"
+    mtu                    = 8981
+    typhaReplicas          = 0
+    wireguardEnabled       = false
   }
+}
+
+variable "container-networking-params-cilium" {
+  type = object({
+    disableMasquerade = bool
+    enableEncryption  = bool
+    enableNodePort    = bool
+    etcdManaged       = bool
+    ipam              = string
+  })
+  description = "Cilium CNI params"
+
+  default = {
+    disableMasquerade = false
+    enableEncryption  = false
+    enableNodePort    = false
+    etcdManaged       = false
+    ipam              = null
+  }
+}
+
+variable "container-networking-params-flannel" {
+  type = object({
+    iptablesResyncSeconds = number
+  })
+  description = "Flannel CNI params"
+
+  default = {
+    iptablesResyncSeconds = 360
+  }
+}
+
+variable "container-networking-params-kuberouter" {
+  type        = map(string)
+  description = "Kuberouter CNI params"
+
+  default = {}
 }
 
 variable "rbac" {
