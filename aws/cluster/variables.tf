@@ -208,6 +208,20 @@ variable "container-networking" {
   default = "kuberouter"
 }
 
+variable "container-networking-params-amazonvpc" {
+  type = object({
+    env = list(object({
+      name  = string
+      value = string
+    }))
+  })
+  description = "AmazonVPC CNI params"
+
+  default = {
+    env = []
+  }
+}
+
 variable "container-networking-params-calico" {
   type = object({
     awsSrcDstCheck         = string

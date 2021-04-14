@@ -1,5 +1,6 @@
 locals {
   container_networking_params = {
+    amazonvpc  = var.container-networking-params-amazonvpc
     calico     = var.container-networking-params-calico
     cilium     = var.container-networking-params-cilium
     flannel    = var.container-networking-params-flannel
