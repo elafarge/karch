@@ -222,6 +222,16 @@ variable "container-networking-params" {
       typhaReplicas          = number
       wireguardEnabled       = bool
     })
+    cilium = object({
+      disableMasquerade = bool
+      enableEncryption  = bool
+      enableNodePort    = bool
+      etcdManaged       = bool
+      ipam              = string
+    })
+    flannel = object({
+      iptablesResyncSeconds = number
+    })
     kuberouter = object({})
   })
   description = "Set the container CNI networking layer parameters"
@@ -232,12 +242,22 @@ variable "container-networking-params" {
       crossSubnet            = null
       bpfEnabled             = false
       bpfExternalServiceMode = null
-      bpfLogLevel            = "Info"
+      bpfLogLevel            = null
       encapsulationMode      = "ipip"
       IPIPMode               = "CrossSubnet"
       mtu                    = 8981
       typhaReplicas          = null
       wireguardEnabled       = false
+    }
+    cilium = {
+      disableMasquerade = false
+      enableEncryption  = false
+      enableNodePort    = false
+      etcdManaged       = false
+      ipam              = null
+    }
+    flannel = {
+      iptablesResyncSeconds = 360
     }
     kuberouter = {}
   }
