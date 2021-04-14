@@ -168,7 +168,7 @@ locals {
       networkCIDR      = var.vpc-networking.vpc-cidr-block
       networkID        = var.vpc-networking.vpc-id
       networking = {
-        (var.container-networking) = var.container-networking-params
+        (var.container-networking) = var.container-networking-params[var.container-networking]
       }
       nonMasqueradeCIDR     = "100.64.0.0/10"
       secretStore           = "s3://${var.kops-state-bucket}/${var.cluster-name}/secrets"

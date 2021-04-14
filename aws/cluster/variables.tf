@@ -90,7 +90,7 @@ variable "kube-proxy-params" {
 }
 
 variable "kube-proxy-enabled" {
-  type = bool
+  type    = bool
   default = false
 }
 
@@ -209,10 +209,38 @@ variable "container-networking" {
 }
 
 variable "container-networking-params" {
-  type        = map(string)
+  type = object({
+    calico = object({
+      awsSrcDstCheck         = string
+      crossSubnet            = bool
+      bpfEnabled             = bool
+      bpfExternalServiceMode = string
+      bpfLogLevel            = string
+      encapsulationMode      = string
+      IPIPMode               = string
+      mtu                    = number
+      typhaReplicas          = number
+      wireguardEnabled       = bool
+    })
+    kuberouter = object({})
+  })
   description = "Set the container CNI networking layer parameters"
 
-  default = {}
+  default = {
+    calico = {
+      awsSrcDstCheck         = "Disable"
+      crossSubnet            = null
+      bpfEnabled             = false
+      bpfExternalServiceMode = null
+      bpfLogLevel            = "Info"
+      encapsulationMode      = "ipip"
+      IPIPMode               = "CrossSubnet"
+      mtu                    = 8981
+      typhaReplicas          = null
+      wireguardEnabled       = false
+    }
+    kuberouter = {}
+  }
 }
 
 variable "rbac" {
