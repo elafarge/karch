@@ -75,6 +75,25 @@ variable "kube-dns" {
   }
 }
 
+# kube-proxy
+variable "kube-proxy-params" {
+  type = object({
+    clusterCIDR      = string
+    cpuRequest       = string
+    hostnameOverride = string
+  })
+  default = {
+    clusterCIDR      = "100.96.0.0/11"
+    cpuRequest       = "100m"
+    hostnameOverride = "@aws"
+  }
+}
+
+variable "kube-proxy-enabled" {
+  type    = bool
+  default = false
+}
+
 # https://kops.sigs.k8s.io/addons/#node-local-dns-cache
 # Available since kops 1.18, K8s 1.15
 variable "node-local-dns-cache" {
@@ -189,9 +208,82 @@ variable "container-networking" {
   default = "kuberouter"
 }
 
-variable "container-networking-params" {
+variable "container-networking-params-amazonvpc" {
+  type = object({
+    env = list(object({
+      name  = string
+      value = string
+    }))
+  })
+  description = "AmazonVPC CNI params"
+
+  default = {
+    env = []
+  }
+}
+
+variable "container-networking-params-calico" {
+  type = object({
+    awsSrcDstCheck         = string
+    crossSubnet            = bool
+    bpfEnabled             = bool
+    bpfExternalServiceMode = string
+    bpfLogLevel            = string
+    encapsulationMode      = string
+    IPIPMode               = string
+    mtu                    = number
+    typhaReplicas          = number
+    wireguardEnabled       = bool
+  })
+  description = "Calico CNI params"
+
+  default = {
+    awsSrcDstCheck         = "Disable"
+    crossSubnet            = true
+    bpfEnabled             = false
+    bpfExternalServiceMode = "Tunnel"
+    bpfLogLevel            = "Off"
+    encapsulationMode      = "ipip"
+    IPIPMode               = "CrossSubnet"
+    mtu                    = 8981
+    typhaReplicas          = 0
+    wireguardEnabled       = false
+  }
+}
+
+variable "container-networking-params-cilium" {
+  type = object({
+    disableMasquerade = bool
+    enableEncryption  = bool
+    enableNodePort    = bool
+    etcdManaged       = bool
+    ipam              = string
+  })
+  description = "Cilium CNI params"
+
+  default = {
+    disableMasquerade = false
+    enableEncryption  = false
+    enableNodePort    = false
+    etcdManaged       = false
+    ipam              = null
+  }
+}
+
+variable "container-networking-params-flannel" {
+  type = object({
+    iptablesResyncSeconds = number
+  })
+  description = "Flannel CNI params"
+
+  default = {
+    iptablesResyncSeconds = 360
+  }
+}
+
+variable "container-networking-params-kuberouter" {
   type        = map(string)
-  description = "Set the container CNI networking layer parameters"
+  description = "Kuberouter CNI params"
 
   default = {}
 }
