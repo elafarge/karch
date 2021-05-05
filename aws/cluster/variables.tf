@@ -224,30 +224,42 @@ variable "container-networking-params-amazonvpc" {
 
 variable "container-networking-params-calico" {
   type = object({
-    awsSrcDstCheck         = string
-    crossSubnet            = bool
-    bpfEnabled             = bool
-    bpfExternalServiceMode = string
-    bpfLogLevel            = string
-    encapsulationMode      = string
-    IPIPMode               = string
-    mtu                    = number
-    typhaReplicas          = number
-    wireguardEnabled       = bool
+    awsSrcDstCheck                     = string
+    crossSubnet                        = bool
+    bpfEnabled                         = bool
+    bpfExternalServiceMode             = string
+    bpfLogLevel                        = string
+    encapsulationMode                  = string
+    IPIPMode                           = string
+    mtu                                = number
+    typhaReplicas                      = number
+    wireguardEnabled                   = bool
+    prometheusMetricsEnabled           = bool
+    prometheusGoMetricsEnabled         = bool
+    prometheusProcessMetricsEnabled    = bool
+    prometheusMetricsPort              = number
+    typhaPrometheusMetricsEnabled      = bool
+    typhaPrometheusMetricsPort         = number
   })
   description = "Calico CNI params"
 
   default = {
-    awsSrcDstCheck         = "Disable"
-    crossSubnet            = true
-    bpfEnabled             = false
-    bpfExternalServiceMode = "Tunnel"
-    bpfLogLevel            = "Off"
-    encapsulationMode      = "ipip"
-    IPIPMode               = "CrossSubnet"
-    mtu                    = 8981
-    typhaReplicas          = 0
-    wireguardEnabled       = false
+    awsSrcDstCheck                     = "Disable"
+    crossSubnet                        = true
+    bpfEnabled                         = false
+    bpfExternalServiceMode             = "Tunnel"
+    bpfLogLevel                        = "Off"
+    encapsulationMode                  = "ipip"
+    IPIPMode                           = "CrossSubnet"
+    mtu                                = 8981
+    typhaReplicas                      = 0
+    wireguardEnabled                   = false
+    prometheusMetricsEnabled           = false
+    prometheusGoMetricsEnabled         = false
+    prometheusProcessMetricsEnabled    = false
+    prometheusMetricsPort              = 9091
+    typhaPrometheusMetricsEnabled      = false
+    typhaPrometheusMetricsPort         = 9093
   }
 }
 
