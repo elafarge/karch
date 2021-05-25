@@ -150,11 +150,24 @@ variable "kops-state-bucket" {
 
 # https://github.com/kubernetes/kops/blob/1ae09e86a5e48e16cb885b8d001023cd1894d59e/docs/addons.md
 # https://github.com/kubernetes/kops/issues/3554#issuecomment-658694934
+# Example:
+# {
+#   kube-router = {
+#     "1.0" = {
+#       manifest = "..."
+#       kubernetes-version = "<=0.6"
+#     }
+#     "2.0" = {
+#       manifest = "..."
+#       kubernetes-version = ">0.6"
+#     }
+#   }
+# }
 variable "kops-static-addons" {
-  type = map(object({
-    version  = string
-    manifest = string
-  }))
+  type = map(map(object({
+    kubernetes-version = string
+    manifest           = string
+  })))
   description = "Map of addon manifests (kubernetes charts to be deployed to the cluster by protokube). Not to be mistaken for managed addons like cert-manager."
 
   default = {}
@@ -224,42 +237,42 @@ variable "container-networking-params-amazonvpc" {
 
 variable "container-networking-params-calico" {
   type = object({
-    awsSrcDstCheck                     = string
-    crossSubnet                        = bool
-    bpfEnabled                         = bool
-    bpfExternalServiceMode             = string
-    bpfLogLevel                        = string
-    encapsulationMode                  = string
-    IPIPMode                           = string
-    mtu                                = number
-    typhaReplicas                      = number
-    wireguardEnabled                   = bool
-    prometheusMetricsEnabled           = bool
-    prometheusGoMetricsEnabled         = bool
-    prometheusProcessMetricsEnabled    = bool
-    prometheusMetricsPort              = number
-    typhaPrometheusMetricsEnabled      = bool
-    typhaPrometheusMetricsPort         = number
+    awsSrcDstCheck                  = string
+    crossSubnet                     = bool
+    bpfEnabled                      = bool
+    bpfExternalServiceMode          = string
+    bpfLogLevel                     = string
+    encapsulationMode               = string
+    IPIPMode                        = string
+    mtu                             = number
+    typhaReplicas                   = number
+    wireguardEnabled                = bool
+    prometheusMetricsEnabled        = bool
+    prometheusGoMetricsEnabled      = bool
+    prometheusProcessMetricsEnabled = bool
+    prometheusMetricsPort           = number
+    typhaPrometheusMetricsEnabled   = bool
+    typhaPrometheusMetricsPort      = number
   })
   description = "Calico CNI params"
 
   default = {
-    awsSrcDstCheck                     = "Disable"
-    crossSubnet                        = true
-    bpfEnabled                         = false
-    bpfExternalServiceMode             = "Tunnel"
-    bpfLogLevel                        = "Off"
-    encapsulationMode                  = "ipip"
-    IPIPMode                           = "CrossSubnet"
-    mtu                                = 8981
-    typhaReplicas                      = 0
-    wireguardEnabled                   = false
-    prometheusMetricsEnabled           = false
-    prometheusGoMetricsEnabled         = false
-    prometheusProcessMetricsEnabled    = false
-    prometheusMetricsPort              = 9091
-    typhaPrometheusMetricsEnabled      = false
-    typhaPrometheusMetricsPort         = 9093
+    awsSrcDstCheck                  = "Disable"
+    crossSubnet                     = true
+    bpfEnabled                      = false
+    bpfExternalServiceMode          = "Tunnel"
+    bpfLogLevel                     = "Off"
+    encapsulationMode               = "ipip"
+    IPIPMode                        = "CrossSubnet"
+    mtu                             = 8981
+    typhaReplicas                   = 0
+    wireguardEnabled                = false
+    prometheusMetricsEnabled        = false
+    prometheusGoMetricsEnabled      = false
+    prometheusProcessMetricsEnabled = false
+    prometheusMetricsPort           = 9091
+    typhaPrometheusMetricsEnabled   = false
+    typhaPrometheusMetricsPort      = 9093
   }
 }
 

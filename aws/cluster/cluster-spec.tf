@@ -20,9 +20,11 @@ locals {
           idleTimeoutSeconds = var.master-lb-idle-timeout
         }
       }
-      addons = [{
-        manifest = "s3://${var.kops-state-bucket}/terraform-addons/${var.cluster-name}/addons.yaml"
-      }]
+      addons = [
+        for name, addon in var.kops-static-addons : {
+          manifest = "s3://${var.kops-state-bucket}/terraform-addons/${var.cluster-name}/${name}.yaml"
+        }
+      ]
       authorization = {
         (var.rbac ? "rbac" : "alwaysAllow") = {}
       }
