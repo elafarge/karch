@@ -421,6 +421,12 @@ variable "kubernetes-version" {
   default     = "1.15.12"
 }
 
+variable "kube-proxy-version" {
+  type        = string
+  description = "Kube-proxy version to use in Core components"
+  default     = "1.15.12"
+}
+
 variable "cloud-labels" {
   type        = map(string)
   description = "(Flat) map of kops cloud labels to apply to all resources in cluster"
