@@ -32,6 +32,10 @@ locals {
       taints  = length(var.taints) > 0 ? var.taints : null
       subnets = var.subnets
       hooks   = length(var.hooks) > 0 ? var.hooks : null
+      rollingUpdate = {
+        maxSurge       = var.rolling-update.max-surge
+        maxUnavailable = var.rolling-update.max-unavailable
+      }
     }, length(var.additional-sgs) > 0 ? { additionalSecurityGroups = var.additional-sgs } : {})
   }
 }

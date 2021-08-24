@@ -193,3 +193,16 @@ variable "policy_spot_allocation_strategy" {
   default     = "lowest-price"
   description = "Spot allcoation strategy should be one of (lowest-price/capacity-optimized) more https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-fleet.html#spot-fleet-allocation-strategy (default: lowest-price)."
 }
+
+variable "rolling-update" {
+  type        = object({
+    max-surge       = any
+    max-unavailable = any
+  })
+  description = "Settings for rolling update. Both can be expressed as absolute numbers or percent, e.g. \"30%\""
+
+  default = {
+    max-surge       = 1
+    max-unavailable = 0
+  }
+}
