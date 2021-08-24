@@ -164,3 +164,16 @@ variable "node-labels" {
 
   default = {}
 }
+
+variable "rolling-update" {
+  type        = object({
+    max-surge       = any
+    max-unavailable = any
+  })
+  description = "Settings for rolling update. Both can be expressed as absolute numbers or percent, e.g. \"30%\""
+
+  default = {
+    max-surge       = 1
+    max-unavailable = 0
+  }
+}
