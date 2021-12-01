@@ -303,6 +303,12 @@ locals {
       hooks                  = length(var.minion-hooks) > 0 ? var.minion-hooks : null
     }, length(var.minion-additional-sgs) > 0 ? { additionalSecurityGroups = var.minion-additional-sgs } : {})
   }
+  docker-auth-config = {
+    auths = { for hostname, creds in var.docker-auth-creds: hostname => {auth = base64encode("${creds.username}:${creds.password}")} }
+    HttpHeaders = {
+      User-Agent = "Docker-Client/18.06.3-ce (linux)"
+    }
+  }
 }
 
 data "aws_iam_policy_document" "master-additional" {

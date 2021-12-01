@@ -837,8 +837,11 @@ variable "allowed-unsafe-sysctls" {
   default     = []
 }
 
-variable "docker-auth-config" {
-  type        = string
-  description = "Base64 encoded ~/.docker/config.json for Docker Hub login"
-  default     = ""
+variable "docker-auth-creds" {
+  type        = map(object({
+    username = string
+    password = string
+  }))
+  description = "Credentials for Docker repositories indexed by repository hostname"
+  default     = {}
 }

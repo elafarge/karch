@@ -154,17 +154,29 @@ EOF
   depends_on = [null_resource.kops-cluster]
 }
 
-// Cluster Docker Login Configuration on S3
-// Short version of https://github.com/kubernetes/kops/blob/master/docs/cli/kops_create_secret_dockerconfig.md
-// Kops version currently subject to bugs and doesn't trigger rolling upgrade so no need to complicate as per cluster-spec.
-resource "aws_s3_bucket_object" "docker-auth-config" {
-  count  = var.docker-auth-config != "" ? 1 : 0
-  bucket = var.kops-state-bucket
-  key    = "/${var.cluster-name}/secrets/dockerconfig"
+resource "null_resource" "docker-auth-config" {
+  count = var.docker-auth-creds != {} ? 1 : 0
+  triggers = {
+    config     = jsonencode(local.docker-auth-config)
+    local_path = "${path.module}/${var.cluster-name}-docker-config.yml"
+  }
 
-  content = <<EOF
-{"Data":"${var.docker-auth-config}"}
+  provisioner "local-exec" {
+    command = <<FILEDUMP
+      cat <<EOF > ${self.triggers.local_path}
+${self.triggers.config}
 EOF
+FILEDUMP
+  }
+
+  provisioner "local-exec" {
+    command = <<EOF
+      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
+        create secret dockerconfig -f ${self.triggers.local_path} && \
+
+      rm -f ${self.triggers.local_path}
+EOF
+  }
 
   depends_on = [null_resource.kops-cluster]
 }
