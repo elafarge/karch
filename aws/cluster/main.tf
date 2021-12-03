@@ -171,7 +171,7 @@ FILEDUMP
 
   provisioner "local-exec" {
     command = <<EOF
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
+      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} --name ${var.cluster-name} \
         create secret dockerconfig -f ${self.triggers.local_path} && \
 
       rm -f ${self.triggers.local_path}
