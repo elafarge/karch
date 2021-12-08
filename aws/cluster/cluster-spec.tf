@@ -156,7 +156,7 @@ locals {
         enforceNodeAllocatable = "pods"
         featureGates           = var.featuregates-flags
       }
-      kubernetesApiAccess = var.trusted-cidrs
+      kubernetesApiAccess = var.api-cidrs
       kubernetesVersion   = var.kubernetes-version
       masterInternalName  = "api.internal.${var.cluster-name}"
       masterKubelet = {
@@ -183,7 +183,7 @@ locals {
       nonMasqueradeCIDR     = "100.64.0.0/10"
       secretStore           = "s3://${var.kops-state-bucket}/${var.cluster-name}/secrets"
       serviceClusterIPRange = "100.64.0.0/13"
-      sshAccess             = var.trusted-cidrs
+      sshAccess             = var.ssh-cidrs
       subnets = flatten([
         for idx in range(length(var.availability-zones)) : [
           {
