@@ -32,8 +32,17 @@ locals {
       cloudConfig = {
         disableSecurityGroupIngress = var.disable-sg-ingress
       }
-      cloudLabels      = length(keys(var.cloud-labels)) == 0 ? null : var.cloud-labels
-      cloudProvider    = "aws"
+      cloudLabels   = length(keys(var.cloud-labels)) == 0 ? null : var.cloud-labels
+      cloudProvider = "aws"
+      clusterAutoscaler = {
+        enabled                       = var.cluster-autoscaler.enabled
+        expander                      = var.cluster-autoscaler.expander
+        balanceSimilarNodeGroups      = var.cluster-autoscaler.balance-similar-node-groups
+        scaleDownUtilizationThreshold = var.cluster-autoscaler.scale-down-utilization-threshold
+        scaleDownDelayAfterAdd        = var.cluster-autoscaler.scale-down-delay-after-add
+        cpuRequest                    = var.cluster-autoscaler.resources.requests.cpu
+        memoryRequest                 = var.cluster-autoscaler.resources.requests.memory
+      }
       clusterDNSDomain = var.kube-dns.domain
       configBase       = "s3://${var.kops-state-bucket}/${var.cluster-name}"
       configStore      = "s3://${var.kops-state-bucket}/${var.cluster-name}"
@@ -57,6 +66,9 @@ locals {
           }
         } : {})
       ]
+      iam = {
+        allowContainerRegistry = var.iam.allow-container-registry
+      }
       keyStore = "s3://${var.kops-state-bucket}/${var.cluster-name}/pki"
       kubeAPIServer = merge({
         insecureBindAddress          = "127.0.0.1"
@@ -175,6 +187,9 @@ locals {
         registerSchedulable     = false
       }
       masterPublicName = "api.${var.cluster-name}"
+      metricsServer = {
+        enabled = var.metrics-server.enabled
+      }
       networkCIDR      = var.vpc-networking.vpc-cidr-block
       networkID        = var.vpc-networking.vpc-id
       networking = {
@@ -304,7 +319,7 @@ locals {
     }, length(var.minion-additional-sgs) > 0 ? { additionalSecurityGroups = var.minion-additional-sgs } : {})
   }
   docker-auth-config = {
-    auths = { for hostname, creds in var.docker-auth-creds: hostname => {auth = base64encode("${creds.username}:${creds.password}")} }
+    auths = { for hostname, creds in var.docker-auth-creds : hostname => { auth = base64encode("${creds.username}:${creds.password}") } }
     HttpHeaders = {
       User-Agent = "Docker-Client/18.06.3-ce (linux)"
     }

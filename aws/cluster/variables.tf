@@ -571,9 +571,7 @@ variable "master-taints" {
   type        = list(string)
   description = "List of taints (under the form key=value) to add to master instances"
 
-  default = [
-    "CriticalAddonsOnly=:NoSchedule",
-  ]
+  default = []
 }
 
 variable "master-hooks" {
@@ -838,10 +836,58 @@ variable "allowed-unsafe-sysctls" {
 }
 
 variable "docker-auth-creds" {
-  type        = map(object({
+  type = map(object({
     username = string
     password = string
   }))
   description = "Credentials for Docker repositories indexed by repository hostname"
   default     = {}
+}
+
+variable "iam" {
+  type = object({
+    allow-container-registry = bool
+  })
+  description = "IAM settings for the cluster"
+  default = {
+    allow-container-registry = true
+  }
+}
+
+variable "cluster-autoscaler" {
+  type = object({
+    enabled                          = bool
+    expander                         = string
+    balance-similar-node-groups      = bool
+    scale-down-utilization-threshold = string
+    scale-down-delay-after-add       = string
+    resources = object({
+      requests = object({
+        cpu    = string
+        memory = string
+      })
+    })
+  })
+  default = {
+    enabled                          = false
+    expander                         = "least-waste"
+    balance-similar-node-groups      = false
+    scale-down-utilization-threshold = "0.5"
+    scale-down-delay-after-add       = "10m0s"
+    resources = {
+      requests = {
+        cpu    = "100m"
+        memory = "300Mi"
+      }
+    }
+  }
+}
+
+variable "metrics-server" {
+  type = object({
+    enabled = bool
+  })
+  default = {
+    enabled = false
+  }
 }
