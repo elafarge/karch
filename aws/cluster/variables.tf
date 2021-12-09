@@ -35,9 +35,16 @@ variable "kops-topology" {
   default     = "private"
 }
 
-variable "trusted-cidrs" {
+variable "api-cidrs" {
   type        = list(string)
-  description = "CIDR whitelist for Kubernetes master HTTPs & bastion SSH access (default: 0.0.0.0/0)"
+  description = "CIDR whitelist for Kubernetes master HTTPs access (default: 0.0.0.0/0)"
+
+  default = ["0.0.0.0/0"]
+}
+
+variable "ssh-cidrs" {
+  type        = list(string)
+  description = "CIDR whitelist for bastion SSH access (default: 0.0.0.0/0)"
 
   default = ["0.0.0.0/0"]
 }
