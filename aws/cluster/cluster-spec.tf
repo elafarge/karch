@@ -28,9 +28,18 @@ locals {
       authorization = {
         (var.rbac ? "rbac" : "alwaysAllow") = {}
       }
+      awsLoadBalancerController = {
+        enabled = var.aws-load-balancer-controller.enabled
+      }
+      certManager = {
+        enabled = var.cert-manager.enabled
+      }
       channel = var.channel
       cloudConfig = {
         disableSecurityGroupIngress = var.disable-sg-ingress
+        awsEBSCSIDriver = {
+          enabled = var.aws-ebs-csi-driver.enabled
+        }
       }
       cloudLabels   = length(keys(var.cloud-labels)) == 0 ? null : var.cloud-labels
       cloudProvider = "aws"
@@ -188,7 +197,8 @@ locals {
       }
       masterPublicName = "api.${var.cluster-name}"
       metricsServer = {
-        enabled = var.metrics-server.enabled
+        enabled  = var.metrics-server.enabled
+        insecure = var.metrics-server.insecure
       }
       networkCIDR      = var.vpc-networking.vpc-cidr-block
       networkID        = var.vpc-networking.vpc-id
