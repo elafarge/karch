@@ -28,20 +28,23 @@ locals {
       authorization = {
         (var.rbac ? "rbac" : "alwaysAllow") = {}
       }
-      channel = var.channel
+      awsLoadBalancerController = var.aws-load-balancer-controller
+      certManager               = var.cert-manager
+      channel                   = var.channel
       cloudConfig = {
         disableSecurityGroupIngress = var.disable-sg-ingress
+        awsEBSCSIDriver             = var.aws-ebs-csi-driver
       }
-      cloudLabels      = length(keys(var.cloud-labels)) == 0 ? null : var.cloud-labels
-      cloudProvider    = "aws"
-      clusterDNSDomain = var.kube-dns.domain
-      configBase       = "s3://${var.kops-state-bucket}/${var.cluster-name}"
-      configStore      = "s3://${var.kops-state-bucket}/${var.cluster-name}"
-      dnsZone          = var.cluster-name
+      cloudLabels       = length(keys(var.cloud-labels)) == 0 ? null : var.cloud-labels
+      cloudProvider     = "aws"
+      clusterAutoscaler = var.cluster-autoscaler
+      clusterDNSDomain  = var.kube-dns.domain
+      configBase        = "s3://${var.kops-state-bucket}/${var.cluster-name}"
+      configStore       = "s3://${var.kops-state-bucket}/${var.cluster-name}"
+      dnsZone           = var.cluster-name
       etcdClusters = [
         for etcd_cluster in ["main", "events"] : merge({
-          name          = etcd_cluster
-          enableEtcdTLS = var.etcd-enable-tls
+          name = etcd_cluster
           etcdMembers = [
             for az in var.master-availability-zones : {
               encryptedVolume = true
@@ -50,13 +53,13 @@ locals {
             }
           ]
           provider = var.etcd-mode
-          version  = var.etcd-version
           }, var.etcd-backup-enabled ? {
           backups = {
             backupStore = "s3://${var.etcd-backup-s3-bucket == "" ? var.kops-state-bucket : var.etcd-backup-s3-bucket}/${var.cluster-name}/backups/etcd/${etcd_cluster}/"
           }
         } : {})
       ]
+      iam      = var.iam
       keyStore = "s3://${var.kops-state-bucket}/${var.cluster-name}/pki"
       kubeAPIServer = merge({
         insecureBindAddress          = "127.0.0.1"
@@ -65,14 +68,11 @@ locals {
         apiServerCount               = length(var.master-availability-zones)
         authorizationMode            = var.rbac ? "RBAC" : "AlwaysAllow"
         cloudProvider                = "aws"
-        etcdServers                  = ["http://127.0.0.1:4001"]
-        etcdServersOverrides         = ["/events#http://127.0.0.1:4002"]
         insecurePort                 = 8080
         kubeletPreferredAddressTypes = ["InternalIP", "Hostname", "ExternalIP"]
         logLevel                     = var.log-level
         securePort                   = 443
         serviceClusterIPRange        = "100.64.0.0/13"
-        storageBackend               = "etcd${substr(var.etcd-version, 0, 1)}"
         runtimeConfig                = var.apiserver-runtime-flags
         featureGates                 = var.featuregates-flags
         }, var.oidc-issuer-url == "" ? {} : {
@@ -104,7 +104,6 @@ locals {
         domain           = var.kube-dns.domain
         serverIP         = var.kube-dns.server-ip
         provider         = var.kube-dns.provider
-        coreDNSImage     = var.coredns.image
         externalCoreFile = var.coredns.corefile
         nodeLocalDNS = {
           enabled       = var.node-local-dns-cache.enabled
@@ -117,7 +116,6 @@ locals {
         clusterCIDR      = var.kube-proxy-params.clusterCIDR
         cpuRequest       = var.kube-proxy-params.cpuRequest
         hostnameOverride = var.kube-proxy-params.hostnameOverride
-        image            = "gcr.io/google_containers/kube-proxy:v${var.kube-proxy-version}" # From upstream
         logLevel         = var.log-level
       }
       kubeScheduler = {
@@ -175,6 +173,7 @@ locals {
         registerSchedulable     = false
       }
       masterPublicName = "api.${var.cluster-name}"
+      metricsServer    = var.metrics-server
       networkCIDR      = var.vpc-networking.vpc-cidr-block
       networkID        = var.vpc-networking.vpc-id
       networking = {
@@ -304,7 +303,7 @@ locals {
     }, length(var.minion-additional-sgs) > 0 ? { additionalSecurityGroups = var.minion-additional-sgs } : {})
   }
   docker-auth-config = {
-    auths = { for hostname, creds in var.docker-auth-creds: hostname => {auth = base64encode("${creds.username}:${creds.password}")} }
+    auths = { for hostname, creds in var.docker-auth-creds : hostname => { auth = base64encode("${creds.username}:${creds.password}") } }
     HttpHeaders = {
       User-Agent = "Docker-Client/18.06.3-ce (linux)"
     }

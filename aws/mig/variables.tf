@@ -102,9 +102,9 @@ variable "volume-provisioned-iops" {
 
 variable "volume-type" {
   type        = string
-  description = "Nodes volume type (io1/gp2), defaults to gp2"
+  description = "Nodes volume type (io1/gp2/gp3), defaults to gp3"
 
-  default = "gp2"
+  default = "gp3"
 }
 
 variable "ebs-optimized" {
@@ -195,7 +195,7 @@ variable "policy_spot_allocation_strategy" {
 }
 
 variable "rolling-update" {
-  type        = object({
+  type = object({
     max-surge       = any
     max-unavailable = any
   })

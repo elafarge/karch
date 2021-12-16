@@ -126,11 +126,9 @@ variable "node-local-dns-cache" {
 
 variable "coredns" {
   type = object({
-    image    = string
     corefile = string
   })
   default = {
-    image    = null
     corefile = null
   }
 }
@@ -182,22 +180,9 @@ variable "kops-static-addons" {
 
 variable "disable-sg-ingress" {
   type        = bool
-  description = "Boolean that indicates wether or not to create and attach a security group to instance nodes and load balancers for each LoadBalancer service (default: false)"
+  description = "Boolean that indicates whether or not to create and attach a security group to instance nodes and load balancers for each LoadBalancer service (default: false)"
 
   default = false
-}
-
-variable "etcd-version" {
-  type        = string
-  description = "Etcd version to use"
-  default     = "3.3.10"
-}
-
-variable "etcd-enable-tls" {
-  type        = bool
-  description = "Set to true to enable TLS on etcd containers (default: true)"
-
-  default = true
 }
 
 variable "etcd-backup-enabled" {
@@ -244,13 +229,11 @@ variable "container-networking-params-amazonvpc" {
 
 variable "container-networking-params-calico" {
   type = object({
-    awsSrcDstCheck                  = string
     crossSubnet                     = bool
     bpfEnabled                      = bool
     bpfExternalServiceMode          = string
     bpfLogLevel                     = string
     encapsulationMode               = string
-    IPIPMode                        = string
     mtu                             = number
     typhaReplicas                   = number
     wireguardEnabled                = bool
@@ -264,15 +247,13 @@ variable "container-networking-params-calico" {
   description = "Calico CNI params"
 
   default = {
-    awsSrcDstCheck                  = "Disable"
     crossSubnet                     = true
     bpfEnabled                      = false
     bpfExternalServiceMode          = "Tunnel"
     bpfLogLevel                     = "Off"
     encapsulationMode               = "ipip"
-    IPIPMode                        = "CrossSubnet"
     mtu                             = 8981
-    typhaReplicas                   = 0
+    typhaReplicas                   = 3
     wireguardEnabled                = false
     prometheusMetricsEnabled        = false
     prometheusGoMetricsEnabled      = false
@@ -428,12 +409,6 @@ variable "kubernetes-version" {
   default     = "1.15.12"
 }
 
-variable "kube-proxy-version" {
-  type        = string
-  description = "Kube-proxy version to use in Core components"
-  default     = "1.15.12"
-}
-
 variable "cloud-labels" {
   type        = map(string)
   description = "(Flat) map of kops cloud labels to apply to all resources in cluster"
@@ -542,9 +517,9 @@ variable "master-volume-provisioned-iops" {
 
 variable "master-volume-type" {
   type        = string
-  description = "Master volume type (io1/gp2), defaults to gp2"
+  description = "Master volume type (io1/gp2/gp3), defaults to gp3"
 
-  default = "gp2"
+  default = "gp3"
 }
 
 variable "master-ebs-optimized" {
@@ -578,9 +553,7 @@ variable "master-taints" {
   type        = list(string)
   description = "List of taints (under the form key=value) to add to master instances"
 
-  default = [
-    "CriticalAddonsOnly=:NoSchedule",
-  ]
+  default = []
 }
 
 variable "master-hooks" {
@@ -633,9 +606,9 @@ variable "bastion-volume-provisioned-iops" {
 
 variable "bastion-volume-type" {
   type        = string
-  description = "Bastion volume type (io1/gp2), defaults to gp2"
+  description = "Bastion volume type (io1/gp2/gp3), defaults to gp3"
 
-  default = "gp2"
+  default = "gp3"
 }
 
 variable "bastion-ebs-optimized" {
@@ -736,9 +709,9 @@ variable "minion-volume-provisioned-iops" {
 
 variable "minion-volume-type" {
   type        = string
-  description = "Minion volume type (io1/gp2), defaults to gp2"
+  description = "Minion volume type (io1/gp2/gp3), defaults to gp3"
 
-  default = "gp2"
+  default = "gp3"
 }
 
 variable "minion-ebs-optimized" {
@@ -845,10 +818,79 @@ variable "allowed-unsafe-sysctls" {
 }
 
 variable "docker-auth-creds" {
-  type        = map(object({
+  type = map(object({
     username = string
     password = string
   }))
   description = "Credentials for Docker repositories indexed by repository hostname"
   default     = {}
+}
+
+variable "iam" {
+  type = object({
+    allowContainerRegistry = bool
+  })
+  description = "IAM settings for the cluster"
+  default = {
+    allowContainerRegistry = true
+  }
+}
+
+variable "cluster-autoscaler" {
+  type = object({
+    enabled                       = bool
+    expander                      = string
+    balanceSimilarNodeGroups      = bool
+    scaleDownUtilizationThreshold = string
+    scaleDownDelayAfterAdd        = string
+    cpuRequest                    = string
+    memoryRequest                 = string
+  })
+  default = {
+    enabled                       = false
+    expander                      = "least-waste"
+    balanceSimilarNodeGroups      = false
+    scaleDownUtilizationThreshold = "0.5"
+    scaleDownDelayAfterAdd        = "10m0s"
+    cpuRequest                    = "100m"
+    memoryRequest                 = "300Mi"
+  }
+}
+
+variable "metrics-server" {
+  type = object({
+    enabled  = bool
+    insecure = bool
+  })
+  default = {
+    enabled  = false
+    insecure = false
+  }
+}
+
+variable "aws-ebs-csi-driver" {
+  type = object({
+    enabled = bool
+  })
+  default = {
+    enabled = false
+  }
+}
+
+variable "aws-load-balancer-controller" {
+  type = object({
+    enabled = bool
+  })
+  default = {
+    enabled = false
+  }
+}
+
+variable "cert-manager" {
+  type = object({
+    enabled = bool
+  })
+  default = {
+    enabled = false
+  }
 }
