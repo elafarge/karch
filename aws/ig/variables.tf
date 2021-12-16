@@ -166,7 +166,7 @@ variable "node-labels" {
 }
 
 variable "rolling-update" {
-  type        = object({
+  type = object({
     max-surge       = any
     max-unavailable = any
   })

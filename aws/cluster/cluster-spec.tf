@@ -28,37 +28,23 @@ locals {
       authorization = {
         (var.rbac ? "rbac" : "alwaysAllow") = {}
       }
-      awsLoadBalancerController = {
-        enabled = var.aws-load-balancer-controller.enabled
-      }
-      certManager = {
-        enabled = var.cert-manager.enabled
-      }
-      channel = var.channel
+      awsLoadBalancerController = var.aws-load-balancer-controller
+      certManager               = var.cert-manager
+      channel                   = var.channel
       cloudConfig = {
         disableSecurityGroupIngress = var.disable-sg-ingress
-        awsEBSCSIDriver = {
-          enabled = var.aws-ebs-csi-driver.enabled
-        }
+        awsEBSCSIDriver             = var.aws-ebs-csi-driver
       }
-      cloudLabels   = length(keys(var.cloud-labels)) == 0 ? null : var.cloud-labels
-      cloudProvider = "aws"
-      clusterAutoscaler = {
-        enabled                       = var.cluster-autoscaler.enabled
-        expander                      = var.cluster-autoscaler.expander
-        balanceSimilarNodeGroups      = var.cluster-autoscaler.balance-similar-node-groups
-        scaleDownUtilizationThreshold = var.cluster-autoscaler.scale-down-utilization-threshold
-        scaleDownDelayAfterAdd        = var.cluster-autoscaler.scale-down-delay-after-add
-        cpuRequest                    = var.cluster-autoscaler.resources.requests.cpu
-        memoryRequest                 = var.cluster-autoscaler.resources.requests.memory
-      }
-      clusterDNSDomain = var.kube-dns.domain
-      configBase       = "s3://${var.kops-state-bucket}/${var.cluster-name}"
-      configStore      = "s3://${var.kops-state-bucket}/${var.cluster-name}"
-      dnsZone          = var.cluster-name
+      cloudLabels       = length(keys(var.cloud-labels)) == 0 ? null : var.cloud-labels
+      cloudProvider     = "aws"
+      clusterAutoscaler = var.cluster-autoscaler
+      clusterDNSDomain  = var.kube-dns.domain
+      configBase        = "s3://${var.kops-state-bucket}/${var.cluster-name}"
+      configStore       = "s3://${var.kops-state-bucket}/${var.cluster-name}"
+      dnsZone           = var.cluster-name
       etcdClusters = [
         for etcd_cluster in ["main", "events"] : merge({
-          name          = etcd_cluster
+          name = etcd_cluster
           etcdMembers = [
             for az in var.master-availability-zones : {
               encryptedVolume = true
@@ -73,9 +59,7 @@ locals {
           }
         } : {})
       ]
-      iam = {
-        allowContainerRegistry = var.iam.allow-container-registry
-      }
+      iam      = var.iam
       keyStore = "s3://${var.kops-state-bucket}/${var.cluster-name}/pki"
       kubeAPIServer = merge({
         insecureBindAddress          = "127.0.0.1"
@@ -189,10 +173,7 @@ locals {
         registerSchedulable     = false
       }
       masterPublicName = "api.${var.cluster-name}"
-      metricsServer = {
-        enabled  = var.metrics-server.enabled
-        insecure = var.metrics-server.insecure
-      }
+      metricsServer    = var.metrics-server
       networkCIDR      = var.vpc-networking.vpc-cidr-block
       networkID        = var.vpc-networking.vpc-id
       networking = {

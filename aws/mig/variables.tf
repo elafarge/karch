@@ -195,7 +195,7 @@ variable "policy_spot_allocation_strategy" {
 }
 
 variable "rolling-update" {
-  type        = object({
+  type = object({
     max-surge       = any
     max-unavailable = any
   })

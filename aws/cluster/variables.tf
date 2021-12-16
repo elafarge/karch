@@ -821,50 +821,42 @@ variable "docker-auth-creds" {
 
 variable "iam" {
   type = object({
-    allow-container-registry = bool
+    allowContainerRegistry = bool
   })
   description = "IAM settings for the cluster"
   default = {
-    allow-container-registry = true
+    allowContainerRegistry = true
   }
 }
 
 variable "cluster-autoscaler" {
   type = object({
-    enabled                          = bool
-    expander                         = string
-    balance-similar-node-groups      = bool
-    scale-down-utilization-threshold = string
-    scale-down-delay-after-add       = string
-    resources = object({
-      requests = object({
-        cpu    = string
-        memory = string
-      })
-    })
+    enabled                       = bool
+    expander                      = string
+    balanceSimilarNodeGroups      = bool
+    scaleDownUtilizationThreshold = string
+    scaleDownDelayAfterAdd        = string
+    cpuRequest                    = string
+    memoryRequest                 = string
   })
   default = {
-    enabled                          = false
-    expander                         = "least-waste"
-    balance-similar-node-groups      = false
-    scale-down-utilization-threshold = "0.5"
-    scale-down-delay-after-add       = "10m0s"
-    resources = {
-      requests = {
-        cpu    = "100m"
-        memory = "300Mi"
-      }
-    }
+    enabled                       = false
+    expander                      = "least-waste"
+    balanceSimilarNodeGroups      = false
+    scaleDownUtilizationThreshold = "0.5"
+    scaleDownDelayAfterAdd        = "10m0s"
+    cpuRequest                    = "100m"
+    memoryRequest                 = "300Mi"
   }
 }
 
 variable "metrics-server" {
   type = object({
-    enabled = bool
+    enabled  = bool
     insecure = bool
   })
   default = {
-    enabled = false
+    enabled  = false
     insecure = false
   }
 }
