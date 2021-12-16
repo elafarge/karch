@@ -119,11 +119,9 @@ variable "node-local-dns-cache" {
 
 variable "coredns" {
   type = object({
-    image    = string
     corefile = string
   })
   default = {
-    image    = null
     corefile = null
   }
 }
@@ -180,19 +178,6 @@ variable "disable-sg-ingress" {
   default = false
 }
 
-variable "etcd-version" {
-  type        = string
-  description = "Etcd version to use"
-  default     = "3.3.10"
-}
-
-variable "etcd-enable-tls" {
-  type        = bool
-  description = "Set to true to enable TLS on etcd containers (default: true)"
-
-  default = true
-}
-
 variable "etcd-backup-enabled" {
   type        = bool
   description = "Set to true to enable backup to S3 on etcd containers (default: false)"
@@ -237,13 +222,11 @@ variable "container-networking-params-amazonvpc" {
 
 variable "container-networking-params-calico" {
   type = object({
-    awsSrcDstCheck                  = string
     crossSubnet                     = bool
     bpfEnabled                      = bool
     bpfExternalServiceMode          = string
     bpfLogLevel                     = string
     encapsulationMode               = string
-    IPIPMode                        = string
     mtu                             = number
     typhaReplicas                   = number
     wireguardEnabled                = bool
@@ -257,15 +240,13 @@ variable "container-networking-params-calico" {
   description = "Calico CNI params"
 
   default = {
-    awsSrcDstCheck                  = "Disable"
     crossSubnet                     = true
     bpfEnabled                      = false
     bpfExternalServiceMode          = "Tunnel"
     bpfLogLevel                     = "Off"
     encapsulationMode               = "ipip"
-    IPIPMode                        = "CrossSubnet"
     mtu                             = 8981
-    typhaReplicas                   = 0
+    typhaReplicas                   = 3
     wireguardEnabled                = false
     prometheusMetricsEnabled        = false
     prometheusGoMetricsEnabled      = false
@@ -418,12 +399,6 @@ variable "channel" {
 variable "kubernetes-version" {
   type        = string
   description = "Kubernetes version to use for Core components (default: 1.15.12)"
-  default     = "1.15.12"
-}
-
-variable "kube-proxy-version" {
-  type        = string
-  description = "Kube-proxy version to use in Core components"
   default     = "1.15.12"
 }
 

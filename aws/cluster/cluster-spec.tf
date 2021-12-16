@@ -59,7 +59,6 @@ locals {
       etcdClusters = [
         for etcd_cluster in ["main", "events"] : merge({
           name          = etcd_cluster
-          enableEtcdTLS = var.etcd-enable-tls
           etcdMembers = [
             for az in var.master-availability-zones : {
               encryptedVolume = true
@@ -68,7 +67,6 @@ locals {
             }
           ]
           provider = var.etcd-mode
-          version  = var.etcd-version
           }, var.etcd-backup-enabled ? {
           backups = {
             backupStore = "s3://${var.etcd-backup-s3-bucket == "" ? var.kops-state-bucket : var.etcd-backup-s3-bucket}/${var.cluster-name}/backups/etcd/${etcd_cluster}/"
@@ -86,14 +84,11 @@ locals {
         apiServerCount               = length(var.master-availability-zones)
         authorizationMode            = var.rbac ? "RBAC" : "AlwaysAllow"
         cloudProvider                = "aws"
-        etcdServers                  = ["http://127.0.0.1:4001"]
-        etcdServersOverrides         = ["/events#http://127.0.0.1:4002"]
         insecurePort                 = 8080
         kubeletPreferredAddressTypes = ["InternalIP", "Hostname", "ExternalIP"]
         logLevel                     = var.log-level
         securePort                   = 443
         serviceClusterIPRange        = "100.64.0.0/13"
-        storageBackend               = "etcd${substr(var.etcd-version, 0, 1)}"
         runtimeConfig                = var.apiserver-runtime-flags
         featureGates                 = var.featuregates-flags
         }, var.oidc-issuer-url == "" ? {} : {
@@ -125,7 +120,6 @@ locals {
         domain           = var.kube-dns.domain
         serverIP         = var.kube-dns.server-ip
         provider         = var.kube-dns.provider
-        coreDNSImage     = var.coredns.image
         externalCoreFile = var.coredns.corefile
         nodeLocalDNS = {
           enabled       = var.node-local-dns-cache.enabled
@@ -138,7 +132,6 @@ locals {
         clusterCIDR      = var.kube-proxy-params.clusterCIDR
         cpuRequest       = var.kube-proxy-params.cpuRequest
         hostnameOverride = var.kube-proxy-params.hostnameOverride
-        image            = "gcr.io/google_containers/kube-proxy:v${var.kube-proxy-version}" # From upstream
         logLevel         = var.log-level
       }
       kubeScheduler = {

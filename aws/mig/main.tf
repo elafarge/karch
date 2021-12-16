@@ -87,7 +87,8 @@ FILEDUMP
       done
       echo 'locked' > ${path.root}/.kops-ig-lock
 
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
+      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
+        create -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
 
       rmdir ${path.root}/.kops-ig-lock
 EOF
@@ -127,6 +128,9 @@ FILEDUMP
         replace -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
 
       rm -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
+
+      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
+        export kubeconfig ${var.cluster-name} --admin
 
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
         update cluster ${var.cluster-name} --yes
