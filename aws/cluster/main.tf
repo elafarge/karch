@@ -101,9 +101,9 @@ EOF
     command = "rm ${path.module}/${var.cluster-name}-cluster-spec.yml"
   }
 
-  // Let's export kubeconfig (it's exported without credentials from kops 1.19)
+  // Let's export kubecfg (it's exported without credentials from kops 1.19)
   provisioner "local-exec" {
-    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} export kubeconfig ${var.cluster-name} --admin"
+    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} export kubecfg ${var.cluster-name} --admin"
   }
 
   // Do not forget to add our public SSH key over there
@@ -152,7 +152,7 @@ FILEDUMP
       rm -f ${path.module}/${var.cluster-name}-cluster-spec.yml
 
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        export kubeconfig ${var.cluster-name} --admin
+        export kubecfg ${var.cluster-name} --admin
 
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
         update cluster ${var.cluster-name} --yes
@@ -180,7 +180,7 @@ FILEDUMP
   provisioner "local-exec" {
     command = <<EOF
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        export kubeconfig ${var.cluster-name} --admin
+        export kubecfg ${var.cluster-name} --admin
 
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} --name ${var.cluster-name} \
         create secret dockerconfig -f ${self.triggers.local_path} --force && \
