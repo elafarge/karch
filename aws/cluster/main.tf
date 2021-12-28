@@ -113,6 +113,9 @@ EOF
 resource "null_resource" "master-up" {
   provisioner "local-exec" {
     command = <<EOF
+      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
+        export kubecfg ${var.cluster-name} --admin
+
       until ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} validate cluster --name ${var.cluster-name}
       do
         echo "Cluster isn't available yet"
@@ -121,7 +124,10 @@ resource "null_resource" "master-up" {
 EOF
   }
 
-  depends_on = [null_resource.kops-cluster]
+  depends_on = [
+    null_resource.kops-cluster,
+    null_resource.kops-update,
+  ]
 }
 
 // Hook that triggers cluster updates when the manifest changes
