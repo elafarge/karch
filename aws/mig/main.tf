@@ -130,10 +130,10 @@ FILEDUMP
       rm -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
 
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        export kubeconfig ${var.cluster-name} --admin
+        update cluster ${var.cluster-name} --yes
 
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        update cluster ${var.cluster-name} --yes
+        export kubecfg ${var.cluster-name} --admin
 
       KOPS_FEATURE_FLAGS="+DrainAndValidateRollingUpdate" \
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
