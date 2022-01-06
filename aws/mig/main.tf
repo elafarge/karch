@@ -16,6 +16,7 @@ locals {
       machineType            = var.type
       maxSize                = var.max-size
       minSize                = var.min-size
+      externalLoadBalancers  = var.external-load-balancers
       role                   = "Node"
       rootVolumeSize         = var.volume-size
       rootVolumeType         = var.volume-type
