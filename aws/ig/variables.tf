@@ -143,6 +143,12 @@ variable "min-size" {
   default = 1
 }
 
+variable "external-load-balancers" {
+  type        = list(map(string))
+  description = "External load balancers config"
+  default     = []
+}
+
 # Labels
 variable "taints" {
   type        = list(string)
