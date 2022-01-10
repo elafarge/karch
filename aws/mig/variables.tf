@@ -1,9 +1,3 @@
-# Dependency hooks
-variable "master-up" {
-  type        = string
-  description = "Terraform dependency hook to wait for the master cluster to be up before creating instance groups"
-}
-
 # Kops env. overrides
 variable "nodeup-url-env" {
   type        = string
@@ -39,20 +33,6 @@ variable "name" {
 variable "kops-state-bucket" {
   type        = string
   description = ""
-}
-
-variable "automatic-rollout" {
-  type        = bool
-  description = "If set to true, a rolling update of the instance group will be triggered when its spec is modified"
-
-  default = false
-}
-
-variable "update-interval" {
-  type        = number
-  description = "Rolling update interval"
-
-  default = 8
 }
 
 # Networking & Security

@@ -1,6 +1,5 @@
 // Cluster manifest on S3 and cluster destroy-time provisioner
 resource "aws_s3_bucket_object" "cluster-spec" {
-  count  = var.create_cluster_spec_object
   bucket = var.kops-state-bucket
   key    = "/karch-specs/${var.cluster-name}/master-cluster-spec.yml"
 
@@ -75,7 +74,7 @@ resource "null_resource" "kops-cluster" {
   provisioner "local-exec" {
     command = <<FILEDUMP
       cat <<EOF > ${path.module}/${var.cluster-name}-cluster-spec.yml
-${aws_s3_bucket_object.cluster-spec[0].content}
+${aws_s3_bucket_object.cluster-spec.content}
 EOF
 FILEDUMP
   }
@@ -106,41 +105,24 @@ EOF
     command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
   }
 
-  depends_on = [aws_s3_bucket_object.cluster-spec]
-}
-
-// Hook for other modules (like instance groups) to wait for the master to be available
-resource "null_resource" "master-up" {
+  // Run initial cluster provisioning
   provisioner "local-exec" {
-    command = <<EOF
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        export kubecfg ${var.cluster-name} --admin
-
-      until ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} validate cluster --name ${var.cluster-name}
-      do
-        echo "Cluster isn't available yet"
-        sleep 5s
-      done
-EOF
+    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} update cluster ${var.cluster-name} --yes"
   }
 
-  depends_on = [
-    null_resource.kops-cluster,
-    null_resource.kops-update,
-  ]
+  depends_on = [aws_s3_bucket_object.cluster-spec]
 }
 
 // Hook that triggers cluster updates when the manifest changes
 resource "null_resource" "kops-update" {
-  count = var.create_cluster_spec_object
   triggers = {
-    cluster_spec = aws_s3_bucket_object.cluster-spec[0].content
+    cluster_spec = aws_s3_bucket_object.cluster-spec.content
   }
 
   provisioner "local-exec" {
     command = <<FILEDUMP
       cat <<EOF > ${path.module}/${var.cluster-name}-cluster-spec.yml
-${aws_s3_bucket_object.cluster-spec[0].content}
+${aws_s3_bucket_object.cluster-spec.content}
 EOF
 FILEDUMP
   }
@@ -151,9 +133,6 @@ FILEDUMP
         replace -f ${path.module}/${var.cluster-name}-cluster-spec.yml
 
       rm -f ${path.module}/${var.cluster-name}-cluster-spec.yml
-
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        update cluster ${var.cluster-name} --yes
 EOF
   }
 

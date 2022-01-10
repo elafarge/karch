@@ -1,10 +1,10 @@
 # Lifecycle hooks
-output "master-up" {
-  value = null_resource.master-up.id
+output "cluster-created" {
+  value = null_resource.kops-update.id
 }
 
-output "cluster-created" {
-  value = null_resource.kops-cluster.id
+output "cluster-spec" {
+  value = aws_s3_bucket_object.cluster-spec.content
 }
 
 # DNS zone for the cluster subdomain
@@ -20,17 +20,18 @@ output "vpc-id" {
   value = var.vpc-networking["vpc-id"]
 }
 
+
 // Nodes security groups (to direct ELB traffic to hostPort pods)
 output "nodes-sg" {
-  value = element(split("/", data.aws_security_group.nodes.arn), 1)
+  value = data.aws_security_group.nodes.id
 }
 
 output "masters-sg" {
-  value = element(split("/", data.aws_security_group.masters.arn), 1)
+  value = data.aws_security_group.masters.id
 }
 
 output "bastion-sg" {
-  value = element(split("/", data.aws_security_group.bastion.arn), 1)
+  value = data.aws_security_group.bastion.id
 }
 
 output "etcd-volume-ids" {

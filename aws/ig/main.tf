@@ -57,11 +57,6 @@ resource "aws_s3_bucket_object" "ig-spec" {
 }
 
 resource "null_resource" "ig" {
-  // Let's wait for the Kubernetes API to be available
-  provisioner "local-exec" {
-    command = "echo \"Master available: ${var.master-up}', let's use kops to create our instance group\""
-  }
-
   // Let's dump the ig spec on disk
   provisioner "local-exec" {
     command = <<FILEDUMP
@@ -74,17 +69,8 @@ FILEDUMP
   // Let's register our Kops cluster into remote state
   provisioner "local-exec" {
     command = <<EOF
-      until mkdir ${path.root}/.kops-ig-lock
-      do
-        echo "Waiting for other instance group update to finish"
-        sleep $(((1 + RANDOM % 10)+10))
-      done
-      echo 'locked' > ${path.root}/.kops-ig-lock
-
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
         create -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
-
-      rmdir ${path.root}/.kops-ig-lock
 EOF
   }
 
@@ -111,31 +97,10 @@ FILEDUMP
 
   provisioner "local-exec" {
     command = <<EOF
-      until mkdir ${path.root}/.kops-ig-lock
-      do
-        echo "Waiting for other instance group update to finish"
-        sleep $(((1 + RANDOM % 10)+10))
-      done
-      echo 'locked' > ${path.root}/.kops-ig-lock
-
       ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
         replace -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
 
       rm -f ${path.module}/${var.cluster-name}-${var.name}-ig-spec.yml
-
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        update cluster ${var.cluster-name} --yes
-
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        export kubecfg ${var.cluster-name} --admin
-
-      KOPS_FEATURE_FLAGS="+DrainAndValidateRollingUpdate" \
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
-        rolling-update cluster ${var.cluster-name} \
-          --node-interval="${var.update-interval}m" ${var.automatic-rollout == "true" ? "--yes" : ""}\
-          --instance-group="${var.name}"
-
-      rmdir ${path.root}/.kops-ig-lock
 EOF
   }
 

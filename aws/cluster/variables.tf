@@ -1,9 +1,3 @@
-variable "create_cluster_spec_object" {
-  description = "Resource count, should be either 1 or 0. It is a workaround for cluster destruction that needs to be done in phased manner by first making its count 0 and the removing from config."
-  type        = string
-  default     = "1"
-}
-
 variable "aws-region" {
   description = "The AWS region in which to deploy your cluster & VPC."
   type        = string

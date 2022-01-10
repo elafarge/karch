@@ -1,9 +1,3 @@
-# Dependency hooks
-variable "master-up" {
-  type        = string
-  description = "Terraform dependency hook to wait for the master cluster to be up before creating instance groups"
-}
-
 # Kops env. overrides
 variable "nodeup-url-env" {
   type        = string

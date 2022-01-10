@@ -1,8 +1,7 @@
 output "created" {
-  value = null_resource.ig.id
+  value = null_resource.ig-update.id
 }
 
-// Name of the AWS autoscaling group corresponding to this kops instance group
-output "asg-name" {
-  value = data.aws_autoscaling_group.ig.name
+output "ig-spec" {
+  value = yamlencode(local.ig_spec)
 }
