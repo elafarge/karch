@@ -1,6 +1,6 @@
 # Lifecycle hooks
 output "cluster-created" {
-  value = null_resource.kops-update.id
+  value = null_resource.kops-cluster.id
 }
 
 output "cluster-spec" {

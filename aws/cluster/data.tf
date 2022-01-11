@@ -7,7 +7,7 @@ data "aws_security_group" "bastion" {
     // The second value is just a hacky dependency hooks on our cluster being created
     values = [
       "bastion.${var.cluster-name}",
-      null_resource.kops-update.id,
+      null_resource.kops-cluster.id,
     ]
   }
 }
@@ -21,7 +21,7 @@ data "aws_security_group" "nodes" {
     // The second value is just a hacky dependency hooks on our cluster being created
     values = [
       "nodes.${var.cluster-name}",
-      null_resource.kops-update.id,
+      null_resource.kops-cluster.id,
     ]
   }
 }
@@ -35,7 +35,7 @@ data "aws_security_group" "masters" {
     // The second value is just a hacky dependency hooks on our cluster being created
     values = [
       "masters.${var.cluster-name}",
-      null_resource.kops-update.id,
+      null_resource.kops-cluster.id,
     ]
   }
 }
@@ -48,7 +48,7 @@ data "aws_ebs_volume" "etcd-volumes" {
 
     values = [
       "${element(var.availability-zones, count.index)}.etcd-main.${var.cluster-name}",
-      null_resource.kops-update.id,
+      null_resource.kops-cluster.id,
     ]
   }
 }
@@ -61,7 +61,7 @@ data "aws_ebs_volume" "etcd-event-volumes" {
 
     values = [
       "${element(var.availability-zones, count.index)}.etcd-events.${var.cluster-name}",
-      null_resource.kops-update.id,
+      null_resource.kops-cluster.id,
     ]
   }
 }
