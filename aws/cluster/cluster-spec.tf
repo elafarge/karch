@@ -66,7 +66,7 @@ locals {
         enableAdmissionPlugins       = var.enable-admission-plugins
         anonymousAuth                = false
         apiServerCount               = length(var.master-availability-zones)
-        authorizationMode            = var.rbac ? "RBAC" : "AlwaysAllow"
+        authorizationMode            = var.rbac ? "Node,RBAC" : "AlwaysAllow"
         cloudProvider                = "aws"
         insecurePort                 = 8080
         kubeletPreferredAddressTypes = ["InternalIP", "Hostname", "ExternalIP"]
