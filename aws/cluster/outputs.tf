@@ -3,6 +3,10 @@ output "cluster-created" {
   value = null_resource.kops-cluster.id
 }
 
+output "cluster-updated" {
+  value = null_resource.kops-update.id
+}
+
 output "cluster-spec" {
   value = aws_s3_bucket_object.cluster-spec.content
 }
