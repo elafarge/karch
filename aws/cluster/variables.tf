@@ -775,6 +775,19 @@ variable "node-additional-policies" {
   default     = ""
 }
 
+variable "external-policies" {
+  type = object({
+    node    = list(string)
+    master  = list(string)
+    bastion = list(string)
+  })
+  default = {
+    node    = []
+    master  = []
+    bastion = []
+  }
+}
+
 variable "log-level" {
   type        = number
   description = "V-Log log level of all infrastructure components (APIServer, controller-manager, etc.)"
