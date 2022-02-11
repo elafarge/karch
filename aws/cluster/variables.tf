@@ -852,6 +852,7 @@ variable "cluster-autoscaler" {
     scaleDownDelayAfterAdd        = string
     cpuRequest                    = string
     memoryRequest                 = string
+    image                         = string
   })
   default = {
     enabled                       = false
@@ -861,6 +862,7 @@ variable "cluster-autoscaler" {
     scaleDownDelayAfterAdd        = "10m0s"
     cpuRequest                    = "100m"
     memoryRequest                 = "300Mi"
+    image                         = null
   }
 }
 
