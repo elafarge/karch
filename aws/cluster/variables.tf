@@ -862,7 +862,7 @@ variable "cluster-autoscaler" {
     scaleDownDelayAfterAdd        = "10m0s"
     cpuRequest                    = "100m"
     memoryRequest                 = "300Mi"
-    image                         = "v1.20.2"
+    image                         = null
   }
 }
 
