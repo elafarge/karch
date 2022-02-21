@@ -850,6 +850,8 @@ variable "cluster-autoscaler" {
     balanceSimilarNodeGroups      = bool
     scaleDownUtilizationThreshold = string
     scaleDownDelayAfterAdd        = string
+    skipNodesWithLocalStorage     = bool
+    skipNodesWithSystemPods       = bool
     cpuRequest                    = string
     memoryRequest                 = string
     image                         = string
@@ -860,6 +862,8 @@ variable "cluster-autoscaler" {
     balanceSimilarNodeGroups      = false
     scaleDownUtilizationThreshold = "0.5"
     scaleDownDelayAfterAdd        = "10m0s"
+    skipNodesWithLocalStorage     = false
+    skipNodesWithSystemPods       = true
     cpuRequest                    = "100m"
     memoryRequest                 = "300Mi"
     image                         = null
