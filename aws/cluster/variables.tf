@@ -231,6 +231,7 @@ variable "container-networking-params-calico" {
     mtu                             = number
     typhaReplicas                   = number
     wireguardEnabled                = bool
+    logSeverityScreen               = string
     prometheusMetricsEnabled        = bool
     prometheusGoMetricsEnabled      = bool
     prometheusProcessMetricsEnabled = bool
@@ -249,6 +250,7 @@ variable "container-networking-params-calico" {
     mtu                             = 8981
     typhaReplicas                   = 3
     wireguardEnabled                = false
+    logSeverityScreen               = "error"
     prometheusMetricsEnabled        = false
     prometheusGoMetricsEnabled      = false
     prometheusProcessMetricsEnabled = false
