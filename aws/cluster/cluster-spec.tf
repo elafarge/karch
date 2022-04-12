@@ -184,7 +184,7 @@ locals {
       secretStore           = "s3://${var.kops-state-bucket}/${var.cluster-name}/secrets"
       serviceClusterIPRange = "100.64.0.0/13"
       sshAccess             = var.ssh-cidrs
-      subnets = flatten([
+      subnets = concat(flatten([
         for idx in range(length(var.availability-zones)) : [
           {
             cidr   = var.vpc-networking.vpc-private-cidrs[idx]
@@ -202,7 +202,8 @@ locals {
             id   = var.vpc-networking.vpc-public-subnet-ids[idx]
           },
         ]
-      ])
+      ]),
+      var.extra-subnets)
       topology = {
         bastion = {
           bastionPublicName = "bastion.${var.cluster-name}"

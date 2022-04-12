@@ -18,6 +18,18 @@ variable "vpc-networking" {
   )
 }
 
+variable "extra-subnets" {
+  type = list(object({
+    cidr   = string
+    name   = string
+    type   = string
+    zone   = string
+    id     = string
+    egress = string
+  }))
+  default = []
+}
+
 variable "availability-zones" {
   type        = list(string)
   description = "Availability zones to span (for HA master deployments, see master-availability-zones)"
