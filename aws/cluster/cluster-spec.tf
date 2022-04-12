@@ -180,10 +180,12 @@ locals {
       networking = {
         (var.container-networking) = local.container_networking_params[var.container-networking]
       }
-      nonMasqueradeCIDR     = "100.64.0.0/10"
-      secretStore           = "s3://${var.kops-state-bucket}/${var.cluster-name}/secrets"
-      serviceClusterIPRange = "100.64.0.0/13"
-      sshAccess             = var.ssh-cidrs
+      additionalNetworkCIDRs = var.additional-network-cidrs
+      nonMasqueradeCIDR      = "100.64.0.0/10"
+      secretStore            = "s3://${var.kops-state-bucket}/${var.cluster-name}/secrets"
+      serviceClusterIPRange  = "100.64.0.0/13"
+      sshAccess              = var.ssh-cidrs
+
       subnets = concat(flatten([
         for idx in range(length(var.availability-zones)) : [
           {
@@ -202,7 +204,7 @@ locals {
             id   = var.vpc-networking.vpc-public-subnet-ids[idx]
           },
         ]
-      ]),
+        ]),
       var.extra-subnets)
       topology = {
         bastion = {
