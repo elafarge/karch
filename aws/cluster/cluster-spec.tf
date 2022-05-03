@@ -69,7 +69,7 @@ locals {
         apiServerCount               = length(var.master-availability-zones)
         authorizationMode            = var.rbac ? "Node,RBAC" : "AlwaysAllow"
         cloudProvider                = "aws"
-        insecurePort                 = 8080
+        insecurePort                 = 0
         kubeletPreferredAddressTypes = ["InternalIP", "Hostname", "ExternalIP"]
         logLevel                     = var.log-level
         securePort                   = 443
