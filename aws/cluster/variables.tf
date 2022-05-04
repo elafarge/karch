@@ -352,7 +352,6 @@ variable "enable-admission-plugins" {
     "NodeRestriction",
     "PersistentVolumeClaimResize",
     "PersistentVolumeLabel",
-    "PodPreset",
     "PodSecurityPolicy",
     "Priority",
     "ResourceQuota",
