@@ -925,3 +925,8 @@ variable "cert-manager" {
     enabled = false
   }
 }
+
+variable "containerd-log-level" {
+  type    = string
+  default = "warn"
+}
