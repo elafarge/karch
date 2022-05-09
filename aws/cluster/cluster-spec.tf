@@ -41,6 +41,10 @@ locals {
       clusterDNSDomain  = var.kube-dns.domain
       configBase        = "s3://${var.kops-state-bucket}/${var.cluster-name}"
       configStore       = "s3://${var.kops-state-bucket}/${var.cluster-name}"
+      containerd        = {
+        logLevel = var.containerd-log-level
+      }
+      containerRuntime  = "containerd"
       dnsZone           = var.cluster-name
       etcdClusters = [
         for etcd_cluster in ["main", "events"] : merge({
