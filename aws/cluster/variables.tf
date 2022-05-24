@@ -582,6 +582,112 @@ variable "master-additional-sgs" {
   default = []
 }
 
+# Apiserver instance group(s)
+variable "apiserver-nodes-enabled" {
+  type        = bool
+  description = "Enables apiserver nodes"
+  default     = false
+}
+
+variable "apiserver-availability-zones" {
+  type        = list(string)
+  description = "Availability zones in which to create apiserver instance groups"
+}
+
+variable "apiserver-lb-visibility" {
+  type        = string
+  description = "Visibility (Public|Private) for our Kubernetes apiservers' ELB (default: Public)"
+
+  default = "Public"
+}
+
+variable "apiserver-lb-idle-timeout" {
+  type        = number
+  description = "Idle timeout for Kubernetes apiservers' ELB (default: 300s), in seconds"
+  default     = 300
+}
+
+variable "apiserver-image" {
+  type        = string
+  description = "AMI id to use for the apiserver nodes"
+}
+
+variable "apiserver-machine-type" {
+  type        = string
+  description = "EC2 instance type to run our apiservers onto (default: m3.medium)"
+
+  default = "c4.large"
+}
+
+variable "apiserver-volume-size" {
+  type        = number
+  description = "Size of our apiserver's root volume, in GB (default: 10)"
+
+  default = 10
+}
+
+variable "apiserver-volume-provisioned-iops" {
+  type        = string
+  description = "apiserver volume provisioned IOPS, if applicable"
+
+  default = ""
+}
+
+variable "apiserver-volume-type" {
+  type        = string
+  description = "apiserver volume type (io1/gp2/gp3), defaults to gp3"
+
+  default = "gp3"
+}
+
+variable "apiserver-ebs-optimized" {
+  type        = bool
+  description = "Boolean (true or false) indicating whether our apiservers should be EBS optimized"
+  default     = false
+}
+
+variable "apiserver-update-interval" {
+  type        = number
+  description = "Interval (in minutes) between rolling updates of apiserver nodes (default: 8)"
+
+  default = 8
+}
+
+variable "apiserver-cloud-labels" {
+  type        = map(string)
+  description = "(Flat) map of EC2 tags to add to apiserver instances"
+
+  default = {}
+}
+
+variable "apiserver-node-labels" {
+  type        = map(string)
+  description = "(Flat) map of Kubernetes node labels to add to apiserver instances"
+
+  default = {}
+}
+
+variable "apiserver-taints" {
+  type        = list(string)
+  description = "List of taints (under the form key=value) to add to apiserver instances"
+
+  default = []
+}
+
+variable "apiserver-hooks" {
+  type        = list(map(any))
+  description = "Docker/Systemd hooks to add to the apiserver instances. https://kops.sigs.k8s.io/cluster_spec/#hooks"
+
+  default = []
+}
+
+variable "apiserver-additional-sgs" {
+  type        = list(string)
+  description = "A list of additional security groups to add to apiserver instances"
+
+  default = []
+}
+
 # Bastion instance group
 variable "bastion-image" {
   type        = string
