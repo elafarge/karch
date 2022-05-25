@@ -30,3 +30,8 @@ variable "rolling-update" {
   type    = bool
   default = false
 }
+
+variable "apiserver-nodes-enabled" {
+  type = string
+  default = false
+}

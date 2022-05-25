@@ -256,6 +256,35 @@ locals {
       }, length(var.master-additional-sgs) > 0 ? { additionalSecurityGroups = var.master-additional-sgs } : {})
     }
   ]
+  apiserver_nodes_spec = var.apiserver-nodes-enabled ? [
+    for az in var.apiserver-availability-zones : {
+      apiVersion = "kops.k8s.io/v1alpha2"
+      kind       = "InstanceGroup"
+      metadata = {
+        labels = {
+          "kops.k8s.io/cluster" : var.cluster-name
+        }
+        name = "apiserver-${az}"
+      }
+      spec = merge({
+        cloudLabels            = length(keys(var.apiserver-cloud-labels)) == 0 ? null : var.apiserver-cloud-labels
+        nodeLabels             = length(var.apiserver-node-labels) > 0 ? var.apiserver-node-labels : null
+        associatePublicIp      = false
+        image                  = var.apiserver-image
+        machineType            = var.apiserver-machine-type
+        maxSize                = 1
+        minSize                = 1
+        role                   = "APIServer"
+        rootVolumeSize         = var.apiserver-volume-size
+        rootVolumeType         = var.apiserver-volume-type
+        rootProvisionedIops    = var.apiserver-volume-provisioned-iops == "" ? null : var.apiserver-volume-provisioned-iops
+        rootVolumeOptimization = var.apiserver-ebs-optimized
+        taints                 = length(var.apiserver-taints) > 0 ? var.apiserver-taints : null
+        subnets                = [az]
+        hooks                  = length(var.apiserver-hooks) > 0 ? var.apiserver-hooks : null
+      }, length(var.apiserver-additional-sgs) > 0 ? { additionalSecurityGroups = var.apiserver-additional-sgs } : {})
+    }
+  ] : []
   bastion_spec = var.kops-topology != "private" ? [] : [{
     apiVersion = "kops.k8s.io/v1alpha2"
     kind       = "InstanceGroup"

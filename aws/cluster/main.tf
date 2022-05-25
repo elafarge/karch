@@ -1,3 +1,7 @@
+locals {
+  apiserver-nodes-ff = "+APIServerNodes"
+}
+
 // Cluster manifest on S3 and cluster destroy-time provisioner
 resource "aws_s3_bucket_object" "cluster-spec" {
   bucket = var.kops-state-bucket
@@ -7,22 +11,25 @@ resource "aws_s3_bucket_object" "cluster-spec" {
 ${join("\n---\n", concat(
   [yamlencode(local.cluster_spec)],
   [for spec in local.master_spec : yamlencode(spec)],
+  [for spec in local.apiserver_nodes_spec : yamlencode(spec)],
   [for spec in local.bastion_spec : yamlencode(spec)],
   [yamlencode(local.minion_spec)],
 ))}
 EOF
 
-tags = {
-  nodeup-url-env    = var.nodeup-url-env
-  aws-profile       = var.aws-profile
-  kops-state-bucket = var.kops-state-bucket
-  cluster-name      = var.cluster-name
-}
+tags = merge({
+  nodeup-url-env     = var.nodeup-url-env
+  aws-profile        = var.aws-profile
+  kops-state-bucket  = var.kops-state-bucket
+  cluster-name       = var.cluster-name
+}, var.apiserver-nodes-enabled ? {
+  kops-feature-flags = local.apiserver-nodes-ff
+} : {})
 
 // On destroy, remove the cluster first, if it exists
 provisioner "local-exec" {
   when    = destroy
-  command = "(test -z \"$(${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} get cluster | grep ${self.tags["cluster-name"]})\" ) || ${self.tags["nodeup-url-env"]} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} delete cluster --yes ${self.tags["cluster-name"]}"
+  command = "(test -z \"$(${self.tags["nodeup-url-env"]} KOPS_FEATURE_FLAGS=${try(self.tags["kops-feature-flags"], "")} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} get cluster | grep ${self.tags["cluster-name"]})\" ) || ${self.tags["nodeup-url-env"]} KOPS_FEATURE_FLAGS=${try(self.tags["kops-feature-flags"], "")} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${self.tags["aws-profile"]} kops --state=s3://${self.tags["kops-state-bucket"]} delete cluster --yes ${self.tags["cluster-name"]}"
 }
 
 depends_on = [aws_route53_record.cluster-root, aws_s3_bucket_object.addons-list]
@@ -92,7 +99,7 @@ EOF
 
   // Let's register our Kops cluster into remote state
   provisioner "local-exec" {
-    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-cluster-spec.yml"
+    command = "${var.nodeup-url-env} KOPS_FEATURE_FLAGS=${var.apiserver-nodes-enabled ? local.apiserver-nodes-ff : ""} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create -f ${path.module}/${var.cluster-name}-cluster-spec.yml"
   }
 
   // Let's remove the cluster spec file from disk
@@ -102,12 +109,12 @@ EOF
 
   // Do not forget to add our public SSH key over there
   provisioner "local-exec" {
-    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
+    command = "${var.nodeup-url-env} KOPS_FEATURE_FLAGS=${var.apiserver-nodes-enabled ? local.apiserver-nodes-ff : ""} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} create secret --name ${var.cluster-name} sshpublickey admin -i ${var.admin-ssh-public-key-path}"
   }
 
   // Run initial cluster provisioning
   provisioner "local-exec" {
-    command = "${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} update cluster ${var.cluster-name} --yes"
+    command = "${var.nodeup-url-env} KOPS_FEATURE_FLAGS=${var.apiserver-nodes-enabled ? local.apiserver-nodes-ff : ""} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} update cluster ${var.cluster-name} --yes"
   }
 
   depends_on = [aws_s3_bucket_object.cluster-spec]
@@ -129,7 +136,7 @@ FILEDUMP
 
   provisioner "local-exec" {
     command = <<EOF
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
+      KOPS_FEATURE_FLAGS="${var.apiserver-nodes-enabled ? local.apiserver-nodes-ff : ""}" ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} \
         replace -f ${path.module}/${var.cluster-name}-cluster-spec.yml
 
       rm -f ${path.module}/${var.cluster-name}-cluster-spec.yml
@@ -156,7 +163,7 @@ FILEDUMP
 
   provisioner "local-exec" {
     command = <<EOF
-      ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} --name ${var.cluster-name} \
+      KOPS_FEATURE_FLAGS="${var.apiserver-nodes-enabled ? local.apiserver-nodes-ff : ""}" ${var.nodeup-url-env} AWS_SDK_LOAD_CONFIG=1 AWS_PROFILE=${var.aws-profile} kops --state=s3://${var.kops-state-bucket} --name ${var.cluster-name} \
         create secret dockerconfig -f ${self.triggers.local_path} --force && \
 
       rm -f ${self.triggers.local_path}
