@@ -117,6 +117,7 @@ variable "kube-proxy-enabled" {
 variable "node-local-dns-cache" {
   type = object({
     enabled = bool
+    localIP = string
     resources = object({
       requests = object({
         cpu    = string
@@ -126,6 +127,7 @@ variable "node-local-dns-cache" {
   })
   default = {
     enabled = true
+    localIP = "169.254.20.10"
     resources = {
       requests = {
         cpu    = "25m"
