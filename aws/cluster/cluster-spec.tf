@@ -111,7 +111,6 @@ locals {
         provider         = var.kube-dns.provider
         externalCoreFile = var.coredns.corefile
         nodeLocalDNS = {
-          localIP       = var.node-local-dns-cache.localIP
           enabled       = var.node-local-dns-cache.enabled
           cpuRequest    = var.node-local-dns-cache.resources.requests.cpu
           memoryRequest = var.node-local-dns-cache.resources.requests.memory
@@ -139,7 +138,6 @@ locals {
         imagePullProgressDeadline = var.image-pull-progress-deadline
         cgroupRoot                = "/"
         cloudProvider             = "aws"
-        clusterDNS                = var.node-local-dns-cache.enabled ? var.node-local-dns-cache.localIP : var.kube-dns.server-ip
         clusterDomain             = var.kube-dns.domain
         enableDebuggingHandlers   = true
         evictionHard              = var.kubelet-eviction-flag

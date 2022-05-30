@@ -127,7 +127,6 @@ variable "node-local-dns-cache" {
   })
   default = {
     enabled = true
-    localIP = "169.254.20.10"
     resources = {
       requests = {
         cpu    = "25m"
