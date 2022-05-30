@@ -138,7 +138,6 @@ locals {
         imagePullProgressDeadline = var.image-pull-progress-deadline
         cgroupRoot                = "/"
         cloudProvider             = "aws"
-        clusterDNS                = var.kube-dns.server-ip
         clusterDomain             = var.kube-dns.domain
         enableDebuggingHandlers   = true
         evictionHard              = var.kubelet-eviction-flag
@@ -165,7 +164,6 @@ locals {
       masterKubelet = {
         cgroupRoot              = "/"
         cloudProvider           = "aws"
-        clusterDNS              = var.kube-dns.server-ip
         clusterDomain           = var.kube-dns.domain
         enableDebuggingHandlers = true
         evictionHard            = "memory.available<100Mi,nodefs.available<10%,nodefs.inodesFree<5%,imagefs.available<10%,imagefs.inodesFree<5%"
