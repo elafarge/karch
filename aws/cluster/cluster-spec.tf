@@ -41,11 +41,11 @@ locals {
       clusterDNSDomain  = var.kube-dns.domain
       configBase        = "s3://${var.kops-state-bucket}/${var.cluster-name}"
       configStore       = "s3://${var.kops-state-bucket}/${var.cluster-name}"
-      containerd        = {
+      containerd = {
         logLevel = var.containerd-log-level
       }
-      containerRuntime  = "containerd"
-      dnsZone           = var.cluster-name
+      containerRuntime = "containerd"
+      dnsZone          = var.cluster-name
       etcdClusters = [
         for etcd_cluster in ["main", "events"] : merge({
           name = etcd_cluster
@@ -111,9 +111,10 @@ locals {
         provider         = var.kube-dns.provider
         externalCoreFile = var.coredns.corefile
         nodeLocalDNS = {
-          enabled       = var.node-local-dns-cache.enabled
-          cpuRequest    = var.node-local-dns-cache.resources.requests.cpu
-          memoryRequest = var.node-local-dns-cache.resources.requests.memory
+          enabled          = var.node-local-dns-cache.enabled
+          forwardToKubeDNS = var.node-local-dns-cache.forwardToKubeDNS
+          cpuRequest       = var.node-local-dns-cache.resources.requests.cpu
+          memoryRequest    = var.node-local-dns-cache.resources.requests.memory
         }
       }
       kubeProxy = {
