@@ -116,7 +116,8 @@ variable "kube-proxy-enabled" {
 # Available since kops 1.18, K8s 1.15
 variable "node-local-dns-cache" {
   type = object({
-    enabled = bool
+    enabled          = bool
+    forwardToKubeDNS = bool
     resources = object({
       requests = object({
         cpu    = string
@@ -125,7 +126,8 @@ variable "node-local-dns-cache" {
     })
   })
   default = {
-    enabled = true
+    enabled          = true
+    forwardToKubeDNS = true
     resources = {
       requests = {
         cpu    = "25m"
