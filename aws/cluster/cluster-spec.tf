@@ -110,6 +110,9 @@ locals {
         serverIP         = var.kube-dns.server-ip
         provider         = var.kube-dns.provider
         externalCoreFile = var.coredns.corefile
+        cpuRequest       = var.kube-dns-resources.requests.cpu
+        memoryRequest    = var.kube-dns-resources.requests.memory
+        memoryLimit      = var.kube-dns-resources.limits.memory
         nodeLocalDNS = {
           enabled          = var.node-local-dns-cache.enabled
           forwardToKubeDNS = var.node-local-dns-cache.forwardToKubeDNS

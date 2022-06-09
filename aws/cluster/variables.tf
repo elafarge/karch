@@ -93,6 +93,27 @@ variable "kube-dns" {
   }
 }
 
+variable "kube-dns-resources" {
+  type = object({
+    requests = object({
+      cpu    = string
+      memory = string
+    })
+    limits = object({
+      memory = string
+    })
+  })
+  default = {
+    requests = {
+      cpu    = "100m"
+      memory = "70Mi"
+    }
+    limits = {
+      memory = "170Mi"
+    }
+  }
+}
+
 # kube-proxy
 variable "kube-proxy-params" {
   type = object({
