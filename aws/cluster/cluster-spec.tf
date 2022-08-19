@@ -192,6 +192,7 @@ locals {
       serviceClusterIPRange  = "100.64.0.0/13"
       sshAccess              = var.ssh-cidrs
 
+      DisableSubnetTags = var.subnet-tags # The property `DisableSubnetTags` has actually the opposite effect than its name says.
       subnets = concat(flatten([
         for idx in range(length(var.availability-zones)) : [
           {

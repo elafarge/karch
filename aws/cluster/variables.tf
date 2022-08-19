@@ -4,6 +4,12 @@ variable "aws-region" {
 }
 
 # Networking & Security
+variable "subnet-tags" {
+  description = "Enables automatic subnet tagging during cluster creation, if set to false make sure you are tagging the subnets appropriately."
+  type        = bool
+  default     = true
+}
+
 variable "vpc-networking" {
   type = object(
     {
