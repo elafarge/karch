@@ -177,3 +177,14 @@ variable "rolling-update" {
     max-unavailable = 0
   }
 }
+
+variable "warm-pool" {
+  type = object({
+    min-size              = number
+    max-size              = number
+    enable-lifecycle-hook = bool
+  })
+  description = "AWS WarmPool to get pre-initialized EC2 instances."
+
+  nullable = true
+}
