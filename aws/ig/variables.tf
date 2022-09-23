@@ -112,7 +112,7 @@ variable "max-price" {
   type        = string
   description = "If set, this group will use spot instances with the specified max-price"
 
-  default = ""
+  nullable = true
 }
 
 variable "hooks" {
