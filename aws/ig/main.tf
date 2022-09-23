@@ -26,6 +26,11 @@ locals {
       taints                 = length(var.taints) > 0 ? var.taints : null
       subnets                = var.subnets
       hooks                  = length(var.hooks) > 0 ? var.hooks : null
+      warmPool = var.warm-pool != null ? {
+        minSize             = var.warm-pool.min-size
+        maxSize             = var.warm-pool.max-size
+        enableLifecycleHook = var.warm-pool.enable-lifecycle-hook
+      } : null
       rollingUpdate = {
         maxSurge       = var.rolling-update.max-surge
         maxUnavailable = var.rolling-update.max-unavailable

@@ -112,7 +112,7 @@ variable "max-price" {
   type        = string
   description = "If set, this group will use spot instances with the specified max-price"
 
-  default = ""
+  nullable = true
 }
 
 variable "hooks" {
@@ -176,4 +176,15 @@ variable "rolling-update" {
     max-surge       = 1
     max-unavailable = 0
   }
+}
+
+variable "warm-pool" {
+  type = object({
+    min-size              = number
+    max-size              = number
+    enable-lifecycle-hook = bool
+  })
+  description = "AWS WarmPool to get pre-initialized EC2 instances."
+
+  nullable = true
 }
