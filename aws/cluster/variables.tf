@@ -374,7 +374,6 @@ variable "enable-admission-plugins" {
   default = [
     "DefaultStorageClass",
     "DefaultTolerationSeconds",
-    "DenyEscalatingExec",
     "LimitRanger",
     "MutatingAdmissionWebhook",
     "NamespaceLifecycle",
