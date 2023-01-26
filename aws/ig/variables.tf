@@ -188,3 +188,13 @@ variable "warm-pool" {
 
   nullable = true
 }
+
+variable "user-data" {
+  type = list(map(object({
+    name    = string
+    type    = string
+    content = string
+  })))
+  description = "UserData defines a user-data section to be passed to the host"
+  default     = []
+}

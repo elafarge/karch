@@ -17,6 +17,7 @@ locals {
       maxSize                = var.max-size
       minSize                = var.min-size
       externalLoadBalancers  = var.external-load-balancers
+      additionalUserData     = var.user-data
       role                   = "Node"
       rootVolumeSize         = var.volume-size
       rootVolumeType         = var.volume-type
