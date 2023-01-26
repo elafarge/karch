@@ -269,6 +269,7 @@ variable "container-networking-params-amazonvpc" {
 
 variable "container-networking-params-calico" {
   type = object({
+    chainInsertMode                 = string
     crossSubnet                     = bool
     bpfEnabled                      = bool
     bpfExternalServiceMode          = string
@@ -288,6 +289,7 @@ variable "container-networking-params-calico" {
   description = "Calico CNI params"
 
   default = {
+    chainInsertMode                 = "insert"
     crossSubnet                     = true
     bpfEnabled                      = false
     bpfExternalServiceMode          = "Tunnel"
